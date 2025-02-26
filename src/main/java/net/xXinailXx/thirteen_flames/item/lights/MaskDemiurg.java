@@ -17,7 +17,7 @@ public class MaskDemiurg extends ArmorItemTF {
     }
 
     @Override
-    public @Nullable RelicData getRelicData() {
+    public RelicData getRelicData() {
         return RelicData.builder().abilityData(RelicAbilityData.builder().ability("teleport", RelicAbilityEntry.builder().maxLevel(2).stat("range", RelicAbilityStat.builder().initialValue(1, 3).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return MathUtils.round(value, 1);
         }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();

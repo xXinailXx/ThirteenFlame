@@ -27,7 +27,7 @@ public class Narsafar extends ItemSetting {
         tooltip.add(Component.translatable("tooltip.st_thirteen_lights.narsafar.gender.tooltip", Component.literal("d")).withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.st_thirteen_lights.narsafar.profession.tooltip", Component.literal("d")).withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("tooltip.st_thirteen_lights.narsafar.owner.tooltip", Component.literal("d")).withStyle(ChatFormatting.GRAY));
-        tooltip.add(Component.translatable("tooltip.st_thirteen_lights.narsafar.number.tooltip", Component.literal(String.valueOf("d")), Component.literal("d")).withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("tooltip.st_thirteen_lights.narsafar.number.tooltip", Component.literal("d"), Component.literal("d")).withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.literal(" "));
         tooltip.add(Component.translatable("tooltip.st_thirteen_lights.narsafar.info_in_config.tooltip").withStyle(ChatFormatting.GRAY));
     }

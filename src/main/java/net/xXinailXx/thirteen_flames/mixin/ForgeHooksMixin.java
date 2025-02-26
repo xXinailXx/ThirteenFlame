@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ForgeHooks.class)
 public class ForgeHooksMixin {
-    @Inject(method = "onLivingAttack", at = @At("HEAD"), remap = false, cancellable = true)
+    @Inject(method = "onLivingAttack", at = @At("HEAD"), remap = false)
     private static void onLivingAttack(LivingEntity entity, DamageSource src, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (entity instanceof Player player) {
             IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
