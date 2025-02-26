@@ -1,0 +1,73 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license = "GNU GPL V3"
+
+[[mods]]
+modId="thirteen_flames"
+version="0.0.1-1.19.2"
+displayName="Storytelling: Thirteen Flames"
+logoFile="logo.png"
+credits="xXinailXx"
+authors="xXinailXx"
+description=''''''
+
+[[dependencies.thirteen_flames]]
+modId="forge"
+mandatory=true
+versionRange="[43,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.19.2,1.20)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="dragonworldlib"
+mandatory=true
+versionRange="[0.0.1-1.19.2,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="alexsmobs"
+mandatory=true
+versionRange="[1.21.1,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="citadel"
+mandatory=true
+versionRange="[2.1.1,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="hammerlib"
+mandatory=true
+versionRange="[19.3.82,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="relics"
+mandatory=true
+versionRange="[0.4.7.3,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId="geckolib3"
+mandatory=true
+versionRange="[3.1,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.thirteen_flames]]
+modId = "curios"
+mandatory = true
+versionRange = "[1.19.2-5.1.1.0,)"
+ordering = "NONE"
+side = "BOTH"
+[[dependencies.thirteen_flames]]
+modId = "skilltree"
+mandatory = true
+versionRange = "[0.4.9e,)"
+ordering = "NONE"
+side = "BOTH"

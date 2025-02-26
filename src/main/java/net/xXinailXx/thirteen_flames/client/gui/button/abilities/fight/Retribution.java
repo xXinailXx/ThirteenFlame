@@ -1,0 +1,17 @@
+package net.xXinailXx.thirteen_flames.client.gui.button.abilities.fight;
+
+import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+
+@Mod.EventBusSubscriber
+public class Retribution extends AbstarctAbilityWidgets {
+    public Retribution(int x, int y) {
+        super(x, y, 9);
+    }
+
+    @Override
+    public AbilityData constructAbilityData() {
+        return AbilityData.builder("retribution").screenID(ScreenID.FIGHT).maxLevel(10).requiredLevel(40).build();
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "record": {
+    "sounds": [
+      {
+        "name": "thirteen_flames:record",
+        "stream": true
+      }
+    ]
+  }
+}

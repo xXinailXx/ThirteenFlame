@@ -1,0 +1,35 @@
+{
+  "required": true,
+  "package": "net.xXinailXx.thirteen_flames.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "thirteen_flames.refmap.json",
+  "mixins": [
+    "AbstractArrowMixin",
+    "DataSlotMixin",
+    "EnderpearlItemMixin",
+    "EntityMixin",
+    "FishingHookMixin",
+    "FlintAndSteelItemMixin",
+    "FoodPropertiesMixin",
+    "ForgeHooksMixin",
+    "HoeItemMixin",
+    "ItemEntityMixin",
+    "ItemMixin",
+    "ItemStackMixin",
+    "LivingEntityMixin",
+    "MobMixin",
+    "MushroomCowMixin",
+    "PlayerMixin",
+    "PumpkinBlockMixin",
+    "SheepMixin",
+    "SnowGolemMixin",
+    "client.AddXPLightItemAbilityScreenMixin",
+    "client.AddXPLightItemRelicScreenMixin",
+    "client.SkillTreeKeyBindsMixin"
+  ],
+  "client": [
+    "client.PassiveSkillTreeMixin",
+    "client.SkillButtomMixin"
+  ],
+  "minVersion": "0.7"
+}

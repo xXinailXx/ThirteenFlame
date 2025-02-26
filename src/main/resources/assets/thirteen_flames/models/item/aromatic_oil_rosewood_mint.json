@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "thirteen_flames:item/aromatic_oil_rosewood_mint"
+  }
+}

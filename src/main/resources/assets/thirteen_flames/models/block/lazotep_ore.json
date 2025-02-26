@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "thirteen_flames:block/lazotep_ore"
+  }
+}

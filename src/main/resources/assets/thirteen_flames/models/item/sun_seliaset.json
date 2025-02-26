@@ -1,0 +1,94 @@
+{
+	"credit": "Made with Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"0": "thirteen_flames:item/sun_seliaset",
+		"particle": "thirteen_flames:item/sun_seliaset"
+	},
+	"elements": [
+		{
+			"from": [4, 2, 4],
+			"to": [12, 10, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 8]},
+			"faces": {
+				"north": {"uv": [2, 0, 6, 4], "texture": "#0"},
+				"east": {"uv": [2, 0, 6, 4], "texture": "#0"},
+				"south": {"uv": [2, 0, 6, 4], "texture": "#0"},
+				"west": {"uv": [2, 0, 6, 4], "texture": "#0"},
+				"up": {"uv": [6, 4, 2, 0], "texture": "#0"},
+				"down": {"uv": [6, 0, 2, 4], "texture": "#0"}
+			}
+		},
+		{
+			"from": [3.25, 1.25, 3.25],
+			"to": [12.75, 10.75, 12.75],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 2, 8]},
+			"faces": {
+				"north": {"uv": [0, 0, 2, 2], "texture": "#0"},
+				"east": {"uv": [0, 0, 2, 2], "texture": "#0"},
+				"south": {"uv": [0, 0, 2, 2], "texture": "#0"},
+				"west": {"uv": [0, 0, 2, 2], "texture": "#0"},
+				"up": {"uv": [2, 2, 0, 0], "texture": "#0"},
+				"down": {"uv": [2, 0, 0, 2], "texture": "#0"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [0, -45, 0],
+			"translation": [0, 0.5, -0.5],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [0, -45, 0],
+			"translation": [0, 0.5, -0.5],
+			"scale": [0.6, 0.6, 0.6]
+		},
+		"firstperson_righthand": {
+			"rotation": [3.35, -37.59, 7],
+			"translation": [-0.75, 0, 1.5],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"firstperson_lefthand": {
+			"rotation": [-26, -34.46, -23.93],
+			"translation": [-1.75, 3, 8.25],
+			"scale": [0.7, 0.7, 0.7]
+		},
+		"ground": {
+			"translation": [0, 3, 0]
+		},
+		"gui": {
+			"rotation": [22.5, -45, 0],
+			"translation": [0.25, 1.25, 0]
+		},
+		"head": {
+			"translation": [0, 17.5, 0],
+			"scale": [4, 4, 4]
+		},
+		"fixed": {
+			"translation": [0, 3.5, 0.5],
+			"scale": [1.5, 1.5, 1.5]
+		}
+	},
+	"groups": [
+		{
+			"name": "sun",
+			"origin": [8, 6, 8],
+			"color": 0,
+			"children": [
+				{
+					"name": "bone",
+					"origin": [8, 6, 8],
+					"color": 0,
+					"children": [0]
+				},
+				{
+					"name": "bone2",
+					"origin": [8, 6, 8],
+					"color": 0,
+					"children": [1]
+				}
+			]
+		}
+	]
+}

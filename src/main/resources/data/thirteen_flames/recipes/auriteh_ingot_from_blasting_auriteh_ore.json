@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 0.8,
+  "group": "auriteh_ingot",
+  "ingredient": {
+    "item": "thirteen_flames:auriteh_ore"
+  },
+  "result": "thirteen_flames:auriteh_ingot"
+}
