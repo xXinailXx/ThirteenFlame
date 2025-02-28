@@ -1,7 +1,5 @@
 package net.xXinailXx.thirteen_flames.entity;
 
-import com.mojang.math.Vector3f;
-import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
@@ -12,9 +10,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 
@@ -29,7 +28,7 @@ public class OreBlockSimulationEntity extends Entity {
         super(pEntityType, level);
     }
 
-    public  OreBlockSimulationEntity(Level level, BlockState state) {
+    public OreBlockSimulationEntity(Level level, BlockState state) {
         super(EntityRegistry.ORE_SIMULATION.get(), level);
         setBlockState(state);
         this.noPhysics = true;
@@ -38,24 +37,30 @@ public class OreBlockSimulationEntity extends Entity {
     public void tick() {
         super.tick();
 
-        if (!level.isClientSide()) {
-            this.getLevel().setBlock(this.blockPosition(), getBlockState(), 11);
+        this.move(MoverType.SELF, getDeltaMovement());
+        setDeltaMovement(0, 0.025F, 0);
+
+        Block clickTargetBlock = null;
+
+        if (this.tickCount == 0 && !this.level.getBlockState(this.blockPosition().above()).isAir()) {
+            clickTargetBlock = this.level.getBlockState(this.blockPosition().above()).getBlock();
         }
 
-        if (this.level.getBlockState(this.blockPosition()).isAir()) {
-            this.level.setBlock(this.blockPosition(), getBlockState(), 11);
+        int oreEntity = 0;
+
+        for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(0, 21, 0))) {
+            if (entity instanceof OreBlockSimulationEntity) {
+                oreEntity++;
+            }
+        }
+
+        if (this.tickCount % (40 * oreEntity == 0 ? 40 : 40 * oreEntity) == 0 || (!this.level.getBlockState(this.blockPosition()).isAir() && this.tickCount > (39 * oreEntity))) {
+            if (!level.isClientSide()) {
+                this.level.setBlock(this.blockPosition().above(), getBlockState(), 11);
+            }
+
             this.remove(RemovalReason.KILLED);
         }
-
-//        this.move(MoverType.SELF, getDeltaMovement());
-//        setDeltaMovement(getDeltaMovement().add(0, 1F, 0));
-//
-//        BlockState state = this.level.getBlockState(this.getOnPos());
-
-//        if (this.level.getBlockState(getOnPos()).isAir()) {
-//            this.remove(RemovalReason.KILLED);
-//            level.setBlock(getOnPos(), getBlockState(), 11);
-//        }
     }
 
     public void setBlockState(@Nullable BlockState state) {
