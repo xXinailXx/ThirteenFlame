@@ -27,9 +27,8 @@ public class Archaeology extends AbstarctAbilityWidgets {
 
         if (!player.isCreative()) {
             if (imenInHand.getItem() instanceof ShovelItem) {
-                if (data.isActiveAbility("archaeology")) {
+                if (data.isActiveAbility("archaeology"))
                     event.setExpToDrop(event.getExpToDrop() + data.getLevelAbility("archaeology"));
-                }
             }
         }
     }

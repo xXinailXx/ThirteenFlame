@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -17,15 +17,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
-public class SunSeleaset extends FireItemSetting {
+public class SunSeleaset extends FlameItemSetting {
     private static int points;
     private static int pointsAbility;
-
-    public SunSeleaset(Properties properties) {
-        super(properties);
-    }
 
     public RelicData getRelicData() {
         return RelicData.builder().abilityData( RelicAbilityData.builder().ability("blessed_light", RelicAbilityEntry.builder().maxLevel(10).stat("radius", RelicAbilityStat.builder().initialValue(10.0, 10.0).upgradeModifier(RelicAbilityStat.Operation.ADD, -1.0).formatValue((value) -> {

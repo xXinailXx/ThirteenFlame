@@ -6,8 +6,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 
 public class PickaxeItemTF extends DiggerItemTF {
-    public PickaxeItemTF(Tier tier, int attackDamage, float speedDamage, Item.Properties properties) {
-        super((float)attackDamage, speedDamage, tier, BlockTags.MINEABLE_WITH_PICKAXE, properties);
+    public PickaxeItemTF(Tier tier, int attackDamage, float speedDamage) {
+        super((float)attackDamage, speedDamage, tier, BlockTags.MINEABLE_WITH_PICKAXE);
     }
 
     @Override

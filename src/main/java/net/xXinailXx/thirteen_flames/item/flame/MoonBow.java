@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -7,13 +7,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
-public class MoonBow extends FireItemSetting {
-    public MoonBow(Properties properties) {
-        super( properties );
-    }
-
+public class MoonBow extends FlameItemSetting {
     public RelicData getRelicData() {
         return RelicData.builder().abilityData(RelicAbilityData.builder().ability("shot", RelicAbilityEntry.builder().maxLevel(10).stat("rays", RelicAbilityStat.builder().initialValue((double)3.0F, (double)3.0F).thresholdValue((double)3.0F, (double)23.0F).upgradeModifier(RelicAbilityStat.Operation.ADD, (double)2.0F).formatValue((x) -> {
             return (int) MathUtils.round(x, 1);

@@ -16,7 +16,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xXinailXx.dragonworldlib.interfaces.IHoveredWidget;
+import net.xXinailXx.enderdragonlib.interfaces.IHoveredWidget;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.IAbilityData;
@@ -71,7 +71,7 @@ public abstract class AbstractGuiFaraon extends Screen {
         switch (screenID) {
             case MINING -> this.addRenderableWidget(new ButtonUpgradeMiningGui(x + 24, y + 250));
             case CRAFT -> this.addRenderableWidget(new ButtonUpgradeCraftGui(x + 24, y + 250));
-             case FIGHT -> this.addRenderableWidget(new ButtonUpgradeFightGui(x + 24, y + 250));
+            case FIGHT -> this.addRenderableWidget(new ButtonUpgradeFightGui(x + 24, y + 250));
             case HEALTH -> this.addRenderableWidget(new ButtonUpgradeHealthGui(x + 24, y + 250));
         }
     }
@@ -97,9 +97,8 @@ public abstract class AbstractGuiFaraon extends Screen {
 
         blit(poseStack, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight, texWidth, texHeight);
 
-        if (effectData.isCurseKnef()) {
+        if (effectData.isCurseKnef())
             blit(poseStack, x + 288, y + 3, 229, 346, 80, 40, texWidth, texHeight);
-        }
 
         blit(poseStack, x + 305, y + 188, 168, 347, 22, 24, texWidth, texHeight);
         blit(poseStack, x + 305, y + 147, 197, 347, 22, 24, texWidth, texHeight);
@@ -123,6 +122,7 @@ public abstract class AbstractGuiFaraon extends Screen {
             this.MC.font.draw(poseStack, "-" + guiLeveling.getProcentCurse() + "%", x + 140, y, 0xFFFFFFFF);
 
             poseStack.scale(1F, 1F, 1F);
+
             this.MC.font.draw(poseStack, Component.translatable("gui.curse.info"), x + 153 - this.font.width(Component.translatable("gui.curse.info")) / 2.0F, y + 10, 0xFFFFFFFF);
 
             poseStack.popPose();
@@ -141,7 +141,20 @@ public abstract class AbstractGuiFaraon extends Screen {
             case GLOBAL -> screenName = "global";
         }
 
-        this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.id." + screenName + ".info", levelGui), (x + 2), (y * 2 + 2), 0x673E09 );
+        int level = 0;
+
+        if (levelGui == 0) {
+            switch (screenID) {
+                case MINING -> level = guiLeveling.getGuiMiningLevelAmount();
+                case CRAFT -> level = guiLeveling.getGuiCraftLevelAmount();
+                case FIGHT -> level = guiLeveling.getGuiFightLevelAmount();
+                case HEALTH -> level = guiLeveling.getGuiHealthLevelAmount();
+            }
+        } else {
+            level = levelGui;
+        }
+
+        this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.id." + screenName + ".info", level), (x + 2), (y * 2 + 2), 0x673E09);
 
         poseStack.scale(0.42F, 0.42F, 0.42F);
 
@@ -186,17 +199,15 @@ public abstract class AbstractGuiFaraon extends Screen {
                 bonusInfo.add(Component.literal(" "));
             }
 
-            if (isMaxLevel) {
+            if (isMaxLevel)
                 bonusInfo.add(Component.translatable("gui.thirteen_flames.bonus_max_level"));
-            } else {
+            else
                 bonusInfo.add(Component.translatable("gui.thirteen_flames.bonus_cost_upgrade"));
-            }
 
-            if (!guiLeveling.isPlayerScreen()) {
+            if (!guiLeveling.isPlayerScreen())
                 bonusInfo.add(Component.translatable("gui.thirteen_flames.gui_upgrade_info"));
-            } else {
+            else
                 bonusInfo.add(Component.translatable("gui.thirteen_flames.player_gui_info"));
-            }
         } else {
             bonusInfo.add(Component.translatable("gui.thirteen_flames.global_info"));
         }
@@ -257,9 +268,8 @@ public abstract class AbstractGuiFaraon extends Screen {
 
             int extraYOff = 0;
 
-            if (!effectData.isCurseKnef()) {
+            if (!effectData.isCurseKnef())
                 extraYOff = 27;
-            }
 
             blit(poseStack, (x + 752), (y + 618 + extraYOff), 197, 347, 22, 24, texWidth, texHeight);
 

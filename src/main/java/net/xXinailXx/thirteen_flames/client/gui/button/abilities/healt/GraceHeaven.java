@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.AirBlock;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.capability.manager.TimeManager;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
 
@@ -32,17 +31,15 @@ public class GraceHeaven extends AbstarctAbilityWidgets {
             Player player = event.player;
             Level level = player.getLevel();
 
-            if (player == null && level == null) {
+            if (player == null && level == null)
                 return;
-            }
 
             Iterator iterator = BlockPos.betweenClosed(new BlockPos(player.getX(), player.getY(), player.getZ()), new BlockPos(player.getX(), 1000, player.getZ())).iterator();
             boolean lock = false;
 
             while (iterator.hasNext()) {
-                if (level.getBlockState((BlockPos) iterator.next()).isAir()) {
+                if (level.getBlockState((BlockPos) iterator.next()).isAir())
                     lock = true;
-                }
             }
 
             if (lock) {

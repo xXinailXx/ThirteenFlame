@@ -35,7 +35,7 @@ public class StatueSelyaBlockItem extends BlockItem implements IAnimatable {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return renderer;
             }
-        } );
+        });
     }
 
     @Override

@@ -23,13 +23,11 @@ public class NileFlame extends AbstarctAbilityWidgets {
     public static void fluidCollide(FluidCollisionEvent event) {
         if (data.isActiveAbility("nile_flame")) {
             if (event.getEntity() instanceof Player player) {
-                if (player == null) {
+                if (player == null)
                     return;
-                }
 
-                if (event.getFluid().is(FluidTags.WATER) && !player.isShiftKeyDown()) {
+                if (event.getFluid().is(FluidTags.WATER) && !player.isShiftKeyDown())
                     event.setCanceled(true);
-                }
             }
         }
     }

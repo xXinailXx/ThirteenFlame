@@ -29,14 +29,12 @@ public class ExcisionFlesh extends AbstarctAbilityWidgets {
             if (event.getTarget() instanceof LivingEntity entity) {
                 Player player = event.getEntity();
 
-                if (player == null) {
+                if (player == null)
                     return;
-                }
 
                 if (player.getMainHandItem().getItem() instanceof SwordItem) {
-                    if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility("excision_flesh"))) {
+                    if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility("excision_flesh")))
                         entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 200));
-                    }
                 }
             }
         }

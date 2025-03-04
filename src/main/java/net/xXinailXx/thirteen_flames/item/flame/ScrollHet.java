@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -13,13 +13,9 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
-public class ScrollHet extends FireItemSetting {
-    public ScrollHet(Properties properties) {
-        super( properties );
-    }
-
+public class ScrollHet extends FlameItemSetting {
     public RelicData getRelicData() {
         return RelicData.builder().abilityData( RelicAbilityData.builder().ability("catalog", RelicAbilityEntry.builder().maxLevel(10).stat("modifier", RelicAbilityStat.builder().initialValue(56.0, 35.0).upgradeModifier(RelicAbilityStat.Operation.ADD, -1.0).formatValue((value) -> {
             return (int) MathUtils.round(value, 0);

@@ -18,9 +18,8 @@ public class SkillButtomMixin {
 
     @Inject(method = "renderButton", at = @At(value = "INVOKE", target = "Ldaripher/skilltree/client/widget/SkillButton;blit(Lcom/mojang/blaze3d/vertex/PoseStack;IIIIFFIIII)V", ordinal = 3), cancellable = true)
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (Minecraft.getInstance().player == null) {
+        if (Minecraft.getInstance().player == null)
             return;
-        }
 
         if (guiLevelingData.isPlayerScreen()) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

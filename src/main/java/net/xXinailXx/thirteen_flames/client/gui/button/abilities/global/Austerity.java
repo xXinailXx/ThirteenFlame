@@ -23,9 +23,8 @@ public class Austerity extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("austerity")) {
             Player player = event.player;
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
             player.getFoodData().setFoodLevel(20);
         }

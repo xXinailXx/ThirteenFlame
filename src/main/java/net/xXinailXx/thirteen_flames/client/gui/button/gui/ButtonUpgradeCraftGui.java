@@ -3,7 +3,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.xXinailXx.dragonworldlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
 import net.xXinailXx.thirteen_flames.data.Data;
@@ -31,14 +31,12 @@ public class ButtonUpgradeCraftGui extends AbstractWidgetUtils {
         RenderSystem.setShaderTexture(0, GodFaraonScreenMining.BACKGROUNG);
         manager.bindForSetup(GodFaraonScreenMining.BACKGROUNG);
 
-        if (scarabsData.getScarabGold() >= 1 && guiLevelingData.getGuiCraftLevelAmount() < 100 && !guiLevelingData.isPlayerScreen()) {
+        if (scarabsData.getScarabGold() >= 1 && guiLevelingData.getGuiCraftLevelAmount() < 100 && !guiLevelingData.isPlayerScreen())
             blit(poseStack, this.x, this.y, 6, 342, 46, 48, 512, 512);
-        } else {
+        else
             blit(poseStack, this.x, this.y, 55, 342, 45, 48, 512, 512);
-        }
 
-        if (this.isHovered) {
+        if (this.isHovered)
             blit(poseStack, this.x - 1, this.y - 3, 6, 395, 51, 59, 512, 512);
-        }
     }
 }

@@ -33,6 +33,7 @@ public class ThirteenFlamesCommands {
                                             String ability = AbilityArgumentsType.getAbility(context, "ability_id");
 
                                             abilityData.setBuyAbility(ability, false);
+                                            abilityData.setActiveAbility(ability, false);
 
                                             return Command.SINGLE_SUCCESS;
                                         }))

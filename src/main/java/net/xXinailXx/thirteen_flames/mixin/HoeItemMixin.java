@@ -38,18 +38,16 @@ public class HoeItemMixin {
                 BlockState state = level.getBlockState(pos);
 
                 if (state.is(BlockTags.DIRT)) {
-                    if (!pos.equals(use.getClickedPos())) {
+                    if (!pos.equals(use.getClickedPos()))
                         level.setBlock(pos, Blocks.FARMLAND.defaultBlockState(), 11);
-                    }
                 } else if (state.is(Blocks.FARMLAND)) {
                     CropBlock block = (CropBlock) Blocks.WHEAT;
 
                     level.setBlock(pos.above(), block.getStateForAge(0), 2);
                     level.gameEvent(player, GameEvent.BLOCK_PLACE, pos);
 
-                    if (player instanceof ServerPlayer) {
+                    if (player instanceof ServerPlayer)
                         CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, pos.relative(use.getClickedFace()), use.getItemInHand());
-                    }
                 }
             });
 
@@ -61,6 +59,7 @@ public class HoeItemMixin {
                 BlockState state = level.getBlockState(use.getClickedPos());
 
                 BonemealableBlock bonemealableBlock = (BonemealableBlock) state.getBlock();
+
                 if (bonemealableBlock.isValidBonemealTarget(level, use.getClickedPos(), state, level.isClientSide)) {
                     if (!level.isClientSide) {
                         level.levelEvent(1505, use.getClickedPos(), 0);
@@ -68,9 +67,8 @@ public class HoeItemMixin {
 
                         ItemStack stack = use.getItemInHand();
                         int damage = 100 - (data.getLevelAbility("grain_grower") * 5);
-                        stack.hurtAndBreak(damage, player, (player1) -> {
-                            player1.broadcastBreakEvent(use.getHand());
-                        });
+
+                        stack.hurtAndBreak(damage, player, (entity) -> entity.broadcastBreakEvent(use.getHand()));
                     }
                 }
             }

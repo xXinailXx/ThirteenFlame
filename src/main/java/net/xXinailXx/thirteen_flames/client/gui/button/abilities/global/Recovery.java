@@ -10,9 +10,8 @@ public class Recovery extends AbstarctAbilityWidgets {
 
     @Override
     public void onPress() {
-        if (effectData.isCurseKnef()) {
+        if (effectData.isCurseKnef())
             super.onPress();
-        }
     }
 
     @Override

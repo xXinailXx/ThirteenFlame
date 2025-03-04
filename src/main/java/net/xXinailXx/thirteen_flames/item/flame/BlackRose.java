@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -7,13 +7,9 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
-public class BlackRose extends FireItemSetting {
-    public BlackRose(Properties properties) {
-        super( properties );
-    }
-
+public class BlackRose extends FlameItemSetting {
     public RelicData getRelicData() {
         return RelicData.builder().abilityData(RelicAbilityData.builder().ability("flesh", RelicAbilityEntry.builder().maxLevel(10).stat("revival", RelicAbilityStat.builder().initialValue(5.0, 10.0).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.5).formatValue((value) -> {
             return MathUtils.round(value, 0);

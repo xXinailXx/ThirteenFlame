@@ -8,7 +8,7 @@ import net.xXinailXx.thirteen_flames.item.MaskSalmana;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.custom.render.*;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
-import net.xXinailXx.thirteen_flames.entity.client.armor.MaskSalmanaRender;
+import net.xXinailXx.thirteen_flames.entity.client.armor.MaskSalmanaRenderer;
 import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
 
 public class ClientBusEvents {
@@ -16,7 +16,7 @@ public class ClientBusEvents {
     public static class ClientEvents {
         @SubscribeEvent
         public static void registerArmorRenderers(final EntityRenderersEvent.AddLayers event) {
-            GeoArmorRenderer.registerArmorRenderer(MaskSalmana.class, new MaskSalmanaRender());
+            GeoArmorRenderer.registerArmorRenderer(MaskSalmana.class, new MaskSalmanaRenderer());
         }
 
         @SubscribeEvent

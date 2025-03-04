@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
@@ -23,14 +24,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
+import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 
 import java.util.UUID;
 
 public class TravelersSword extends SwordItemTF {
-    private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId( Player.class, EntityDataSerializers.BYTE);
-
-    public TravelersSword(Tier tier, int attackDamage, float speedDamage, Properties properties) {
-        super(tier, attackDamage, speedDamage, properties);
+    public TravelersSword() {
+        super(ToolTierTF.THIRTEEN_FLAMES, 3, -2.4f);
     }
 
     public RelicData getRelicData() {
@@ -42,7 +42,6 @@ public class TravelersSword extends SwordItemTF {
             return MathUtils.round(value, 1);
         }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).styleData( RelicStyleData.builder().borders("#40D42F", "#35D922").build()).build();
     }
-
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {

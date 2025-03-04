@@ -44,9 +44,8 @@ public class Scissorhands extends AbstarctAbilityWidgets {
             Entity entity = event.getTarget();
 
             if (entity instanceof net.minecraftforge.common.IForgeShearable target) {
-                if (entity.level.isClientSide) {
+                if (entity.level.isClientSide)
                     return;
-                }
 
                 BlockPos pos = new BlockPos(entity.getX(), entity.getY(), entity.getZ());
                 Player player = event.getEntity();
@@ -70,23 +69,20 @@ public class Scissorhands extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("scissorhands")) {
             Player player = event.getEntity();
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
-            if (player.getMainHandItem().is(Items.SHEARS)) {
+            if (player.getMainHandItem().is(Items.SHEARS))
                 return;
-            }
 
             Level level = player.getLevel();
             BlockState state = level.getBlockState(event.getPos());
 
             if (! state.is(Blocks.COBWEB) && ! state.is(BlockTags.LEAVES)) {
-                if (state.is(BlockTags.WOOL)) {
+                if (state.is(BlockTags.WOOL))
                     event.setNewSpeed(5.0F);
-                } else {
+                else
                     event.setNewSpeed(!isShearsMinesBlock(state) ? event.getOriginalSpeed() : 2.0F);
-                }
             } else {
                 event.setNewSpeed(15.0F);
             }
@@ -101,9 +97,8 @@ public class Scissorhands extends AbstarctAbilityWidgets {
                 BlockState state = level.getBlockState(event.getPos());
                 ItemStack stack = null;
 
-                if (isShearsMinesBlock(state)) {
+                if (isShearsMinesBlock(state))
                     stack = stack.getItem().getDefaultInstance();
-                }
 
                 if (state != null) {
                     ItemEntity itemEntity = new ItemEntity(level, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), stack);
@@ -118,22 +113,19 @@ public class Scissorhands extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("scissorhands")) {
             Player player = event.getEntity();
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
-            if (player.getMainHandItem().is(Items.SHEARS)) {
+            if (player.getMainHandItem().is(Items.SHEARS))
                 return;
-            }
 
             Level level = player.getLevel();
             BlockState state = level.getBlockState(event.getPos());
 
             if (state.getBlock() instanceof GrowingPlantHeadBlock growingplantheadblock) {
                 if (!growingplantheadblock.isMaxAge(state)) {
-                    if (player instanceof ServerPlayer) {
+                    if (player instanceof ServerPlayer)
                         CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger((ServerPlayer)player, event.getPos(), player.getMainHandItem());
-                    }
 
                     level.playSound(player, event.getPos(), SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0F, 1.0F);
                     level.setBlockAndUpdate(event.getPos(), growingplantheadblock.getMaxAgeState(state));

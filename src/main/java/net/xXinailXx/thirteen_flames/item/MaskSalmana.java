@@ -55,9 +55,8 @@ public class MaskSalmana extends GeoArmorItem implements IAnimatable {
 
     private boolean hasCorrectArmorOn(ArmorMaterial material, Player player) {
         for (ItemStack armorStack: player.getInventory().armor) {
-            if(!(armorStack.getItem() instanceof ArmorItem)) {
+            if(!(armorStack.getItem() instanceof ArmorItem))
                 return false;
-            }
         }
 
         ArmorItem boots = ((ArmorItem)player.getInventory().getArmor(0).getItem());

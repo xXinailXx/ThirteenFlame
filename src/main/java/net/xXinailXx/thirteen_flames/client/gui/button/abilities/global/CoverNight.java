@@ -13,13 +13,8 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAb
 
 @Mod.EventBusSubscriber
 public class CoverNight extends AbstarctAbilityWidgets {
-    private static int tickState;
-    private static Vec3 lastPos;
-
-    static {
-        tickState = 6;
-        lastPos = Vec3.ZERO;
-    }
+    private static int tickState = 6;
+    private static Vec3 lastPos = Vec3.ZERO;
 
     public CoverNight(int x, int y) {
         super(x, y, 9 + (effectData.isCurseKnef() ? 1 : 0));
@@ -34,23 +29,19 @@ public class CoverNight extends AbstarctAbilityWidgets {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
 
-        if (player == null) {
+        if (player == null)
             return;
-        }
 
         if (data.isActiveAbility("cover_night")) {
-            if (player.hasEffect(MobEffects.INVISIBILITY) && player.hasEffect(MobEffects.REGENERATION)) {
+            if (player.hasEffect(MobEffects.INVISIBILITY) && player.hasEffect(MobEffects.REGENERATION))
                 return;
-            }
 
             if (tickState == 0) {
-                if (!player.hasEffect(MobEffects.INVISIBILITY)) {
+                if (!player.hasEffect(MobEffects.INVISIBILITY))
                     player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 300, 1, true, true));
-                }
 
-                if (!player.hasEffect(MobEffects.REGENERATION)) {
+                if (!player.hasEffect(MobEffects.REGENERATION))
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 300, 2, true, true));
-                }
 
                 tickState = 6;
                 return;
@@ -64,9 +55,8 @@ public class CoverNight extends AbstarctAbilityWidgets {
                 }
 
                 if (!player.getLevel().isClientSide) {
-                    if (player.tickCount % 20 == 0) {
+                    if (player.tickCount % 20 == 0)
                         tickState--;
-                    }
                 }
             }
         } else {

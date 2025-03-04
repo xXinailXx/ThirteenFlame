@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import daripher.skilltree.client.screen.SkillTreeScreen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-import net.xXinailXx.dragonworldlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
 
 public class ButtonOpenPassiveSkillTree extends AbstractWidgetUtils {
@@ -25,8 +25,7 @@ public class ButtonOpenPassiveSkillTree extends AbstractWidgetUtils {
 
         blit(poseStack, this.x, this.y, 439, 58, 59, 27, 512, 512);
 
-        if (this.isHovered) {
+        if (this.isHovered)
             blit(poseStack, this.x - 3, this.y - 3, 376, 304, 67, 36, 512, 512);
-        }
     }
 }

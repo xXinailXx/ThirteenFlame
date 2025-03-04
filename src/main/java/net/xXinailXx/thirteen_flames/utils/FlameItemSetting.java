@@ -1,19 +1,22 @@
 package net.xXinailXx.thirteen_flames.utils;
 
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.phys.Vec3;
-import net.xXinailXx.dragonworldlib.client.utils.item.GlowItemData;
-import net.xXinailXx.dragonworldlib.interfaces.IGlowItem;
+import net.xXinailXx.enderdragonlib.client.utils.item.GlowItemData;
+import net.xXinailXx.enderdragonlib.interfaces.IGlowItem;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 
 import java.awt.*;
 
-public class FireItemSetting extends RelicItem implements IGlowItem {
-    public FireItemSetting(Properties properties) {
-        super((new Item.Properties().tab(ThirteenFlames.FLAME_TAB)));
+public abstract class FlameItemSetting extends RelicItem implements IGlowItem {
+    public FlameItemSetting(Properties properties) {
+        super(properties.tab(ThirteenFlames.FLAME_TAB));
+    }
+
+    public FlameItemSetting() {
+        this(new Properties());
     }
 
     @Override
@@ -33,15 +36,17 @@ public class FireItemSetting extends RelicItem implements IGlowItem {
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        short var10000;
+        short maxDurability;
+
         switch (stack.getRarity()) {
-            case COMMON -> var10000 = -1;
-            case UNCOMMON -> var10000 = -1;
-            case RARE -> var10000 = -1;
-            case EPIC -> var10000 = -1;
+            case COMMON -> maxDurability = -1;
+            case UNCOMMON -> maxDurability = -1;
+            case RARE -> maxDurability = -1;
+            case EPIC -> maxDurability = -1;
             default -> throw new IncompatibleClassChangeError();
         }
-        return var10000;
+
+        return maxDurability;
     }
 
     @Override

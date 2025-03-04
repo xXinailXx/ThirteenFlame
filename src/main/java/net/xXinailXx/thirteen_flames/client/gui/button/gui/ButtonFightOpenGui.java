@@ -3,7 +3,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.xXinailXx.dragonworldlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenFight;
 import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
 
@@ -24,8 +24,7 @@ public class ButtonFightOpenGui extends AbstractWidgetUtils {
 
         blit(poseStack, this.x, this.y, 376, 29, 59, 27, 512, 512);
 
-        if (this.isHovered) {
+        if (this.isHovered)
             blit(poseStack, this.x - 3, this.y - 3, 376, 304, 65, 34, 512, 512);
-        }
     }
 }

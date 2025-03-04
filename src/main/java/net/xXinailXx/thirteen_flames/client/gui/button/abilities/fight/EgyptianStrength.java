@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.capability.manager.TimeManager;
+import net.xXinailXx.enderdragonlib.capability.manager.TimeManager;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
 
@@ -24,16 +24,14 @@ public class EgyptianStrength extends AbstarctAbilityWidgets {
     @SubscribeEvent
     public static void addEffectPlayer(TickEvent.PlayerTickEvent event) {
         if (data.isActiveAbility("egyptian_strength")) {
-            if (!TimeManager.getTimeMap().containsKey("ability_egyptian_strength")) {
+            if (!TimeManager.getTimeMap().containsKey("ability_egyptian_strength"))
                 TimeManager.getTimeMap().put("ability_egyptian_strength", 0);
-            }
 
             if (TimeManager.isStop("ability_egyptian_strength")) {
                 Player player = event.player;
 
-                if (player == null) {
+                if (player == null)
                     return;
-                }
 
                 if ((player.getMaxHealth() * 0.3) <= player.getHealth()) {
                     player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 2));

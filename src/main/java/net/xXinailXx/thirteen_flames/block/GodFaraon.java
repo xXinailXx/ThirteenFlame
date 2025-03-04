@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.utils.statues.StatueSize5x5Util;
+import net.xXinailXx.enderdragonlib.utils.statues.StatueSize5x5Util;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
@@ -25,9 +25,8 @@ public class GodFaraon extends StatueSize5x5Util {
 
     @OnlyIn(Dist.CLIENT)
     public static void openFaraonScreen() {
-        if (Minecraft.getInstance().player == null) {
+        if (Minecraft.getInstance().player == null)
             return;
-        }
 
         IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
         guiLevelingData.setPlayerScreen(false);
@@ -50,8 +49,6 @@ public class GodFaraon extends StatueSize5x5Util {
 
     @Mod.EventBusSubscriber
     public static class Event {
-        public Event() {
-        }
         @SubscribeEvent
         public static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
             InteractionHand hand = event.getHand();
@@ -60,9 +57,8 @@ public class GodFaraon extends StatueSize5x5Util {
                 BlockPos pos = event.getPos();
                 BlockState state = event.getLevel().getBlockState(pos);
                 if (state.is( BlockRegistry.GOD_FARAON_STRUCTURE_BLOCK.get()) || state.is( BlockRegistry.GOD_FARAON_BLOCK.get())) {
-                    if (level.isClientSide) {
+                    if (level.isClientSide)
                         GodFaraon.openFaraonScreen();
-                    }
                 }
             }
         }

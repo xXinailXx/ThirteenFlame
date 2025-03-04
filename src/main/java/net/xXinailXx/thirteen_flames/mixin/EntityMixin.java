@@ -20,24 +20,21 @@ public class EntityMixin {
 
     @Inject(method = "setSecondsOnFire", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/ProtectionEnchantment;getFireAfterDampener(Lnet/minecraft/world/entity/LivingEntity;I)I"), remap = false, cancellable = true)
     public void setSecondsOnFire(int i, CallbackInfo ci) {
-        if (data.isActiveAbility("lord_elements") && ((LivingEntity) (Object) this) instanceof Player) {
+        if (data.isActiveAbility("lord_elements") && ((LivingEntity) (Object) this) instanceof Player)
             ci.cancel();
-        }
     }
 
     @Overwrite
     public void setRemainingFireTicks(int i) {
-        if (!data.isActiveAbility("lord_elements") && !(((Entity) (Object) this) instanceof Player)) {
+        if (!data.isActiveAbility("lord_elements") && !(((Entity) (Object) this) instanceof Player))
             this.remainingFireTicks = i;
-        }
     }
 
     @Overwrite
     public int getRemainingFireTicks() {
-        if (data.isActiveAbility("lord_elements") && ((LivingEntity) (Object) this) instanceof Player) {
+        if (data.isActiveAbility("lord_elements") && ((LivingEntity) (Object) this) instanceof Player)
             return 0;
-        } else {
+        else
             return this.remainingFireTicks;
-        }
     }
 }

@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -14,23 +14,17 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ShieldRonosa extends FireItemSetting {
+public class ShieldRonosa extends FlameItemSetting {
     public static final int EFFECTIVE_BLOCK_DELAY = 5;
     public static final float MINIMUM_DURABILITY_DAMAGE = 3.0F;
     public static final String TAG_BASE_COLOR = "Base";
-
-    public ShieldRonosa(Properties properties) {
-        super( properties );
-        DispenserBlock.registerBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
-    }
 
     public RelicData getRelicData() {
         return RelicData.builder().abilityData( RelicAbilityData.builder().ability("ejection", RelicAbilityEntry.builder().maxLevel(15).stat("cooldown", RelicAbilityStat.builder().initialValue(56.0, 35.0).upgradeModifier(RelicAbilityStat.Operation.ADD, -2.0).formatValue((value) -> {

@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.capability.manager.UUIDManager;
+import net.xXinailXx.enderdragonlib.capability.manager.UUIDManager;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -29,17 +29,15 @@ public class Resistance extends AbstarctAbilityWidgets {
     public static void addEffect(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
 
-        if (player == null) {
+        if (player == null)
             return;
-        }
 
         AttributeInstance damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
         AttributeModifier bonusDamage = new AttributeModifier(UUIDManager.getOrCreate("ability_damage_bonus"), ThirteenFlames.MODID + ":damage_bonus", damage.getValue(), AttributeModifier.Operation.ADDITION);
 
         if (data.isActiveAbility("resistance") && StaminaData.Utils.getStaminaData(player).isStaminaFull()) {
-            if (!damage.hasModifier(bonusDamage)) {
+            if (!damage.hasModifier(bonusDamage))
                 damage.addTransientModifier(bonusDamage);
-            }
         } else {
             damage.removeModifier(bonusDamage);
         }

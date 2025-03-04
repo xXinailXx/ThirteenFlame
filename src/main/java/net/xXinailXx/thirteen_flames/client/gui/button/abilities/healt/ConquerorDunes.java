@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.capability.manager.UUIDManager;
+import net.xXinailXx.enderdragonlib.capability.manager.UUIDManager;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -29,17 +29,15 @@ public class ConquerorDunes extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("conqueror_dunes")) {
             Player player = event.player;
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
             AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
             AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("ability_conqueror_dunes"), ThirteenFlames.MODID + ":conqueror_dunes", data.getLevelAbility("conqueror_dunes") * 0.01, AttributeModifier.Operation.ADDITION);
 
             if (player.getMainHandItem().is(Items.AIR) && player.getOffhandItem().is(Items.AIR) || data.getLevelAbility("conqueror_dunes") == bonus.getAmount() * 100) {
-                if (!speed.hasModifier(bonus)) {
+                if (!speed.hasModifier(bonus))
                     speed.addTransientModifier(bonus);
-                }
             } else {
                 speed.removeModifier(bonus);
             }

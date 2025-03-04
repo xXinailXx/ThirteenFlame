@@ -31,16 +31,14 @@ public class Abundance extends AbstarctAbilityWidgets {
     }
 
     private static void extraDrop(Level level, Entity entity, Vec3 pos, int value) {
-        if (level.isClientSide) {
+        if (level.isClientSide)
             return;
-        }
 
         List<ItemEntity> dropEntities = new ArrayList<ItemEntity>();
 
         for (Entity entity1 : level.getEntities(null, new AABB(entity.getX()-1, entity.getY()-1, entity.getZ()-1, entity.getX()+1, entity.getY()+1, entity.getZ()+1))) {
-            if (entity1 instanceof ItemEntity) {
+            if (entity1 instanceof ItemEntity)
                 dropEntities.add((ItemEntity)entity1);
-            }
         }
 
         RandomSource random = level.getRandom();

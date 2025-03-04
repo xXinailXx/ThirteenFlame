@@ -32,6 +32,7 @@ public class StaminaSyncPacket {
     public boolean handle(Supplier<NetworkEvent.Context> ctx) {
         ((NetworkEvent.Context)ctx.get()).enqueueWork(() -> {
             LocalPlayer player = Minecraft.getInstance().player;
+
             if (player != null) {
                 StaminaData fake = new StaminaData();
                 fake.deserializeNBT(this.nbt);

@@ -200,7 +200,6 @@ public class StaminaData implements IAutoNBTSerializable {
                     } else {
                         staminaData.addStamina(player, -1);
                     }
-                    return;
                 }
             }
         }
@@ -235,9 +234,8 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerJump(LivingEvent.LivingJumpEvent event) {
-            if (event.getEntity() instanceof Player player) {
+            if (event.getEntity() instanceof Player player)
                 staminaData.setRegenCooldown(player, 3);
-            }
         }
 
         @SubscribeEvent
@@ -254,24 +252,20 @@ public class StaminaData implements IAutoNBTSerializable {
                 int maxStamina = staminaData.getMaxStamina(player);
 
                 if (cooldown > 0) {
-                    if (player.tickCount % 20 == 0) {
+                    if (player.tickCount % 20 == 0)
                         staminaData.addRegenCooldown(player, -1);
-                    }
                 } else if (stamina < maxStamina && player.tickCount % 5 == 0) {
                     int tickCount = player.tickCount - (AbilityUtils.playerLevelSea(player) != AbilityUtils.PlayerPosYState.NONE ? 3 : 0);
 
-                    if (tickCount % 2 == 0) {
+                    if (tickCount % 2 == 0)
                         staminaData.addStaminaReqAbil(player, 1);
-                    }
                 }
 
-                if (stamina > maxStamina) {
+                if (stamina > maxStamina)
                     staminaData.setStamina(player, maxStamina);
-                }
 
-                if (time > 0) {
+                if (time > 0)
                     staminaData.addShakeTime(player, -1);
-                }
 
                 if (!player.isCreative() && !player.isSpectator() && player.isOnGround()) {
                     Vec3 pos = player.position();
@@ -300,9 +294,8 @@ public class StaminaData implements IAutoNBTSerializable {
 
                 if (stamina <= 0 && player.isSprinting()) {
                     if (abilitiesData.isActiveAbility("overcoming") && player.getFoodData().getFoodLevel() > 0) {
-                        if (player.tickCount % 20 == 0) {
+                        if (player.tickCount % 20 == 0)
                             player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() - 1);
-                        }
 
                         player.getFoodData().setExhaustion(0);
 

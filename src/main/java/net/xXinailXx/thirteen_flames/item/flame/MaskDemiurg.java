@@ -1,4 +1,4 @@
-package net.xXinailXx.thirteen_flames.item.lights;
+package net.xXinailXx.thirteen_flames.item.flame;
 
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -8,12 +8,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
 import net.xXinailXx.thirteen_flames.item.base.ArmorItemTF;
-import org.jetbrains.annotations.Nullable;
 
 public class MaskDemiurg extends ArmorItemTF {
-    public MaskDemiurg(ArmorMaterial material, EquipmentSlot slot, Properties settings) {
-        super(material, slot, settings);
+    public MaskDemiurg() {
+        super(ArmorMaterials.NETHERITE, EquipmentSlot.HEAD);
     }
 
     @Override

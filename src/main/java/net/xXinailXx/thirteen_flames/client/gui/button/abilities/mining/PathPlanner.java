@@ -37,9 +37,8 @@ public class PathPlanner extends AbstarctAbilityWidgets {
 
                     for (AbstarctAbilityWidgets ability : AbilityStorage.abilities) {
                         if (ability instanceof MagomedWalks) {
-                            if (ability.isActiveAbility()) {
+                            if (ability.isActiveAbility())
                                 error = true;
-                            }
                         }
                     }
 

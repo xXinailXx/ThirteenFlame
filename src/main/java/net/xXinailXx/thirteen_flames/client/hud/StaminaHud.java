@@ -44,7 +44,6 @@ public class StaminaHud {
             }
 
             RenderSystem.enableBlend();
-
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.setShaderTexture(0, new ResourceLocation(ThirteenFlames.MODID, "textures/hud/stamina_icon.png"));
 
@@ -61,7 +60,6 @@ public class StaminaHud {
             Gui.blit(poseStack, x, y, 0.0F, 0.0F, Math.round(77.0F * percentage), 7, 77, 7);
 
             RenderSystem.disableBlend();
-
             poseStack.popPose();
         }
     }
@@ -69,7 +67,6 @@ public class StaminaHud {
     @SubscribeEvent
     public static void onOverlayRegistry(RegisterGuiOverlaysEvent event) {
         event.registerBelowAll(ThirteenFlames.MODID,
-                (ForgeGui, poseStack, partialTick, screenWidth, screenHeight)
-                        -> render(poseStack, partialTick));
+                (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> render(poseStack, partialTick));
     }
 }

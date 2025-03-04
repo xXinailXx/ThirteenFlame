@@ -33,11 +33,8 @@ public class SnowGolemMixin extends SnowGolem {
             this.gameEvent(GameEvent.SHEAR, player);
 
             if (!data.isActiveAbility("scissorhands")) {
-                if (!this.level.isClientSide) {
-                    itemstack.hurtAndBreak(1, player, (p_29910_) -> {
-                        p_29910_.broadcastBreakEvent(hand);
-                    });
-                }
+                if (!this.level.isClientSide)
+                    itemstack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(hand));
             }
 
             return InteractionResult.sidedSuccess(this.level.isClientSide);

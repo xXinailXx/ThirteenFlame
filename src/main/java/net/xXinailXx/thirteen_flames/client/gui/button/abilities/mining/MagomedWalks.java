@@ -38,16 +38,14 @@ public class MagomedWalks extends AbstarctAbilityWidgets {
 
                     for (AbstarctAbilityWidgets ability : AbilityStorage.abilities) {
                         if (ability instanceof PathPlanner) {
-                            if (ability.isActiveAbility()) {
+                            if (ability.isActiveAbility())
                                 error = true;
-                            }
                         }
                     }
 
                     if (!error) {
-                        if (!player.isShiftKeyDown()) {
+                        if (!player.isShiftKeyDown())
                             AbilityUtils.breakBlock(player, level, pos, 1);
-                        }
                     }
                 }
             }

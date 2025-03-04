@@ -28,9 +28,8 @@ public class Perseverance extends AbstarctAbilityWidgets {
         Level level = event.getPlayer().getLevel();
 
         if (data.isActiveAbility("perseverance")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility("perseverance"))) {
+            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility("perseverance")))
                 player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1000, data.getLevelAbility("perseverance")));
-            }
         }
     }
 }

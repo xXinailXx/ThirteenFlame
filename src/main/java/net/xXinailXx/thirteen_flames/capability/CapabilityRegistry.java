@@ -30,9 +30,8 @@ public class CapabilityRegistry {
 
     @SubscribeEvent
     public static void attach(final AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player) {
+        if (event.getObject() instanceof Player)
             event.addCapability(new ResourceLocation(ThirteenFlames.MODID, "capability"), new CapabilityProvider());
-        }
     }
 
     @SubscribeEvent
@@ -55,18 +54,16 @@ public class CapabilityRegistry {
 
     @SubscribeEvent
     public static void playerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        if (event.getEntity() == null) {
+        if (event.getEntity() == null)
             return;
-        }
 
         StaminaData.Utils.setStaminaData(event.getEntity(), StaminaData.Utils.getStaminaData(event.getEntity()));
     }
 
     @SubscribeEvent
     public static void playerDimensionChange(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (event.getEntity() == null) {
+        if (event.getEntity() == null)
             return;
-        }
 
         StaminaData.Utils.setStaminaData(event.getEntity(), StaminaData.Utils.getStaminaData(event.getEntity()));
     }

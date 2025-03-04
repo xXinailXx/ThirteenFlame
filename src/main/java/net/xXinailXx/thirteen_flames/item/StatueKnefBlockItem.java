@@ -33,7 +33,7 @@ public class StatueKnefBlockItem extends BlockItem implements IAnimatable {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return this.renderer;
             }
-        } );
+        });
     }
 
     public void registerControllers(AnimationData data) {

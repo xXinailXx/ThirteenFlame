@@ -24,9 +24,8 @@ public class Metabolism extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("metabolism")) {
             Player player = event.player;
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
             if (player.tickCount % 20 == 0) {
                 FoodData foodData = player.getFoodData();

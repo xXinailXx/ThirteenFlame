@@ -1,10 +1,10 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "klik_ronosa",
+	"parent": "sword_ronosa",
 	"texture_size": [64, 64],
 	"textures": {
-		"0": "thirteen_flames:item/klik_ronosa",
-		"particle": "thirteen_flames:item/klik_ronosa"
+		"0": "thirteen_flames:item/sword_ronosa",
+		"particle": "thirteen_flames:item/sword_ronosa"
 	},
 	"elements": [
 		{

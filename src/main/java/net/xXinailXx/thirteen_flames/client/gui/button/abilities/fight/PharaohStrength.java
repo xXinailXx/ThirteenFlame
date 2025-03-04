@@ -26,13 +26,11 @@ public class PharaohStrength extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("pharaoh_strength")) {
             Player player = event.getEntity();
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
-            if (player.getMainHandItem().getItem() instanceof AxeItem) {
+            if (player.getMainHandItem().getItem() instanceof AxeItem)
                 player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1200, data.getLevelAbility("pharaoh_strength") - 1));
-            }
         }
     }
 }

@@ -71,15 +71,13 @@ public class ShockwaveEntity extends ThrowableProjectile {
                     float damage = radius * this.damage / step;
 
                     for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, new AABB(p, p.above(3)).inflate(0.5F))) {
-                        if (owner != null && entity.getStringUUID().equals(owner.getStringUUID())) {
+                        if (owner != null && entity.getStringUUID().equals(owner.getStringUUID()))
                             continue;
-                        }
 
-                        if (this.getOwner() instanceof Player player) {
+                        if (this.getOwner() instanceof Player player)
                             entity.hurt(DamageSource.playerAttack(player), damage);
-                        } else {
+                        else
                             entity.hurt(DamageSource.MAGIC, damage);
-                        }
 
                         entity.setDeltaMovement(entity.position().add(0, 1, 0).subtract(centerVec).normalize().multiply(2, 1, 2));
                     }
@@ -91,9 +89,8 @@ public class ShockwaveEntity extends ThrowableProjectile {
                 if (!level.getBlockState(p).isAir() && level.getBlockState(p.above()).isAir()) {
                     BlockState state = level.getBlockState(p);
 
-                    if (!state.getMaterial().blocksMotion() || level.getBlockState(p.above()).getMaterial().blocksMotion()) {
+                    if (!state.getMaterial().blocksMotion() || level.getBlockState(p.above()).getMaterial().blocksMotion())
                         continue;
-                    }
 
                     entity.setPos(p.getX() + 0.5F, p.getY() + 0.5F, p.getZ() + 0.5F);
                 } else if (level.getBlockState(p).isAir() && level.getBlockState(p.above()).isAir()){
@@ -102,9 +99,8 @@ public class ShockwaveEntity extends ThrowableProjectile {
                         BlockState state = level.getBlockState(pos);
 
                         if (!state.isAir() && level.getBlockState(pos.above()).isAir()) {
-                            if (!state.getMaterial().blocksMotion() || level.getBlockState(p.above()).getMaterial().blocksMotion()) {
+                            if (!state.getMaterial().blocksMotion() || level.getBlockState(p.above()).getMaterial().blocksMotion())
                                 break;
-                            }
 
                             entity = new BlockSimulationEntity(level, state);
                             entity.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
@@ -119,9 +115,8 @@ public class ShockwaveEntity extends ThrowableProjectile {
                         BlockState state = level.getBlockState(pos);
 
                         if (!state.isAir() && level.getBlockState(pos.above()).isAir()) {
-                            if (!state.getMaterial().blocksMotion() || level.getBlockState(pos.above()).getMaterial().blocksMotion()) {
+                            if (!state.getMaterial().blocksMotion() || level.getBlockState(pos.above()).getMaterial().blocksMotion())
                                 break;
-                            }
 
                             entity = new BlockSimulationEntity(level, state);
                             entity.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5);
@@ -141,12 +136,12 @@ public class ShockwaveEntity extends ThrowableProjectile {
                     BlockPos pos = new BlockPos(p.getX(), p.getY() + extraY - i, p.getZ());
                     BlockState state = level.getBlockState(pos);
 
-                    if (state.getBlock() instanceof DropExperienceBlock) {
+                    if (state.getBlock() instanceof DropExperienceBlock)
                         oreBlocks.add(state);
-                    }
                 }
 
                 final int orecCount = oreBlocks.size();
+
                 for (int i = 0; i < oreBlocks.size(); i++) {
                     BlockState state = oreBlocks.get(i);
 

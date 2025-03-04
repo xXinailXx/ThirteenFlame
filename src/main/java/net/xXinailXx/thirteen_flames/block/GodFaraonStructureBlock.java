@@ -22,9 +22,8 @@ public class GodFaraonStructureBlock extends StatueStructureBlock {
             BlockPos pos = event.getPos();
             BlockState state = event.getLevel().getBlockState(pos);
             if (state.is( BlockRegistry.GOD_FARAON_STRUCTURE_BLOCK.get()) || state.is( BlockRegistry.GOD_FARAON_BLOCK.get())) {
-                if (level.isClientSide) {
+                if (level.isClientSide)
                     GodFaraon.openFaraonScreen();
-                }
             }
         }
     }

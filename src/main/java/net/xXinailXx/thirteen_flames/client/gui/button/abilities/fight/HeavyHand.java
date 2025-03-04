@@ -29,14 +29,12 @@ public class HeavyHand extends AbstarctAbilityWidgets {
             if (event.getTarget() instanceof LivingEntity entity) {
                 Player player = event.getEntity();
 
-                if (player == null) {
+                if (player == null)
                     return;
-                }
 
                 if (player.getMainHandItem().getItem() instanceof AxeItem) {
-                    if (AbilityUtils.isRandomSuccess(player.getLevel(), data.getLevelAbility("heavy_hand"))) {
+                    if (AbilityUtils.isRandomSuccess(player.getLevel(), data.getLevelAbility("heavy_hand")))
                         entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), 30));
-                    }
                 }
             }
         }

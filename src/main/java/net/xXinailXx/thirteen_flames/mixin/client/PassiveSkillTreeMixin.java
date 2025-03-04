@@ -58,9 +58,7 @@ public abstract class PassiveSkillTreeMixin extends Screen {
     @Shadow public int skillPoints;
     @Shadow public abstract void addSkillButtons();
     @Shadow public abstract void buttonPressed(Button button);
-
     @Shadow protected abstract void renderConnection(PoseStack poseStack, Pair<SkillButton, SkillButton> connection);
-
     @Unique private static final IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
 
     public PassiveSkillTreeMixin() {
@@ -74,13 +72,12 @@ public abstract class PassiveSkillTreeMixin extends Screen {
         this.addSkillButtons();
         this.maxScrollX -= this.width / 2 - 80;
         this.maxScrollY -= this.height / 2 - 80;
-        if (this.maxScrollX < 0) {
-            this.maxScrollX = 0;
-        }
 
-        if (this.maxScrollY < 0) {
+        if (this.maxScrollX < 0)
+            this.maxScrollX = 0;
+
+        if (this.maxScrollY < 0)
             this.maxScrollY = 0;
-        }
 
         this.addSkillConnections();
         this.highlightSkillsThatCanBeLearned();
@@ -93,37 +90,41 @@ public abstract class PassiveSkillTreeMixin extends Screen {
         this.renderAnimation += partialTick;
         this.renderBackground(poseStack);
         this.renderConnections(poseStack, mouseX, mouseY, partialTick);
+
         poseStack.pushPose();
         poseStack.translate(this.scrollX, this.scrollY, 0.0);
+
         Iterator var5 = this.renderables.iterator();
 
         while(var5.hasNext()) {
             Widget widget = (Widget)var5.next();
-            if (widget != this.progressBar && widget != this.buySkillButton) {
+
+            if (widget != this.progressBar && widget != this.buySkillButton)
                 widget.render(poseStack, mouseX, mouseY, partialTick);
-            }
         }
 
         poseStack.popPose();
+
         this.renderOverlay(poseStack, mouseX, mouseY, partialTick);
         this.prepareTextureRendering(SCARABS_SILVER);
+
         blit(poseStack, this.width / 2 - 12, this.height - 50, 103.0F, 347.0F, 23, 24, 512, 512);
+
         MutableComponent pointsLeft = Component.literal("" + this.skillPoints);
+
         drawCenteredString(poseStack, this.font, pointsLeft, this.width / 2, this.height - 15, 16777215);
+
         Optional optional = this.getChildAt((double)mouseX, (double)mouseY);
         Objects.requireNonNull(SkillButton.class);
         optional = optional.filter(SkillButton.class::isInstance);
         Objects.requireNonNull(SkillButton.class);
-        optional.map(SkillButton.class::cast).ifPresent((button) -> {
-            this.renderButtonTooltip( (Button) button, poseStack, mouseX, mouseY);
-        });
+        optional.map(SkillButton.class::cast).ifPresent((button) -> this.renderButtonTooltip((Button) button, poseStack, mouseX, mouseY));
     }
 
     @Inject(method = "skillButtonPressed", at = @At(value = "INVOKE", target = "Ldaripher/skilltree/client/screen/SkillTreeScreen;learnSkill(Ldaripher/skilltree/skill/PassiveSkill;)V"), remap = false, cancellable = true)
     protected void skillButtonPressed(SkillButton button, CallbackInfo ci) {
-        if (guiLevelingData.isPlayerScreen()) {
+        if (guiLevelingData.isPlayerScreen())
             ci.cancel();
-        }
     }
 
     @Inject(method = "renderConnection", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0), cancellable = true)

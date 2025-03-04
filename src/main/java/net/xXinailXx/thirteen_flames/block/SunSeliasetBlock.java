@@ -17,8 +17,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.xXinailXx.dragonworldlib.utils.statues.data.HorizontalDirectionalBlockData;
-import net.xXinailXx.thirteen_flames.item.lights.SunSeleaset;
+import net.xXinailXx.enderdragonlib.utils.statues.data.HorizontalDirectionalBlockData;
+import net.xXinailXx.thirteen_flames.item.flame.SunSeleaset;
 import net.xXinailXx.thirteen_flames.block.entity.SunSeliasetBlockEntity;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
@@ -48,11 +48,11 @@ public class SunSeliasetBlock extends HorizontalDirectionalBlockData {
         if (SunSeliasetBlockEntity.isOpportunityPickUp()) {
             if (player.isCrouching()) {
                 level.setBlock(pos, Blocks.AIR.defaultBlockState(), 3);
-                player.addItem( ItemsRegistry.SUN_SELEASET.get().getDefaultInstance());
+                player.addItem(ItemsRegistry.SUN_SELEASET.get().getDefaultInstance());
                 ItemStack stack = player.getMainHandItem();
                 if (stack.getItem() instanceof SunSeleaset) {
-                    LevelingUtils.setPoints( stack, SunSeleaset.getPoints() );
-                    AbilityUtils.setAbilityPoints( stack, "blessed_light", SunSeleaset.getPointsAbility() );
+                    LevelingUtils.setPoints(stack, SunSeleaset.getPoints());
+                    AbilityUtils.setAbilityPoints(stack, "blessed_light", SunSeleaset.getPointsAbility());
                 }
             }
         } else {

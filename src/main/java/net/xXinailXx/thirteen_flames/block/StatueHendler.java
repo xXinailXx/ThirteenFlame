@@ -6,16 +6,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.utils.statues.StatueSize3x3Util;
+import net.xXinailXx.enderdragonlib.utils.statues.StatueSize3x3Util;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.jetbrains.annotations.Nullable;
 
 @MethodsReturnNonnullByDefault
@@ -84,7 +83,7 @@ public class StatueHendler extends StatueSize3x3Util {
                 return;
             }
 
-            if (stack.getItem() instanceof FireItemSetting fireItemSetting) {
+            if (stack.getItem() instanceof FlameItemSetting fireItemSetting) {
                 if (stack.is( ItemsRegistry.MOLOT_MONTU.get() ) || stack.is( ItemsRegistry.GLOVES_MONTU.get() )) {
                     if (state.is( BlockRegistry.STATUE_MONTU_BLOCK.get() ) || state.is( BlockRegistry.STATUE_MONTU_STRUCTURE_BLOCK.get() )) {
                         LevelingUtils.addLevel( stack, 1 );
@@ -100,7 +99,7 @@ public class StatueHendler extends StatueSize3x3Util {
                         LevelingUtils.addLevel( stack, 1 );
                         reloadUpdataTick();
                     }
-                } else if (stack.is( ItemsRegistry.SHIELD_RONOSA.get() ) || stack.is( ItemsRegistry.KLIK_RONOSA.get() )) {
+                } else if (stack.is( ItemsRegistry.SHIELD_RONOSA.get() ) || stack.is( ItemsRegistry.SWORD_RONOSA.get() )) {
                     if (state.is( BlockRegistry.STATUE_RONOS_BLOCK.get() ) || state.is( BlockRegistry.STATUE_RONOS_STRUCTURE_BLOCK.get() )) {
                         LevelingUtils.addLevel( stack, 1 );
                         reloadUpdataTick();

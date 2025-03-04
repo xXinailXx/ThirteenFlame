@@ -41,11 +41,10 @@ public class NileTide extends AbstarctAbilityWidgets {
             ItemStack stack = null;
 
             if (!level.isClientSide) {
-                if (player.getMainHandItem().canPerformAction(net.minecraftforge.common.ToolActions.FISHING_ROD_CAST)) {
+                if (player.getMainHandItem().canPerformAction(net.minecraftforge.common.ToolActions.FISHING_ROD_CAST))
                     stack = player.getMainHandItem();
-                } else {
+                else
                     stack = player.getOffhandItem();
-                }
 
                 LootContext.Builder loot_builder = new LootContext.Builder(new LootContext.Builder((ServerLevel) level).getLevel()).withParameter(LootContextParams.ORIGIN, hook.position()).withParameter(LootContextParams.TOOL, stack).withParameter(LootContextParams.THIS_ENTITY, hook).withRandom(player.getRandom()).withLuck(player.getLuck());
                 loot_builder.withParameter(LootContextParams.KILLER_ENTITY, player).withParameter(LootContextParams.THIS_ENTITY, hook);
@@ -57,9 +56,8 @@ public class NileTide extends AbstarctAbilityWidgets {
 
                 List<ItemStack> extraItems = new ArrayList<>();
 
-                for (int i = 0; i < data.getLevelAbility("nile_tide"); i++) {
+                for (int i = 0; i < data.getLevelAbility("nile_tide"); i++)
                     extraItems.add(list.get(random.nextInt(0, list.size())));
-                }
 
                 for (ItemStack itemStack : extraItems) {
                     ItemEntity itementity = new ItemEntity(level, hook.getX(), hook.getY(), hook.getZ(), itemStack);

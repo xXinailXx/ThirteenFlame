@@ -18,17 +18,20 @@ public class ItemSetting extends Item {
         super(properties.tab(ThirteenFlames.ITEMS_TAB));
     }
 
-    public ItemSetting(Properties properties, Component tooltip) {
-        super(properties.tab(ThirteenFlames.ITEMS_TAB));
+    public ItemSetting(Component tooltip) {
+        this(new Properties().tab(ThirteenFlames.ITEMS_TAB));
 
         this.tooltip = tooltip;
     }
 
+    public ItemSetting() {
+        this(new Properties());
+    }
+
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
-        if (this.tooltip != null) {
+        if (this.tooltip != null)
             tooltip.add(this.tooltip);
-        }
     }
 
     @Override

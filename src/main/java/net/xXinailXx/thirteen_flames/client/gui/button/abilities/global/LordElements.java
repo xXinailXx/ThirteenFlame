@@ -21,9 +21,8 @@ public class LordElements extends AbstarctAbilityWidgets {
     @SubscribeEvent
     public static void onLivingDamage(LivingHurtEvent event) {
         if (data.isActiveAbility("lord_elements")) {
-            if (event.getEntity() instanceof Player && event.getSource().isFire()) {
+            if (event.getEntity() instanceof Player && event.getSource().isFire())
                 event.setCanceled(true);
-            }
         }
     }
 }

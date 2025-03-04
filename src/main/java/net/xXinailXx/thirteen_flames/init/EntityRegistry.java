@@ -9,6 +9,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.entity.OreBlockSimulationEntity;
+import net.xXinailXx.thirteen_flames.entity.PoisonCloundEntity;
 import net.xXinailXx.thirteen_flames.entity.ShockwaveEntity;
 import net.xXinailXx.thirteen_flames.entity.TestEntity;
 
@@ -23,6 +24,10 @@ public class EntityRegistry {
             EntityType.Builder.<OreBlockSimulationEntity>of(OreBlockSimulationEntity::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F)
                     .build("ore_simulation"));
+    public static final RegistryObject<EntityType<PoisonCloundEntity>> POISON_CLOUD = ENTITIES.register("poison_cloud", () ->
+            EntityType.Builder.of(PoisonCloundEntity::new, MobCategory.MISC)
+                    .sized(1.0F, 1.0F)
+                    .build("poison_cloud"));
     public static final RegistryObject<EntityType<TestEntity>> TEST = ENTITIES.register("test", () ->
             EntityType.Builder.of(TestEntity::new, MobCategory.MISC)
                     .sized(1.0F, 1.0F)

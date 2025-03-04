@@ -24,7 +24,7 @@ versionRange="[1.19.2,1.20)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.thirteen_flames]]
-modId="dragonworldlib"
+modId="enderdragonlib"
 mandatory=true
 versionRange="[0.0.1-1.19.2,)"
 ordering="NONE"

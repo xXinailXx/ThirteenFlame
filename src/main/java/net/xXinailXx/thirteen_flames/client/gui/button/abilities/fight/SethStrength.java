@@ -7,7 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.capability.manager.UUIDManager;
+import net.xXinailXx.enderdragonlib.capability.manager.UUIDManager;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -35,9 +35,8 @@ public class SethStrength extends AbstarctAbilityWidgets {
         AttributeInstance strength = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
         if (data.isActiveAbility("seth_strength")) {
-            if (!strength.hasModifier(bonus)) {
+            if (!strength.hasModifier(bonus))
                 strength.addTransientModifier(bonus);
-            }
         } else {
             strength.removeModifier(bonus);
         }

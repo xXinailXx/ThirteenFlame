@@ -19,9 +19,8 @@ public class ForgeHooksMixin {
             IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
             IData.IAbilitiesData abilitiesData = new Data.AbilitiesData.Utils();
 
-            if (abilitiesData.isActiveAbility("resistance")) {
+            if (abilitiesData.isActiveAbility("resistance"))
                 amount = amount / 2;
-            }
 
             amount = (float) (amount - (amount * (Math.round((float) guiLevelingData.getGuiFightLevelAmount() / 10) * 0.01)));
         }

@@ -45,11 +45,8 @@ public class PumpkinBlockMixin extends PumpkinBlock {
                 itementity.setDeltaMovement(0.05D * (double)direction1.getStepX() + level.random.nextDouble() * 0.02D, 0.05D, 0.05D * (double)direction1.getStepZ() + level.random.nextDouble() * 0.02D);
                 level.addFreshEntity(itementity);
 
-                if (!data.isActiveAbility("scissorhands")) {
-                    itemstack.hurtAndBreak(1, player, (p_55287_) -> {
-                        p_55287_.broadcastBreakEvent(hand);
-                    });
-                }
+                if (!data.isActiveAbility("scissorhands"))
+                    itemstack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(hand));
 
                 level.gameEvent(player, GameEvent.SHEAR, pos);
                 player.awardStat(Stats.ITEM_USED.get(Items.SHEARS));

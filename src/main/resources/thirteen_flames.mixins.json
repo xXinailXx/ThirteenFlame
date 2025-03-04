@@ -17,17 +17,17 @@
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
-    "MobMixin",
     "MushroomCowMixin",
     "PlayerMixin",
     "PumpkinBlockMixin",
     "SheepMixin",
     "SnowGolemMixin",
-    "client.AddXPLightItemAbilityScreenMixin",
-    "client.AddXPLightItemRelicScreenMixin",
+    "client.AddXpButtonAbilityScreenMixin",
     "client.SkillTreeKeyBindsMixin"
   ],
   "client": [
+    "BakedOverrideAccessor",
+    "client.AddXpButtonRelicScreen",
     "client.PassiveSkillTreeMixin",
     "client.SkillButtomMixin"
   ],

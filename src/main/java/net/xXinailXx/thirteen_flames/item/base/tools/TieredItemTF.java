@@ -1,15 +1,14 @@
 package net.xXinailXx.thirteen_flames.item.base.tools;
 
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Tier;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
-public class TieredItemTF extends FireItemSetting {
+public class TieredItemTF extends FlameItemSetting {
     private final Tier tier;
 
-    public TieredItemTF(Tier p_43308_, Item.Properties p_43309_) {
-        super(p_43309_.defaultDurability(p_43308_.getUses()));
-        this.tier = p_43308_;
+    public TieredItemTF(Tier tier) {
+        super(new Properties().defaultDurability(tier.getUses()));
+        this.tier = tier;
     }
 
     public Tier getTier() {

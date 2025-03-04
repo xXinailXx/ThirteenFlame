@@ -16,10 +16,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.utils.statues.StatueSize3x3Util;
+import net.xXinailXx.enderdragonlib.utils.statues.StatueSize3x3Util;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.jetbrains.annotations.Nullable;
 
 @Mod.EventBusSubscriber
@@ -42,18 +42,16 @@ public class StatueStructureBlock extends Block {
 
     @Override
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide)
             destroyBlock(level, pos);
-        }
 
         super.playerDestroy(level, player, pos, state, entity, stack);
     }
 
     @Override
     public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide)
             destroyBlock(level, pos);
-        }
 
         super.wasExploded(level, pos, explosion);
     }
@@ -68,9 +66,8 @@ public class StatueStructureBlock extends Block {
     public static void playerUseOnBlock(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
 
-        if (player == null) {
+        if (player == null)
             return;
-        }
 
         BlockPos pos = event.getPos();
         BlockState state = event.getLevel().getBlockState(pos);
@@ -78,27 +75,22 @@ public class StatueStructureBlock extends Block {
         if (state.getBlock() instanceof StatueStructureBlock && !(state.getBlock() instanceof GodFaraonStructureBlock) || state.getBlock() instanceof StatueSize3x3Util) {
             Item item = event.getItemStack().getItem();
 
-            if (item instanceof FireItemSetting setting) {
+            if (item instanceof FlameItemSetting setting) {
                 if (item.equals(ItemsRegistry.MOLOT_MONTU) || item.equals(ItemsRegistry.GLOVES_MONTU)) {
-                    if (state.getBlock().equals(BlockRegistry.STATUE_MONTU_BLOCK)) {
+                    if (state.getBlock().equals(BlockRegistry.STATUE_MONTU_BLOCK))
                         LevelingUtils.addLevel(item.getDefaultInstance(), 1);
-                    }
-                } else if (item.equals(ItemsRegistry.KLIK_RONOSA) || item.equals(ItemsRegistry.SHIELD_RONOSA)) {
-                    if (state.getBlock().equals(BlockRegistry.STATUE_RONOS_BLOCK)) {
+                } else if (item.equals(ItemsRegistry.SWORD_RONOSA) || item.equals(ItemsRegistry.SHIELD_RONOSA)) {
+                    if (state.getBlock().equals(BlockRegistry.STATUE_RONOS_BLOCK))
                         LevelingUtils.addLevel(item.getDefaultInstance(), 1);
-                    }
                 } else if (item.equals(ItemsRegistry.BLACK_ROSE) || item.equals(ItemsRegistry.MOONBOW)) {
-                    if (state.getBlock().equals(BlockRegistry.STATUE_KNEF_BLOCK)) {
+                    if (state.getBlock().equals(BlockRegistry.STATUE_KNEF_BLOCK))
                         LevelingUtils.addLevel(item.getDefaultInstance(), 1);
-                    }
                 } else if (item.equals(ItemsRegistry.GORN_SELEASET) || item.equals(ItemsRegistry.SUN_SELEASET)) {
-                    if (state.getBlock().equals(BlockRegistry.STATUE_SELYA_BLOCK)) {
+                    if (state.getBlock().equals(BlockRegistry.STATUE_SELYA_BLOCK))
                         LevelingUtils.addLevel(item.getDefaultInstance(), 1);
-                    }
                 } else if (item.equals(ItemsRegistry.SCROLL_HET) || item.equals(ItemsRegistry.FLIGHT_HET)) {
-                    if (state.getBlock().equals(BlockRegistry.STATUE_HET_BLOCK)) {
+                    if (state.getBlock().equals(BlockRegistry.STATUE_HET_BLOCK))
                         LevelingUtils.addLevel(item.getDefaultInstance(), 1);
-                    }
                 }
             }
         }

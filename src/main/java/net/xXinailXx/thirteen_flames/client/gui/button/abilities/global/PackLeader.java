@@ -29,9 +29,8 @@ public class PackLeader extends AbstarctAbilityWidgets {
     public static void onLivingDamage(LivingHurtEvent event) {
         if (data.isActiveAbility("pack_leader")) {
             if (event.getEntity() instanceof TamableAnimal pet) {
-                if (pet.getOwner() instanceof Player player) {
+                if (pet.getOwner() instanceof Player player)
                     event.setAmount(0);
-                }
             }
         }
     }

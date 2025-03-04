@@ -5,12 +5,18 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.xXinailXx.thirteen_flames.entity.TestEntityRenderer;
 import net.xXinailXx.thirteen_flames.init.*;
 import net.xXinailXx.thirteen_flames.world.feature.CongiruredFeatures;
 import software.bernie.geckolib3.GeckoLib;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.SlotTypePreset;
 
 @Mod(ThirteenFlames.MODID)
 public class ThirteenFlames {
@@ -27,6 +33,8 @@ public class ThirteenFlames {
     };
 
     public ThirteenFlames() {
+        MinecraftForge.EVENT_BUS.register(this);
+
         ItemsRegistry.register();
         BlockRegistry.register();
         BlockEntityRegistry.register();
@@ -37,8 +45,6 @@ public class ThirteenFlames {
         CongiruredFeatures.register();
 
         GeckoLib.initialize();
-
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD)

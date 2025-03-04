@@ -26,11 +26,10 @@ public class SecretSurvival extends AbstarctAbilityWidgets {
         FoodData foodData = player.getFoodData();
         float maxHealth = target.getMaxHealth();
 
-        if (target instanceof Player) {
+        if (target instanceof Player)
             return;
-        } else if (!foodData.needsFood()) {
+        else if (!foodData.needsFood())
             return;
-        }
 
         if (maxHealth <= 20) {
             target.hurt(DamageSource.MAGIC, maxHealth);
@@ -44,13 +43,11 @@ public class SecretSurvival extends AbstarctAbilityWidgets {
             LivingEntity entity = (LivingEntity) event.getTarget();
             Player player = event.getEntity();
 
-            if (entity == null || player == null) {
+            if (entity == null || player == null)
                 return;
-            }
 
-            if (player.isShiftKeyDown()) {
+            if (player.isShiftKeyDown())
                 eatTargetEntity(entity, player);
-            }
         }
     }
 }

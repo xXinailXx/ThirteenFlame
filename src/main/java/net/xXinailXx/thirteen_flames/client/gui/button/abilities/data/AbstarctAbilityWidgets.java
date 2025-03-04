@@ -13,9 +13,9 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.dragonworldlib.client.utils.gui.AbstractWidgetUtils;
-import net.xXinailXx.dragonworldlib.interfaces.IHoveredWidget;
-import net.xXinailXx.dragonworldlib.utils.GuiUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.interfaces.IHoveredWidget;
+import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
@@ -49,9 +49,8 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         poseStack.pushPose();
         poseStack.scale(1F, 1F, 1F);
 
-        if (!isBuyAbility()) {
+        if (!isBuyAbility())
             RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 1F);
-        }
 
         blit(poseStack, this.x + 5, this.y + 5, 0, 0, 24, 24, 24, 24);
 
@@ -60,20 +59,18 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         manager.bindForSetup(FRAME_BUTTON);
 
         if (this.isHovered) {
-            if (getScreenLevel() >= getAbilityData().getRequiredLevel() || !isBuyAbility()) {
+            if (getScreenLevel() >= getAbilityData().getRequiredLevel() || !isBuyAbility())
                 blit(poseStack, this.x - 2, this.y - 2, 454, 167, 38, 38, 512, 512);
-            } else {
+            else
                 blit(poseStack, this.x - 2, this.y - 2, 454, 212, 38, 38, 512, 512);
-            }
         }
 
         if (getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
             if (isBuyAbility()) {
-                if (isActiveAbility()) {
+                if (isActiveAbility())
                     blit(poseStack, this.x + 1, this.y + 1, 412, 215, 32, 32, 512, 512);
-                } else {
+                else
                     blit(poseStack, this.x + 1, this.y + 1, 376, 215, 32, 32, 512, 512);
-                }
             } else {
                 blit(poseStack, this.x + 1, this.y + 1, 412, 170, 32, 32, 512, 512);
             }
@@ -96,36 +93,36 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
                 if (isBuyAbility()) {
                     if (! isActiveAbility()) {
                         if (Screen.hasShiftDown()) {
-                            setActiveAbility( true );
+                            setActiveAbility(true);
                         } else {
                             if (getLevelAbility() < getAbilityData().getMaxLevel()) {
-                                if (! getAbilityData().getScreenID().equals( ScreenID.GLOBAL )) {
+                                if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
                                     if (scarabsData.getScarabAuriteh() >= getAbilityData().getRequiredScarabsForUpgrade()) {
                                         scarabsData.addScarabAuriteh(-getAbilityData().getRequiredScarabsForUpgrade());
-                                        addLevelAbility( 1 );
+                                        addLevelAbility(1);
                                     }
                                 } else {
                                     if (scarabsData.getScarabLazotep() >= getAbilityData().getRequiredScarabsForUpgrade()) {
                                         scarabsData.addScarabLazotep(-getAbilityData().getRequiredScarabsForUpgrade());
-                                        addLevelAbility( 1 );
+                                        addLevelAbility(1);
                                     }
                                 }
                             }
                         }
                     } else {
                         if (Screen.hasShiftDown()) {
-                            setActiveAbility( false );
+                            setActiveAbility(false);
                         } else {
                             if (getLevelAbility() < getAbilityData().getMaxLevel()) {
-                                if (! getAbilityData().getScreenID().equals( ScreenID.GLOBAL )) {
+                                if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
                                     if (scarabsData.getScarabAuriteh() >= getAbilityData().getRequiredScarabsForUpgrade()) {
                                         scarabsData.addScarabAuriteh(-getAbilityData().getRequiredScarabsForUpgrade());
-                                        addLevelAbility( 1 );
+                                        addLevelAbility(1);
                                     }
                                 } else {
                                     if (scarabsData.getScarabLazotep() >= getAbilityData().getRequiredScarabsForUpgrade()) {
                                         scarabsData.addScarabLazotep(-getAbilityData().getRequiredScarabsForUpgrade());
-                                        addLevelAbility( 1 );
+                                        addLevelAbility(1);
                                     }
                                 }
                             }
@@ -196,11 +193,11 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
                     renderIconYOff += 3;
                 }
 
-                if (isActiveAbility()) {
+                if (isActiveAbility())
                     entries.add(Component.translatable("button.thirteen_flames.button.off"));
-                } else {
+                else
                     entries.add(Component.translatable("button.thirteen_flames.button.on"));
-                }
+
                 renderIconYOff++;
             } else {
                 entries.add(Component.translatable("button.thirteen_flames.button.cost_open", getAbilityData().getRequiredScarabsForOpen()));
@@ -254,11 +251,10 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
         int descriptionLines = (description.size() > 1 ? description.size() : 0);
 
-        if (descriptionLines % 2 == 0) {
+        if (descriptionLines % 2 == 0)
             descriptionLines = descriptionLines * 5;
-        } else {
+        else
             descriptionLines = descriptionLines * 6;
-        }
 
         int extraY = 0;
 
@@ -274,18 +270,16 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
         if (getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
             if (!isBuyAbility()) {
-                if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
+                if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL))
                     GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX, renderIconY, 100, 373, 28, 24, 512, 512);
-                } else {
+                else
                     GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX, renderIconY - 4, 131, 373, 28, 28, 512, 512);
-                }
             } else {
                 if (getLevelAbility() != getAbilityData().getMaxLevel()) {
-                    if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
+                    if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL))
                         GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX - 25, renderIconY - 2, 100, 373, 28, 24, 512, 512);
-                    } else {
+                    else
                         GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX - 26, renderIconY - 5, 131, 373, 28, 28, 512, 512);
-                    }
                 }
             }
         }

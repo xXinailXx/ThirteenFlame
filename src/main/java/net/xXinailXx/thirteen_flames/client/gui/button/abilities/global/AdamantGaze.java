@@ -24,12 +24,10 @@ public class AdamantGaze extends AbstarctAbilityWidgets {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
 
-        if (player == null) {
+        if (player == null)
             return;
-        }
 
-        if (data.isActiveAbility("adamant_gaze")) {
+        if (data.isActiveAbility("adamant_gaze"))
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 2, 1, true, true));
-        }
     }
 }

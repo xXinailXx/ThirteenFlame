@@ -9,6 +9,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.simple.SimpleChannel;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.network.packet.AddSkillPointPacket;
+import net.xXinailXx.thirteen_flames.network.packet.AddXpFlameItemPacket;
 import net.xXinailXx.thirteen_flames.network.packet.SetSkillPointPacket;
 import net.xXinailXx.thirteen_flames.network.packet.capability.*;
 
@@ -42,6 +43,11 @@ public class NetworkRegistry {
                 .encoder(StaminaSyncPacket::toBytes)
                 .decoder(StaminaSyncPacket::new)
                 .consumer(StaminaSyncPacket::handle)
+                .add();
+        INSTANCE.messageBuilder(AddXpFlameItemPacket.class, nextID())
+                .encoder(AddXpFlameItemPacket::toBytes)
+                .decoder(AddXpFlameItemPacket::new)
+                .consumer(AddXpFlameItemPacket::handle)
                 .add();
     }
 

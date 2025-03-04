@@ -23,9 +23,8 @@ public class CombatExperience extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("combat_experience")) {
             Player player = event.player;
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
             if (player.getHealth() < player.getMaxHealth()) {
                 if (player.totalExperience >= 5) {

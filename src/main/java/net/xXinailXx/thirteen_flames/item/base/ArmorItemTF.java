@@ -8,7 +8,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -16,9 +15,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -27,14 +24,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.phys.AABB;
-import net.xXinailXx.thirteen_flames.utils.FireItemSetting;
+import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.UUID;
 
-public class ArmorItemTF extends FireItemSetting implements Wearable {
+public class ArmorItemTF extends FlameItemSetting implements Wearable {
     private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
     public static final DispenseItemBehavior DISPENSE_ITEM_BEHAVIOR = new DefaultDispenseItemBehavior() {
         protected ItemStack execute(BlockSource source, ItemStack stack) {
@@ -55,8 +50,8 @@ public class ArmorItemTF extends FireItemSetting implements Wearable {
         }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();
     }
 
-    public ArmorItemTF(ArmorMaterial material, EquipmentSlot slot, Item.Properties properties) {
-        super(properties.defaultDurability(material.getDurabilityForSlot(slot)));
+    public ArmorItemTF(ArmorMaterial material, EquipmentSlot slot) {
+        super(new Properties().defaultDurability(material.getDurabilityForSlot(slot)));
         this.material = material;
         this.slot = slot;
         this.defense = material.getDefenseForSlot(slot);
@@ -67,9 +62,9 @@ public class ArmorItemTF extends FireItemSetting implements Wearable {
         UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[slot.getIndex()];
         builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", (double) this.defense, AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", (double) this.toughness, AttributeModifier.Operation.ADDITION));
-        if (this.knockbackResistance > 0) {
+
+        if (this.knockbackResistance > 0)
             builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", (double) this.knockbackResistance, AttributeModifier.Operation.ADDITION));
-        }
 
         this.defaultModifiers = builder.build();
     }
@@ -86,8 +81,8 @@ public class ArmorItemTF extends FireItemSetting implements Wearable {
         return this.material;
     }
 
-    public boolean isValidRepairItem(ItemStack p_40392_, ItemStack p_40393_) {
-        return this.material.getRepairIngredient().test(p_40393_) || super.isValidRepairItem(p_40392_, p_40393_);
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repairStack) {
+        return this.material.getRepairIngredient().test(repairStack) || super.isValidRepairItem(stack, repairStack);
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
@@ -97,9 +92,9 @@ public class ArmorItemTF extends FireItemSetting implements Wearable {
 
         if (itemstack1.isEmpty()) {
             player.setItemSlot(equipmentslot, itemstack.copy());
-            if (!level.isClientSide()) {
+
+            if (!level.isClientSide())
                 player.awardStat(Stats.ITEM_USED.get(this));
-            }
 
             itemstack.setCount(0);
             return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());

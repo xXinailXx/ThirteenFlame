@@ -16,8 +16,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.ModelData;
 import net.xXinailXx.thirteen_flames.entity.OreBlockSimulationEntity;
 
-public class OreBlockSimulationEntityRenderer extends EntityRenderer<OreBlockSimulationEntity> {
-    public OreBlockSimulationEntityRenderer(EntityRendererProvider.Context pContext) {
+public class OreBlockSimulationRenderer extends EntityRenderer<OreBlockSimulationEntity> {
+    public OreBlockSimulationRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 

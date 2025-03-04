@@ -19,9 +19,8 @@ public class ItemStackMixin {
     @Inject(method = "hurt", at = @At(value = "HEAD"))
     public void hurt(int p_220158_, RandomSource source, ServerPlayer serverPlayer, CallbackInfoReturnable<Boolean> cir) {
         if (data.isActiveAbility("careful_handling")) {
-            if (AbilityUtils.isRandomSuccess(serverPlayer.getLevel(), data.getLevelAbility("careful_handling"))) {
+            if (AbilityUtils.isRandomSuccess(serverPlayer.getLevel(), data.getLevelAbility("careful_handling")))
                 cir.cancel();
-            }
         }
     }
 }

@@ -35,9 +35,7 @@ public class SheepMixin extends Sheep {
 
                 if (!data.isActiveAbility("scissorhands")) {
                     if (!this.level.isClientSide) {
-                        itemstack.hurtAndBreak(1, player, (p_29910_) -> {
-                            p_29910_.broadcastBreakEvent(hand);
-                        });
+                        itemstack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(hand));
                     }
                 }
 

@@ -40,24 +40,16 @@ public class OreBlockSimulationEntity extends Entity {
         this.move(MoverType.SELF, getDeltaMovement());
         setDeltaMovement(0, 0.025F, 0);
 
-        Block clickTargetBlock = null;
-
-        if (this.tickCount == 0 && !this.level.getBlockState(this.blockPosition().above()).isAir()) {
-            clickTargetBlock = this.level.getBlockState(this.blockPosition().above()).getBlock();
-        }
-
         int oreEntity = 0;
 
         for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(0, 21, 0))) {
-            if (entity instanceof OreBlockSimulationEntity) {
+            if (entity instanceof OreBlockSimulationEntity)
                 oreEntity++;
-            }
         }
 
         if (this.tickCount % (40 * oreEntity == 0 ? 40 : 40 * oreEntity) == 0 || (!this.level.getBlockState(this.blockPosition()).isAir() && this.tickCount > (39 * oreEntity))) {
-            if (!level.isClientSide()) {
+            if (!level.isClientSide())
                 this.level.setBlock(this.blockPosition().above(), getBlockState(), 11);
-            }
 
             this.remove(RemovalReason.KILLED);
         }

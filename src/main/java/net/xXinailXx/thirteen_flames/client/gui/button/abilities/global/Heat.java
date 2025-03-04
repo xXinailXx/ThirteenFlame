@@ -32,9 +32,8 @@ public class Heat extends AbstarctAbilityWidgets {
         if (data.isActiveAbility("heat")) {
             Player player = event.player;
 
-            if (player == null) {
+            if (player == null)
                 return;
-            }
 
             ItemStack stack = player.getOffhandItem();
             if (!stack.is(Items.AIR)) {
@@ -53,10 +52,6 @@ public class Heat extends AbstarctAbilityWidgets {
                         default -> player.setItemSlot(EquipmentSlot.OFFHAND, tiers.getRepairIngredient().getItems()[0]);
                     }
                 } else {
-                    if (stack.getFoodProperties(player) != null) {
-
-                    }
-
                     RecipeManager recipeManager = player.getLevel().getRecipeManager();
 
                     List<SmeltingRecipe> smeltingRecipes = recipeManager.getRecipesFor(RecipeType.SMELTING, new SimpleContainer(stack), player.getLevel());

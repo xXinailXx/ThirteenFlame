@@ -23,9 +23,8 @@ public class CoverNile extends AbstarctAbilityWidgets {
     @SubscribeEvent
     public static void attackEntity(LivingHurtEvent event) {
         if (data.isActiveAbility("cover_nile")) {
-            if (event.getEntity() instanceof Player player && player.isUnderWater()) {
+            if (event.getEntity() instanceof Player player && player.isUnderWater())
                 event.setCanceled(true);
-            }
         }
     }
 }

@@ -34,9 +34,8 @@ public class GodFaraonScreenGlobal extends AbstractGuiFaraon {
 
         this.addRenderableWidget(new LordElements(X, Y + yOff));
 
-        if (effectData.isCurseKnef()) {
+        if (effectData.isCurseKnef())
             this.addRenderableWidget(new Recovery(X + xOff, Y + yOff));
-        }
 
         this.addRenderableWidget(new SacredBonds(X + (effectData.isCurseKnef() ? (xOff * 2) : xOff), Y + yOff));
         this.addRenderableWidget(new Trader(X + (effectData.isCurseKnef() ? (xOff * 3) : (xOff * 2)), Y + yOff));
