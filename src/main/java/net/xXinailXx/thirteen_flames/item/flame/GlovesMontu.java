@@ -59,6 +59,10 @@ public class GlovesMontu extends FlameItemSetting {
     }
 
 //    @Override
+//    public CuriosModel getModel(ItemStack stack) {
+//        return new CuriosHandsSidedModel(stack.getItem());
+//    }
+//
 //    @OnlyIn(Dist.CLIENT)
 //    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
 //        CuriosModel model = getModel(stack);
@@ -86,7 +90,6 @@ public class GlovesMontu extends FlameItemSetting {
 //        matrixStack.popPose();
 //    }
 //
-//    @Override
 //    public LayerDefinition constructLayerDefinition() {
 //        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0);
 //
@@ -101,17 +104,14 @@ public class GlovesMontu extends FlameItemSetting {
 //        return LayerDefinition.create(mesh, 32, 32);
 //    }
 //
-//    @Override
 //    public List<String> bodyParts() {
 //        return Lists.newArrayList("right_arm", "left_arm");
 //    }
 
-    @Override
     public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
         return true;
     }
 
-    @Override
     public boolean canEquipFromUse(SlotContext slotContext, ItemStack stack) {
         return true;
     }
