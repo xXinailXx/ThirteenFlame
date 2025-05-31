@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.fight;
 
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 public class FangFrost extends AbstarctAbilityWidgets {
     public FangFrost(int x, int y) {

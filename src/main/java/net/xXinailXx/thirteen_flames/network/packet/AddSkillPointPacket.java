@@ -12,34 +12,32 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
+import org.zeith.hammerlib.net.IPacket;
+import org.zeith.hammerlib.net.PacketContext;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public class AddSkillPointPacket {
-    private final int amount;
+public class AddSkillPointPacket implements IPacket {
+    private int amount;
 
     public AddSkillPointPacket(int amount) {
         this.amount = amount;
     }
 
-    public AddSkillPointPacket(FriendlyByteBuf buf) {
-        this.amount = buf.readInt();
-    }
-
-    public void toBytes(FriendlyByteBuf buf) {
+    public void write(FriendlyByteBuf buf) {
         buf.writeInt(this.amount);
     }
 
-    public boolean handle(Supplier<NetworkEvent.Context> ctx) {
-        ((NetworkEvent.Context)ctx.get()).enqueueWork(() -> {
-            ServerPlayer player = ctx.get().getSender();
-            IPlayerSkills skillsData = PlayerSkillsProvider.get(player);
+    public void read(FriendlyByteBuf buf) {
+        this.amount = buf.readInt();
+    }
 
-            skillsData.grantSkillPoints(this.amount);
-            NetworkDispatcher.network_channel.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerSkillsMessage(player));
-        });
+    public void serverExecute(PacketContext ctx) {
+        ServerPlayer player = ctx.getSender();
+        IPlayerSkills skillsData = PlayerSkillsProvider.get(player);
 
-        return true;
+        skillsData.grantSkillPoints(this.amount);
+        NetworkDispatcher.network_channel.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerSkillsMessage(player));
     }
 }

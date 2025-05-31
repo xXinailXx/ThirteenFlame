@@ -2,10 +2,10 @@ package net.xXinailXx.thirteen_flames.data;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -15,20 +15,32 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
-import net.xXinailXx.thirteen_flames.network.NetworkRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.capability.StaminaSyncPacket;
-import org.zeith.hammerlib.api.io.IAutoNBTSerializable;
-import org.zeith.hammerlib.api.io.NBTSerializable;
+import org.zeith.hammerlib.net.Network;
 
-public class StaminaData implements IAutoNBTSerializable {
-    @NBTSerializable
+public class StaminaData implements INBTSerializable<CompoundTag> {
     private int maxStamina;
-    @NBTSerializable
     private int stamina;
-    @NBTSerializable
     private int regenCooldown;
-    @NBTSerializable
     private int shakeTime;
+
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+
+        tag.putInt("max_stamina", this.maxStamina);
+        tag.putInt("stamina", this.stamina);
+        tag.putInt("regen_cooldown", this.regenCooldown);
+        tag.putInt("shake_time", this.shakeTime);
+
+        return tag;
+    }
+
+    public void deserializeNBT(CompoundTag tag) {
+        this.maxStamina = tag.getInt("max_stamina");
+        this.stamina = tag.getInt("stamina");
+        this.regenCooldown = tag.getInt("regen_cooldown");
+        this.shakeTime = tag.getInt("shake_time");
+    }
 
     public int getMaxStamina() {
         return maxStamina;
@@ -97,7 +109,7 @@ public class StaminaData implements IAutoNBTSerializable {
             player.getPersistentData().put("stamina_data", nbt);
 
             if (!player.level.isClientSide()) {
-                NetworkRegistry.sendToClient(new StaminaSyncPacket(nbt), (ServerPlayer)player);
+                Network.sendTo(new StaminaSyncPacket(nbt), player);
             }
         }
 

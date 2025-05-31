@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityStorage;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 @Mod.EventBusSubscriber
 public class PathPlanner extends AbstarctAbilityWidgets {
@@ -35,7 +36,7 @@ public class PathPlanner extends AbstarctAbilityWidgets {
                 if (data.isActiveAbility("path_planner")) {
                     boolean error = false;
 
-                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilities) {
+                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilitiesList) {
                         if (ability instanceof MagomedWalks) {
                             if (ability.isActiveAbility())
                                 error = true;

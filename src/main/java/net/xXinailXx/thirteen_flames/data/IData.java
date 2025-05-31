@@ -3,15 +3,14 @@ package net.xXinailXx.thirteen_flames.data;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.IAbilityData;
 
 public interface IData extends INBTSerializable<CompoundTag> {
     public static interface IAbilitiesData {
         Data.AbilitiesData.Handler getAbilityHandler(String abilityName);
 
-        void addExtraAbilitySetting(String abilityName, CompoundTag nbt);
+        boolean isLockAbility(String abilityName);
 
-        CompoundTag getExtraAbilitySetting(String abilityName);
+        void setLockAbility(String abilityName, boolean value);
 
         boolean isBuyAbility(String abilityName);
 

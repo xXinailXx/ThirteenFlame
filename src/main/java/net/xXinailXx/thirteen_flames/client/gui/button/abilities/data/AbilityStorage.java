@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Map;
 
 public class AbilityStorage {
-    public static final Map<IAbilityData, AbilityData> ABILITY = new HashMap<>();
-    public static List<AbstarctAbilityWidgets> abilities = getAbilitiesList();
+    public static final Map<IAbilityData, AbilityData> ABILITIES = new HashMap<>();
+    public static List<AbstarctAbilityWidgets> abilitiesList = getAbilitiesList();
 
     private static @NotNull List<AbstarctAbilityWidgets> getAbilitiesList() {
         List<AbstarctAbilityWidgets> cache = new ArrayList<>();
 
-        ABILITY.keySet().forEach(iAbility -> {
+        ABILITIES.keySet().forEach(iAbility -> {
             AbstarctAbilityWidgets widgets = (AbstarctAbilityWidgets) iAbility;
             cache.add(widgets);
         });

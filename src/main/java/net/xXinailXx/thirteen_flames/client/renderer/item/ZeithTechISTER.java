@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
-import net.xXinailXx.thirteen_flames.mixin.BakedOverrideAccessor;
+import net.xXinailXx.thirteen_flames.mixin.client.BakedOverrideAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,12 +39,14 @@ public abstract class ZeithTechISTER extends BlockEntityWithoutLevelRenderer {
         Minecraft mc = Minecraft.getInstance();
         ItemRenderer ir = mc.getItemRenderer();
         BakedModel overridenModel = ((BakedOverrideAccessor)override).getModel();
+
         if (overridenModel != null) {
             boolean cull;
 
             label49: {
                 if (transformType != ItemTransforms.TransformType.GUI && !transformType.firstPerson()) {
                     Item model = stack.getItem();
+
                     if (model instanceof BlockItem) {
                         BlockItem bi = (BlockItem)model;
                         Block block = bi.getBlock();
@@ -62,6 +64,7 @@ public abstract class ZeithTechISTER extends BlockEntityWithoutLevelRenderer {
                         type = overrideType;
 
                     VertexConsumer vertexconsumer;
+
                     if (cull)
                         vertexconsumer = ItemRenderer.getFoilBufferDirect(bufferSource, type, true, stack.hasFoil());
                     else
@@ -83,12 +86,14 @@ public abstract class ZeithTechISTER extends BlockEntityWithoutLevelRenderer {
         while(var11.hasNext()) {
             ItemOverrides.BakedOverride override = (ItemOverrides.BakedOverride)var11.next();
             BakedModel overridenModel = ((BakedOverrideAccessor)override).getModel();
+
             if (overridenModel != null) {
                 boolean cull;
 
                 label43: {
                     if (transformType != ItemTransforms.TransformType.GUI && !transformType.firstPerson()) {
                         Item model = stack.getItem();
+
                         if (model instanceof BlockItem) {
                             BlockItem bi = (BlockItem)model;
                             Block block = bi.getBlock();
@@ -103,6 +108,7 @@ public abstract class ZeithTechISTER extends BlockEntityWithoutLevelRenderer {
                 for(BakedModel model : overridenModel.getRenderPasses(stack, cull)) {
                     for(RenderType type : model.getRenderTypes(stack, cull)) {
                         VertexConsumer vertexconsumer;
+
                         if (cull)
                             vertexconsumer = ItemRenderer.getFoilBufferDirect(bufferSource, type, true, stack.hasFoil());
                         else

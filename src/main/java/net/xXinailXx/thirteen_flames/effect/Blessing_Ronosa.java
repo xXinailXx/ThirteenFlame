@@ -1,10 +1,9 @@
 package net.xXinailXx.thirteen_flames.effect;
 
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectCategory;
+import net.xXinailXx.thirteen_flames.utils.Gods;
 
-public class Blessing_Ronosa extends MobEffect {
-    public Blessing_Ronosa(MobEffectCategory mobEffectCategory, int color) {
-        super(mobEffectCategory, color);
+public class Blessing_Ronosa extends StatueEffect {
+    public Blessing_Ronosa(int color) {
+        super(color, Gods.RONOS);
     }
 }

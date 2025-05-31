@@ -18,7 +18,7 @@ public class AbilityData {
 
 /// Sets which leveling menu it will be in.
     @Builder.Default
-    private AbstarctAbilityWidgets.ScreenID screenID = IAbilityData.ScreenID.MINING;
+    private ScreenID screenID = ScreenID.MINING;
 /// By setting the value to zero, when an ability is purchased, it will not require improvement.
     @Builder.Default
     private int maxLevel = 1;

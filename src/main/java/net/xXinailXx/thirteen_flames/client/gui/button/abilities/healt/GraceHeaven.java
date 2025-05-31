@@ -10,6 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,19 +35,23 @@ public class GraceHeaven extends AbstarctAbilityWidgets {
             if (player == null && level == null)
                 return;
 
+            if (player.tickCount % 300 == 0)
+                return;
+
+            if (!level.isDay())
+                return;
+
             Iterator iterator = BlockPos.betweenClosed(new BlockPos(player.getX(), player.getY(), player.getZ()), new BlockPos(player.getX(), 1000, player.getZ())).iterator();
-            boolean lock = false;
+            boolean isBlock = false;
 
             while (iterator.hasNext()) {
                 if (level.getBlockState((BlockPos) iterator.next()).isAir())
-                    lock = true;
+                    isBlock = true;
             }
 
-            if (lock) {
-                if (player.tickCount % 300 == 0) {
-                    FoodData foodData = player.getFoodData();
-                    foodData.eat(1, 0);
-                }
+            if (isBlock) {
+                FoodData foodData = player.getFoodData();
+                foodData.eat(1, 0);
             }
         }
     }

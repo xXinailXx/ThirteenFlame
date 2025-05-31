@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.entity;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
@@ -12,8 +13,10 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 
@@ -23,6 +26,7 @@ import java.util.Optional;
 
 public class OreBlockSimulationEntity extends Entity {
     private static final EntityDataAccessor<Optional<BlockState>> BLOCK_STATE = SynchedEntityData.defineId(OreBlockSimulationEntity.class, EntityDataSerializers.BLOCK_STATE);
+    private static final EntityDataAccessor<Integer> ORE_COUNT = SynchedEntityData.defineId(OreBlockSimulationEntity.class, EntityDataSerializers.INT);
 
     public OreBlockSimulationEntity(EntityType<?> pEntityType, Level level) {
         super(pEntityType, level);
@@ -38,18 +42,11 @@ public class OreBlockSimulationEntity extends Entity {
         super.tick();
 
         this.move(MoverType.SELF, getDeltaMovement());
-        setDeltaMovement(0, 0.025F, 0);
+        setDeltaMovement(0, 0.05F, 0);
 
-        int oreEntity = 0;
-
-        for (Entity entity : this.level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(0, 21, 0))) {
-            if (entity instanceof OreBlockSimulationEntity)
-                oreEntity++;
-        }
-
-        if (this.tickCount % (40 * oreEntity == 0 ? 40 : 40 * oreEntity) == 0 || (!this.level.getBlockState(this.blockPosition()).isAir() && this.tickCount > (39 * oreEntity))) {
+        if (this.tickCount % (20 * getOreCount() == 0 ? 20 : 20 * getOreCount()) == 0) {
             if (!level.isClientSide())
-                this.level.setBlock(this.blockPosition().above(), getBlockState(), 11);
+                this.level.setBlock(new BlockPos(this.position()).above(), getBlockState(), 11);
 
             this.remove(RemovalReason.KILLED);
         }
@@ -64,32 +61,39 @@ public class OreBlockSimulationEntity extends Entity {
         return this.entityData.get(BLOCK_STATE).orElse(null);
     }
 
-    @Override
+    public void setOreCount(int count) {
+        this.entityData.set(ORE_COUNT, count);
+    }
+
+    public int getOreCount() {
+        return this.entityData.get(ORE_COUNT);
+    }
+
     protected void defineSynchedData() {
         this.entityData.define(BLOCK_STATE, Optional.of(Blocks.AIR.defaultBlockState()));
+        this.entityData.define(ORE_COUNT, 1);
     }
 
-    @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         setBlockState(NbtUtils.readBlockState(compound.getCompound("BlockState")));
+        setOreCount(compound.getInt("ore_count"));
     }
 
-    @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         BlockState state = getBlockState();
 
         if (state != null) {
             compound.put("BlockState", NbtUtils.writeBlockState(state));
         }
+
+        compound.putInt("ore_count", getOreCount());
     }
 
-    @Override
     public boolean isPushedByFluid() {
         return false;
     }
 
     @Nonnull
-    @Override
     public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }

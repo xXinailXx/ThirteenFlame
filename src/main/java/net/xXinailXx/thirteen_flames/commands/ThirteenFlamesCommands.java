@@ -11,10 +11,12 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.command.EnumArgument;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityStorage;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.IAbilityData;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.data.IStaminaData;
 import net.xXinailXx.thirteen_flames.data.StaminaData;
+import net.xXinailXx.thirteen_flames.utils.ScarabsType;
 
 public class ThirteenFlamesCommands {
     private static final IData.IAbilitiesData abilityData = new Data.AbilitiesData.Utils();
@@ -29,22 +31,27 @@ public class ThirteenFlamesCommands {
                 .then(Commands.literal("ability")
                         .then(Commands.argument("ability_id", AbilityArgumentsType.abilityType())
                                 .then(Commands.literal("lock")
-                                        .executes(context -> {
-                                            String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                        .then(Commands.argument("value", BoolArgumentType.bool())
+                                                .executes(context -> {
+                                                    String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                                    boolean value = BoolArgumentType.getBool(context, "value");
 
-                                            abilityData.setBuyAbility(ability, false);
-                                            abilityData.setActiveAbility(ability, false);
+                                                    abilityData.setLockAbility(ability, value);
 
-                                            return Command.SINGLE_SUCCESS;
-                                        }))
+                                                    return Command.SINGLE_SUCCESS;
+                                                })
+                                        ))
                                 .then(Commands.literal("buy")
-                                        .executes(context -> {
-                                            String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                        .then(Commands.argument("value", BoolArgumentType.bool())
+                                                .executes(context -> {
+                                                    String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                                    boolean value = BoolArgumentType.getBool(context, "value");
 
-                                            abilityData.setBuyAbility(ability, true);
+                                                    abilityData.setBuyAbility(ability, value);
 
-                                            return Command.SINGLE_SUCCESS;
-                                        }))
+                                                    return Command.SINGLE_SUCCESS;
+                                                })
+                                        ))
                                 .then(Commands.literal("active")
                                         .then(Commands.argument("value", BoolArgumentType.bool())
                                                 .executes(context -> {
@@ -61,6 +68,7 @@ public class ThirteenFlamesCommands {
                                                 .then(Commands.argument("count", IntegerArgumentType.integer())
                                                         .executes(context -> {
                                                             String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                                            IAbilityData iAbilityData = getAbilityData(ability);
 
                                                             if (!abilityData.isBuyAbility(ability)) {
                                                                 context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_lock_message"));
@@ -71,12 +79,12 @@ public class ThirteenFlamesCommands {
                                                             CommandIntegerActionType type = context.getArgument("action", CommandIntegerActionType.class);
                                                             int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                            AbilityStorage.abilities.forEach(abil -> {
+                                                            AbilityStorage.abilitiesList.forEach(abil -> {
                                                                 if (abil.getAbilityData().getAbilityName().equals(ability)) {
                                                                     switch (type) {
-                                                                        case add -> abilityData.addLevelAbility(ability, count, abil.getAbilityData().getMaxLevel());
-                                                                        case set -> abilityData.setLevelAbility(ability, count);
-                                                                        case take -> abilityData.addLevelAbility(ability, -count, abil.getAbilityData().getMaxLevel());
+                                                                        case add -> abilityData.addLevelAbility(ability, count, iAbilityData.getAbilityData().getMaxLevel());
+                                                                        case set -> abilityData.setLevelAbility(ability, Math.min(count, iAbilityData.getAbilityData().getMaxLevel()));
+                                                                        case take -> abilityData.addLevelAbility(ability, - count, iAbilityData.getAbilityData().getMaxLevel());
                                                                     }
                                                                 }
                                                             });
@@ -158,10 +166,10 @@ public class ThirteenFlamesCommands {
                                                     int count = IntegerArgumentType.getInteger(context, "count");
 
                                                     switch (type) {
-                                                        case MINING -> guiLevelingData.addGuiMiningLevelAmount(count);
-                                                        case CRAFT -> guiLevelingData.addGuiCraftLevelAmount(count);
-                                                        case FIGHT -> guiLevelingData.addGuiFightLevelAmount(count);
-                                                        case HEALTH -> guiLevelingData.addGuiHealthLevelAmount(count);
+                                                        case mining -> guiLevelingData.addGuiMiningLevelAmount(count);
+                                                        case craft -> guiLevelingData.addGuiCraftLevelAmount(count);
+                                                        case fight -> guiLevelingData.addGuiFightLevelAmount(count);
+                                                        case health -> guiLevelingData.addGuiHealthLevelAmount(count);
                                                     }
 
                                                     return Command.SINGLE_SUCCESS;
@@ -174,10 +182,10 @@ public class ThirteenFlamesCommands {
                                                     int count = IntegerArgumentType.getInteger(context, "count");
 
                                                     switch (type) {
-                                                        case MINING -> guiLevelingData.setGuiMiningLevelAmount(count);
-                                                        case CRAFT -> guiLevelingData.setGuiCraftLevelAmount(count);
-                                                        case FIGHT -> guiLevelingData.setGuiFightLevelAmount(count);
-                                                        case HEALTH -> guiLevelingData.setGuiHealthLevelAmount(count);
+                                                        case mining -> guiLevelingData.setGuiMiningLevelAmount(count);
+                                                        case craft -> guiLevelingData.setGuiCraftLevelAmount(count);
+                                                        case fight -> guiLevelingData.setGuiFightLevelAmount(count);
+                                                        case health -> guiLevelingData.setGuiHealthLevelAmount(count);
                                                     }
 
                                                     return Command.SINGLE_SUCCESS;
@@ -296,6 +304,15 @@ public class ThirteenFlamesCommands {
         );
     }
 
+    private static IAbilityData getAbilityData(String abilityName) {
+        for (IAbilityData data : AbilityStorage.ABILITIES.keySet()) {
+            if (data.getAbilityData().equals(abilityName))
+                return data;
+        }
+
+        return null;
+    }
+
     private enum CommandIntegerActionType {
         add,
         set,
@@ -303,16 +320,9 @@ public class ThirteenFlamesCommands {
     }
 
     private enum ScreenType {
-        MINING,
-        CRAFT,
-        FIGHT,
-        HEALTH
-    }
-
-    private enum ScarabsType {
-        SILVER,
-        GOLD,
-        AURITEH,
-        LAZOTEP
+        mining,
+        craft,
+        fight,
+        health
     }
 }

@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.healt;
 
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 public class SecondWind extends AbstarctAbilityWidgets {
     public SecondWind(int x, int y) {

@@ -1,0 +1,31 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "thirteen_flames:bag_paint"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "D": {
+      "item": "minecraft:blue_dye"
+    },
+    "E": {
+      "item": "minecraft:black_dye"
+    },
+    "Y": {
+      "item": "minecraft:yellow_dye"
+    },
+    "O": {
+      "item": "minecraft:orange_dye"
+    }
+  },
+  "pattern": [
+    "GOG",
+    "DBE",
+    "YGY"
+  ],
+  "result": {
+    "item": "thirteen_flames:bag_paint_het"
+  }
+}

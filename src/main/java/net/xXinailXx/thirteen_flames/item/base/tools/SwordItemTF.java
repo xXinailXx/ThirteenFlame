@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-public class SwordItemTF extends TieredItemTF {
+public abstract class SwordItemTF extends TieredItemTF {
     private final float attackDamage;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 

@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.xXinailXx.thirteen_flames.client.progress.ProgressManager;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,10 +29,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class HoeItemMixin {
     @Unique private IData.IAbilitiesData data = new Data.AbilitiesData.Utils();
 
-    @Inject(method = "useOn", at = @At(value = "RETURN"))
+    @Inject(method = "useOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"), cancellable = true)
     public void useOn(UseOnContext use, CallbackInfoReturnable<InteractionResult> cir) {
         Level level = use.getLevel();
         Player player = use.getPlayer();
+
+        if (!ProgressManager.isAllowUsage(use.getItemInHand())) {
+            cir.setReturnValue(InteractionResult.SUCCESS);
+            cir.cancel();
+        }
 
         if (data.isActiveAbility("oasis")) {
             BlockPos.betweenClosed(use.getClickedPos().north().east(), use.getClickedPos().south().west()).forEach(pos -> {

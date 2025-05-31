@@ -3,6 +3,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.data;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -11,9 +12,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CommandBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.xXinailXx.enderdragonlib.utils.AABBUtils;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -65,13 +68,16 @@ public class AbilityUtils {
         }
     }
 
-    public static List<LivingEntity> getSurroundingEntities(LivingEntity entity, double rad) {
+    public static List<LivingEntity> getEntities(LivingEntity entity, double radius) {
         if (entity == null || entity.getLevel() == null)
             return List.of();
 
-        AABB area = entity.getBoundingBox().inflate(rad, (rad * 2.0), rad);
-        List<LivingEntity> abstList = entity.getLevel().getEntitiesOfClass(LivingEntity.class, area);
-        return abstList;
+        List<Entity> entities = AABBUtils.getEntities(entity, radius);
+        List<LivingEntity> entityList = new ArrayList<>();
+
+        entities.stream().filter(entity1 -> entities instanceof LivingEntity).forEach(entity1 -> entities.add(entity1));
+
+        return entityList;
     }
 
     public static PlayerPosYState playerLevelSea(Player player) {
@@ -80,13 +86,13 @@ public class AbilityUtils {
         }
 
         if (data.isActiveAbility("deep_kinship") && !data.isActiveAbility("celestial_kinship") && !data.isActiveAbility("terrestrial_kinship")) {
-            if (player.getY() < -25)
+            if (player.getY() < -60)
                 return PlayerPosYState.BELOW_SEA;
         } else if (data.isActiveAbility("celestial_kinship") && !data.isActiveAbility("deep_kinship") && !data.isActiveAbility("terrestrial_kinship")) {
-            if (player.getY() >= -25 && player.getY() <= 50)
+            if (player.getY() >= -60 && player.getY() <= 60)
                 return PlayerPosYState.LEVEL_SEA;
         } else if (data.isActiveAbility("terrestrial_kinship") && !data.isActiveAbility("deep_kinship") && !data.isActiveAbility("celestial_kinship")) {
-            if (player.getY() > 50)
+            if (player.getY() > 60)
                 return PlayerPosYState.ABOVE_SEA;
         }
 

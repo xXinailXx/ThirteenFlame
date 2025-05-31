@@ -16,8 +16,8 @@ import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.StaminaData;
-import net.xXinailXx.thirteen_flames.network.NetworkRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.capability.*;
+import org.zeith.hammerlib.net.Network;
 
 @Mod.EventBusSubscriber
 public class CapabilityRegistry {
@@ -49,7 +49,7 @@ public class CapabilityRegistry {
     public static void playerLogged(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
 
-        NetworkRegistry.sendToClient(new StaminaSyncPacket(StaminaData.Utils.getStaminaData(player)), (ServerPlayer)player);
+        Network.sendTo(new StaminaSyncPacket(StaminaData.Utils.getStaminaData(player).serializeNBT()), player);
     }
 
     @SubscribeEvent

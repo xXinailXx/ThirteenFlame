@@ -12,6 +12,7 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityDat
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityStorage;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 @Mod.EventBusSubscriber
 public class MagomedWalks extends AbstarctAbilityWidgets {
@@ -36,7 +37,7 @@ public class MagomedWalks extends AbstarctAbilityWidgets {
                 if (data.isActiveAbility("magomed_walks")) {
                     boolean error = false;
 
-                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilities) {
+                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilitiesList) {
                         if (ability instanceof PathPlanner) {
                             if (ability.isActiveAbility())
                                 error = true;

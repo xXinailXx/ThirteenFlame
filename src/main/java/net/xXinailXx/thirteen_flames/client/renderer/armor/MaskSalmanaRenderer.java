@@ -1,0 +1,20 @@
+package net.xXinailXx.thirteen_flames.client.renderer.armor;
+
+import net.xXinailXx.thirteen_flames.client.model.armor.MaskSalmanaModel;
+import net.xXinailXx.thirteen_flames.item.MaskSalmana;
+import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+
+public class MaskSalmanaRenderer extends GeoArmorRenderer<MaskSalmana> {
+    public MaskSalmanaRenderer() {
+        super(new MaskSalmanaModel());
+
+        this.headBone = "armorHead";
+        this.bodyBone = "armorBody";
+        this.rightArmBone = "armorRightArm";
+        this.leftArmBone = "armorLeftArm";
+        this.rightLegBone = "armorLeftLeg";
+        this.leftLegBone = "armorRightLeg";
+        this.rightBootBone = "armorLeftBoot";
+        this.leftBootBone = "armorRightBoot";
+    }
+}

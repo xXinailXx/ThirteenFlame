@@ -10,7 +10,6 @@ import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -23,8 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.network.NetworkRegistry;
-import net.xXinailXx.thirteen_flames.network.packet.AddXpFlameItemPacket;
+import net.xXinailXx.thirteen_flames.network.packet.AddExpFlamePacket;
+import org.zeith.hammerlib.net.Network;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,19 +41,15 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
         this.pos = pos;
     }
 
-    @Override
     public void onPress() {
-        Item item = this.stack.getItem();
-
         if (scarabsData.getScarabSilver(this.player) >= 1) {
             scarabsData.addScarabSilver(this.player, -1);
 
-            NetworkRegistry.sendToServer(new AddXpFlameItemPacket(this.pos));
+            LevelingUtils.addExperience(this.stack, 50);
+            Network.sendToServer(new AddExpFlamePacket(this.pos));
 
-            if (MC.screen instanceof RelicDescriptionScreen) {
-                LevelingUtils.addExperience(this.player, this.stack, 50);
+            if (MC.screen instanceof RelicDescriptionScreen)
                 MC.setScreen(new RelicDescriptionScreen(this.pos, this.stack));
-            }
         }
     }
 
@@ -79,6 +74,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
 
     public void onHovered(PoseStack poseStack, int i, int i1) {
         Item item = this.stack.getItem();
+
         if (item instanceof RelicItem relic) {
             RelicData relicData = relic.getRelicData();
             List<FormattedCharSequence> tooltip = Lists.newArrayList();
@@ -114,6 +110,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
 
             int yOff = 0;
 
+            poseStack.pushPose();
             poseStack.scale(0.5F, 0.5F, 0.5F);
 
             for(Iterator var19 = tooltip.iterator(); var19.hasNext(); yOff += 4) {
@@ -121,7 +118,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
                 this.MC.font.draw(poseStack, entrys, (float)((renderX + 9) * 2), (float)((renderY + 9 + yOff) * 2), 4269832);
             }
 
-            poseStack.scale(1.0F, 1.0F, 1.0F);
+            poseStack.popPose();
         }
     }
 }

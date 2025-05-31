@@ -1,6 +1,5 @@
 package net.xXinailXx.thirteen_flames.entity;
 
-import com.qurenie.relics_thirteenflames.util.ParticleHelper;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
@@ -20,7 +19,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
-import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
+import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
+import net.xXinailXx.thirteen_flames.init.EffectRegistry;
 
 import java.awt.*;
 import java.util.List;
@@ -38,6 +38,64 @@ public class PoisonCloundEntity extends Projectile {
     public PoisonCloundEntity(EntityType<? extends Projectile> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
         this.sword = ItemStack.EMPTY;
+    }
+
+    public void tick() {
+        super.tick();
+
+        if (this.tickCount > this.getLifeTime())
+            this.discard();
+
+        float radius = this.getRadius() * (1.0F - (float)this.tickCount / (float)this.getLifeTime());
+        AABB box = (new AABB(this.getPosition(1.0F), this.getPosition(1.0F))).inflate((double)radius);
+
+        if (this.getLevel() instanceof ServerLevel) {
+            ParticleActions.spawnParticleAABB(this.getLevel(), new CircleTintData(new Color(85 - this.random.nextInt(80) + this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 6.0F + 0.1F, 80, 0.94F, false), box, Math.round(radius * radius * 2.0F) + 1, 0.01 * (double)radius);
+            ParticleActions.spawnParticleAABB(this.getLevel(), new SparkTintData(new Color(85 - this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 10.0F, 60), box, Math.round(radius * radius) + 1, (double)0.0F);
+        }
+
+        List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, box, (entity) -> !entity.equals(this.getOwner()));
+
+        if (this.cooldown == 0) {
+            for(LivingEntity e : entities) {
+                e.hurt(DamageSource.MAGIC, 2.0F + radius);
+                int maxAmp = this.getAmplifire();
+                int duration = this.getDuration();
+
+                if (e.hasEffect(EffectRegistry.POISON.get())) {
+                    int appliedAmplifier = e.getEffect(EffectRegistry.POISON.get()).getAmplifier() + 1;
+
+                    if (appliedAmplifier <= maxAmp) {
+                        e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true, false));
+
+                        if (this.random.nextFloat() < 0.25F)
+                            LevelingUtils.addExperience(this.getSword(), 1);
+                    } else {
+                        e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
+                    }
+                } else {
+                    e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration, 0, false, true, false));
+
+                    if (this.random.nextFloat() < 0.25F)
+                        LevelingUtils.addExperience(this.getSword(), 1);
+                }
+            }
+
+            this.cooldown = 20;
+        }
+
+        if (this.cooldown > 0) {
+            --this.cooldown;
+        }
+
+    }
+
+    public boolean canCollideWith(Entity p_20303_) {
+        return false;
+    }
+
+    public boolean canBeCollidedWith() {
+        return false;
     }
 
     public void setLifeTime(int lifetime) {
@@ -82,64 +140,6 @@ public class PoisonCloundEntity extends Projectile {
 
     public boolean isAlwaysTicking() {
         return true;
-    }
-
-    public void tick() {
-        super.tick();
-
-        if (this.tickCount > this.getLifeTime())
-            this.discard();
-
-        float radius = this.getRadius() * (1.0F - (float)this.tickCount / (float)this.getLifeTime());
-        AABB box = (new AABB(this.getPosition(1.0F), this.getPosition(1.0F))).inflate((double)radius);
-
-        if (this.getLevel() instanceof ServerLevel) {
-            ParticleHelper.spawnParticleAABB(this.getLevel(), new CircleTintData(new Color(85 - this.random.nextInt(80) + this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 6.0F + 0.1F, 80, 0.94F, false), box, Math.round(radius * radius * 2.0F) + 1, 0.01 * (double)radius);
-            ParticleHelper.spawnParticleAABB(this.getLevel(), new SparkTintData(new Color(85 - this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 10.0F, 60), box, Math.round(radius * radius) + 1, (double)0.0F);
-        }
-
-        List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, box, (entity) -> !entity.equals(this.getOwner()));
-
-        if (this.cooldown == 0) {
-            for(LivingEntity e : entities) {
-                e.hurt(DamageSource.MAGIC, 2.0F + radius);
-                int maxAmp = this.getAmplifire();
-                int duration = this.getDuration();
-
-                if (e.hasEffect(EffectsRegistry.POISON.get())) {
-                    int appliedAmplifier = e.getEffect(EffectsRegistry.POISON.get()).getAmplifier() + 1;
-
-                    if (appliedAmplifier <= maxAmp) {
-                        e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true, false));
-
-                        if (this.random.nextFloat() < 0.25F)
-                            LevelingUtils.addExperience(this.getSword(), 1);
-                    } else {
-                        e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
-                    }
-                } else {
-                    e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration, 0, false, true, false));
-
-                    if (this.random.nextFloat() < 0.25F)
-                        LevelingUtils.addExperience(this.getSword(), 1);
-                }
-            }
-
-            this.cooldown = 20;
-        }
-
-        if (this.cooldown > 0) {
-            --this.cooldown;
-        }
-
-    }
-
-    public boolean canCollideWith(Entity p_20303_) {
-        return false;
-    }
-
-    public boolean canBeCollidedWith() {
-        return false;
     }
 
     protected void defineSynchedData() {

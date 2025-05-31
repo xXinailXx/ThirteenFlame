@@ -1,0 +1,6 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#forge:is_desert",
+  "features": "thirteen_flames:auriteh_ore_placed",
+  "step": "vegetal_decoration"
+}

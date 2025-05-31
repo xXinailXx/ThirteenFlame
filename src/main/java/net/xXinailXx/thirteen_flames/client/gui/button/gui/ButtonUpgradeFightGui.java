@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.thirteen_flames.data.IData;
-import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
+import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 import net.xXinailXx.thirteen_flames.data.Data;
 
 public class ButtonUpgradeFightGui extends AbstractWidgetUtils {
@@ -28,8 +28,8 @@ public class ButtonUpgradeFightGui extends AbstractWidgetUtils {
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, GodFaraonScreenMining.BACKGROUNG);
-        manager.bindForSetup(GodFaraonScreenMining.BACKGROUNG);
+        RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
+        manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
 
         if (scarabsData.getScarabGold() >= 1 && guiLevelingData.getGuiFightLevelAmount() < 100 && !guiLevelingData.isPlayerScreen())
             blit(poseStack, this.x, this.y, 6, 342, 46, 48, 512, 512);

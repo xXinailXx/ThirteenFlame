@@ -9,14 +9,14 @@ public interface IAbilityData {
     AbilityData constructAbilityData();
 
     default AbilityData getAbilityData() {
-        if (!AbilityStorage.ABILITY.containsKey(this))
-            AbilityStorage.ABILITY.put(this, constructAbilityData());
+        if (!AbilityStorage.ABILITIES.containsKey(this))
+            AbilityStorage.ABILITIES.put(this, constructAbilityData());
 
-        return AbilityStorage.ABILITY.get(this);
+        return AbilityStorage.ABILITIES.get(this);
     }
 
     default void setAbilityData(AbilityData data) {
-        AbilityStorage.ABILITY.put(this, data);
+        AbilityStorage.ABILITIES.put(this, data);
     }
 
     default IAbilityData getIAbilityData() {
@@ -43,13 +43,5 @@ public interface IAbilityData {
             case HEALTH -> "health";
             case GLOBAL -> "global";
         };
-    }
-
-    public enum ScreenID {
-        MINING,
-        CRAFT,
-        FIGHT,
-        HEALTH,
-        GLOBAL
     }
 }

@@ -8,10 +8,11 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.manager.UUIDManager;
+import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 @Mod.EventBusSubscriber
 public class ConquerorDunes extends AbstarctAbilityWidgets {

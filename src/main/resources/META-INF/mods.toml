@@ -4,7 +4,7 @@ license = "GNU GPL V3"
 
 [[mods]]
 modId="thirteen_flames"
-version="0.0.1-1.19.2"
+version="${file.jarVersion}"
 displayName="Storytelling: Thirteen Flames"
 logoFile="logo.png"
 credits="xXinailXx"
@@ -26,7 +26,7 @@ side="BOTH"
 [[dependencies.thirteen_flames]]
 modId="enderdragonlib"
 mandatory=true
-versionRange="[0.0.1-1.19.2,)"
+versionRange="[0.0.7,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.thirteen_flames]]
@@ -44,7 +44,7 @@ side="BOTH"
 [[dependencies.thirteen_flames]]
 modId="hammerlib"
 mandatory=true
-versionRange="[19.3.82,)"
+versionRange="[19.3.57,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.thirteen_flames]]

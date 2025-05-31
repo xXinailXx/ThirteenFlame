@@ -3,6 +3,7 @@ package net.xXinailXx.thirteen_flames.data;
 import daripher.skilltree.capability.skill.IPlayerSkills;
 import daripher.skilltree.capability.skill.PlayerSkillsProvider;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -25,18 +26,18 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.manager.UUIDManager;
+import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.utils.MessageUtil;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
+import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.*;
-import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
-import net.xXinailXx.thirteen_flames.network.NetworkRegistry;
+import net.xXinailXx.thirteen_flames.init.EffectRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.SetSkillPointPacket;
+import net.xXinailXx.thirteen_flames.utils.Gods;
+import org.zeith.hammerlib.net.Network;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Mod.EventBusSubscriber
 public class Data implements IData {
@@ -60,22 +61,80 @@ public class Data implements IData {
         ScarabsData.deserializeNBT(nbt);
     }
 
+    public static class StatueBuilderData {
+        private static final List<StatueBuilder> STATUE_LIST = new ArrayList<>();
+        private static final List<StatueBE> STATUE_BE_LIST = new ArrayList<>();
+        private static final List<ShcemeBuilder> SHCEME_BUILDER_LIST = new ArrayList();
+        private static final List<UUID> SHCEME_BUILDER_UUID_LIST = new ArrayList<>();
+
+        public static void addShceme(ShcemeBuilder builder, UUID uuid) {
+            SHCEME_BUILDER_LIST.add(builder);
+            SHCEME_BUILDER_UUID_LIST.add(uuid);
+        }
+
+        public static void removeShceme(ShcemeBuilder builder, UUID uuid) {
+            SHCEME_BUILDER_LIST.remove(builder);
+            SHCEME_BUILDER_UUID_LIST.remove(uuid);
+        }
+
+        public static void addStatue(StatueBuilder statues, StatueBE entity) {
+            STATUE_LIST.add(statues);
+            STATUE_BE_LIST.add(entity);
+        }
+
+        public static void removeStatue(StatueBuilder statues) {
+            if (!STATUE_LIST.contains(statues))
+                return;
+
+            STATUE_BE_LIST.remove(STATUE_LIST.indexOf(statues));
+            STATUE_LIST.remove(statues);
+        }
+
+        public static void removeStatue(StatueBE entity) {
+            if (!STATUE_BE_LIST.contains(entity))
+                return;
+
+            STATUE_LIST.remove(STATUE_BE_LIST.indexOf(entity));
+            STATUE_BE_LIST.remove(entity);
+        }
+
+        public static List<StatueBuilder> getStatueList() {
+            return STATUE_LIST;
+        }
+
+        public static List<StatueBE> getStatueBEList() {
+            return STATUE_BE_LIST;
+        }
+
+        public static List<ShcemeBuilder> getShcemeBuilderList() {
+            return SHCEME_BUILDER_LIST;
+        }
+
+        public static List<UUID> getShcemeBuilderUuidList() {
+            return SHCEME_BUILDER_UUID_LIST;
+        }
+
+        public record ShcemeBuilder(List<BlockPos> posList, BlockPos mainPos, Gods god) {}
+
+        public record StatueBuilder(List<BlockPos> posList, BlockPos mainPos) {}
+    }
+
     public static class AbilitiesData {
         private static CompoundTag abilitiesTags = new CompoundTag();
 
         private static void serializeNBT(CompoundTag nbt) {
             nbt.put("abilities_data", abilitiesTags);
 
-            AbilityStorage.abilities.forEach(ability -> ability.getInfo().serializeNBT(nbt));
+            AbilityStorage.abilitiesList.forEach(ability -> ability.getInfo().serializeNBT(nbt));
         }
 
         private static void deserializeNBT(CompoundTag nbt) {
-            if (nbt.get("abilities_data") != null)
-                abilitiesTags = (CompoundTag) nbt.get("abilities_data");
+            if (nbt.contains("abilities_data"))
+                abilitiesTags = nbt.getCompound("abilities_data");
             else
                 abilitiesTags = new CompoundTag();
 
-            AbilityStorage.abilities.forEach(ability -> ability.getInfo().deserializeNBT(nbt));
+            AbilityStorage.abilitiesList.forEach(ability -> ability.getInfo().deserializeNBT(nbt));
         }
 
         public static class Handler {
@@ -86,23 +145,37 @@ public class Data implements IData {
             }
 
             private void serializeNBT(CompoundTag nbt) {
+                nbt.putBoolean(this.abilityName + "_lock", isLock());
                 nbt.putBoolean(this.abilityName + "_buy", isBuy());
                 nbt.putBoolean(this.abilityName + "_active", isActive());
                 nbt.putInt(this.abilityName + "_level", getLevel());
             }
 
             private void deserializeNBT(CompoundTag nbt) {
+                setLock(nbt.getBoolean(this.abilityName + "_lock"));
                 setBuy(nbt.getBoolean(this.abilityName + "_buy"));
                 setActive(nbt.getBoolean(this.abilityName + "_active"));
                 setLevel(nbt.getInt(this.abilityName + "_level"));
             }
 
-            private void addExtraAbilitySetting(CompoundTag nbt) {
-                abilitiesTags.put(this.abilityName + "extra_setting", nbt);
+            private boolean isLock() {
+                boolean lock = false;
+
+                if (!abilitiesTags.contains(abilityName + "_lock")) {
+                    lock = false;
+                    abilitiesTags.putBoolean(abilityName + "_lock", false);
+                } else if (abilitiesTags.getBoolean(abilityName + "_lock") != lock) {
+                    if (abilitiesTags.getBoolean(abilityName + "_lock") && !lock)
+                        lock = true;
+                    else
+                        abilitiesTags.putBoolean(abilityName + "_lock", true);
+                }
+
+                return lock;
             }
 
-            private CompoundTag getExtraAbilitySetting() {
-                return abilitiesTags.getCompound(this.abilityName + "extra_setting");
+            private void setLock(boolean value) {
+                abilitiesTags.putBoolean(abilityName + "_lock", value);
             }
 
             private boolean isBuy() {
@@ -111,9 +184,7 @@ public class Data implements IData {
                 if (!abilitiesTags.contains(abilityName + "_buy")) {
                     buy = false;
                     abilitiesTags.putBoolean(abilityName + "_buy", false);
-                }
-
-                if (abilitiesTags.getBoolean(abilityName + "_buy") != buy) {
+                } else if (abilitiesTags.getBoolean(abilityName + "_buy") != buy) {
                     if (abilitiesTags.getBoolean(abilityName + "_buy") && !buy)
                         buy = true;
                     else
@@ -143,9 +214,7 @@ public class Data implements IData {
                 if (!abilitiesTags.contains(abilityName + "_active")) {
                     active = false;
                     abilitiesTags.putBoolean(abilityName + "_active", false);
-                }
-
-                if (abilitiesTags.getBoolean(abilityName + "_active") != active) {
+                } else  if (abilitiesTags.getBoolean(abilityName + "_active") != active) {
                     if (abilitiesTags.getBoolean(abilityName + "_active") && !active)
                         active = true;
                     else
@@ -165,9 +234,7 @@ public class Data implements IData {
                 if (!abilitiesTags.contains(abilityName + "_level")) {
                     level = 0;
                     abilitiesTags.putInt(abilityName + "_level", 0);
-                }
-
-                if (abilitiesTags.getInt(abilityName + "_level") != level) {
+                } else if (abilitiesTags.getInt(abilityName + "_level") != level) {
                     if (abilitiesTags.getInt(abilityName + "_level") != level)
                         level = abilitiesTags.getInt(abilityName + "_level");
                     else
@@ -194,14 +261,12 @@ public class Data implements IData {
                 return new Handler(abilityName);
             }
 
-            public void addExtraAbilitySetting(String abilityName, CompoundTag nbt) {
-                getAbilityHandler(abilityName).addExtraAbilitySetting(nbt);
+            public boolean isLockAbility(String abilityName) {
+                return getAbilityHandler(abilityName).isLock();
             }
 
-            public CompoundTag getExtraAbilitySetting(String abilityName) {
-                CompoundTag nbt = getAbilityHandler(abilityName).getExtraAbilitySetting();
-
-                return Objects.requireNonNullElseGet(nbt, CompoundTag::new);
+            public void setLockAbility(String abilityName, boolean value) {
+                getAbilityHandler(abilityName).setLock(value);
             }
 
             public boolean isBuyAbility(String abilityName) {
@@ -235,12 +300,12 @@ public class Data implements IData {
     }
 
     public static class EffectData implements IEffectData {
-        private static int effectMontuAmount;
-        private static int effectRonosAmount;
-        private static int effectKnefAmount;
-        private static int effectSelyaAmount;
-        private static int effectHetAmount;
-        private static boolean curseKnef;
+        private static int effectMontuAmount = 750;
+        private static int effectRonosAmount = 750;
+        private static int effectKnefAmount = 350;
+        private static int effectSelyaAmount = 500;
+        private static int effectHetAmount = 750;
+        private static boolean curseKnef = false;
 
         private static void serializeNBT(CompoundTag nbt) {
             nbt.putInt("effect_montu_amount", effectMontuAmount);
@@ -555,7 +620,7 @@ public class Data implements IData {
         }
 
         public void setScarabSilver(Player player, int amount) {
-            NetworkRegistry.sendToServer(new SetSkillPointPacket(Math.max(amount, 0)));
+            Network.sendToServer(new SetSkillPointPacket(Math.max(amount, 0)));
         }
 
         public int getScarabGold() {
@@ -694,8 +759,8 @@ public class Data implements IData {
 
         @SubscribeEvent
         public static void healPlayer(LivingHealEvent event) {
-            if (event.getEntity() instanceof Player player)
-                event.setAmount(event.getAmount() + (float) guiLevelingData.getGuiHealthLevelAmount() / 10);
+            if (event.getEntity() instanceof Player player && guiLevelingData.getGuiHealthLevelAmount() > 0)
+                event.setAmount((float) (event.getAmount() * (0.8 * guiLevelingData.getGuiHealthLevelAmount())));
         }
 
         @SubscribeEvent
@@ -705,11 +770,11 @@ public class Data implements IData {
             if (level == null && !(event.getSource().getEntity() instanceof Player))
                 return;
 
-            if (AbilityUtils.isRandomSuccess(level, guiLevelingData.getGuiCraftLevelAmount())) {
-                if (AbilityUtils.isRandomSuccess(level, 85)) {
+            if (MathUtils.isRandom(level, guiLevelingData.getGuiCraftLevelAmount())) {
+                if (MathUtils.isRandom(level, 85)) {
                     extraDrop(level, event.getEntity(), 2);
                 } else {
-                    if (AbilityUtils.isRandomSuccess(level, 95))
+                    if (MathUtils.isRandom(level, 95))
                         extraDrop(level, event.getEntity(), 3);
                     else
                         extraDrop(level, event.getEntity(), 4);
@@ -772,28 +837,28 @@ public class Data implements IData {
             }
 
             if (effectData.getEffectMontuAmount() <= 0) {
-                player.addEffect(new MobEffectInstance(EffectsRegistry.BLESSING_MONTU.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.st_thirteen_lights.montu.addeffect", ChatFormatting.GRAY);
+                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_MONTU.get(), 18000, 1, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.montu.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectMontuAmount(750);
             }
             if (effectData.getEffectRonosAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_RONOSA.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.st_thirteen_lights.montu.addeffect", ChatFormatting.GRAY);
+                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_RONOSA.get(), 18000, 1, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.ronos.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectRonosAmount(750);
             }
             if (effectData.getEffectKnefAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_KNEF.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.st_thirteen_lights.montu.addeffect", ChatFormatting.GRAY);
+                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_KNEF.get(), 18000, 1, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.knef.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectKnefAmount(350);
             }
             if (effectData.getEffectSelyaAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_SELIASET.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.st_thirteen_lights.montu.addeffect", ChatFormatting.GRAY);
+                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_SELIASET.get(), 18000, 1, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.seliaset.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectSelyaAmount(500);
             }
             if (effectData.getEffectHetAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_HET.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.st_thirteen_lights.montu.addeffect", ChatFormatting.GRAY);
+                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_HET.get(), 18000, 1, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.het.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectHetAmount(750);
             }
 
@@ -802,49 +867,18 @@ public class Data implements IData {
 
                 if (!player.getLevel().isClientSide)
                     scarabsData.addScarabSilver(player, 2);
-//                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_silver_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_silver.tooltip")));
             }
             if (xpScarabsData.getXpScarabGold() <= 0) {
                 xpScarabsData.setXpScarabGold(750 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
                 scarabsData.addScarabGold(1);
-//                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_gold_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_gold.tooltip")));
             }
             if (xpScarabsData.getXpScarabAuriteh() <= 0) {
                 xpScarabsData.setXpScarabAuriteh(1000 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
                 scarabsData.addScarabAuriteh(1);
-//                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_auriteh_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_auriteh.tooltip")));
             }
             if (xpScarabsData.getXpScarabLazotep() <= 0) {
                 xpScarabsData.setXpScarabLazotep(2000 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
                 scarabsData.addScarabLazotep(1);
-//                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_lazotep_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_lazotep.tooltip")));
-            }
-
-            var inventory = player.getInventory();
-
-            for (int i = 0; i < inventory.items.size(); i++) {
-                ItemStack item = inventory.getItem(i);
-
-                if (item.is(ItemsRegistry.SCARAB_SILVER.get())) {
-                    item.shrink(1);
-
-                    if (!player.getLevel().isClientSide)
-                        scarabsData.addScarabSilver(player, 2);
-
-//                    MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_silver_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_silver.tooltip")));
-                } else if (item.is(ItemsRegistry.SCARAB_GOLD.get())) {
-                    item.shrink(1);
-                    scarabsData.addScarabGold(1);
-//                    MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_gold_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_gold.tooltip")));
-                } else if (item.is(ItemsRegistry.SCARAB_AURITEH.get())) {
-                    item.shrink(1);
-                    scarabsData.addScarabAuriteh(1);
-//                    MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_auriteh_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_auriteh.tooltip")));
-                } else if (item.is(ItemsRegistry.SCARAB_LAZATEP.get())) {
-                    item.shrink(1);
-                    scarabsData.addScarabLazotep(1);
-//                    MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_lazotep_icon.png"), Component.literal("§6§l[§e§l>§6§l]").append(Component.translatable("tooltip.st_thirteen_lights.get_scarab_lazotep.tooltip")));
-                }
             }
         }
     }

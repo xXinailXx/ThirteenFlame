@@ -3,7 +3,7 @@ package net.xXinailXx.thirteen_flames.item.base.tools;
 import net.minecraft.world.item.Tier;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
-public class TieredItemTF extends FlameItemSetting {
+public abstract class TieredItemTF extends FlameItemSetting {
     private final Tier tier;
 
     public TieredItemTF(Tier tier) {

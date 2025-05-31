@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "thirteen_flames:bag_paint"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "R": {
+      "item": "minecraft:black_dye"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "RBR",
+    " G "
+  ],
+  "result": {
+    "item": "thirteen_flames:bag_paint_cup"
+  }
+}

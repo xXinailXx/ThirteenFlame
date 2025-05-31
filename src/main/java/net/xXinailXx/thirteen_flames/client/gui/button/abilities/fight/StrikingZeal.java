@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 @Mod.EventBusSubscriber
 public class StrikingZeal extends AbstarctAbilityWidgets {
@@ -26,7 +28,10 @@ public class StrikingZeal extends AbstarctAbilityWidgets {
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
         if (data.isActiveAbility("striking_zeal")) {
-            AbilityUtils.getSurroundingEntities((LivingEntity) event.getTarget(), 2.5).forEach(entity -> {
+            if (!(event.getEntity().getMainHandItem().getItem() instanceof SwordItem))
+                return;
+
+            AbilityUtils.getEntities((LivingEntity) event.getTarget(), 2.5).forEach(entity -> {
                 entity.hurt(DamageSource.playerAttack(event.getEntity()), 5);
             });
 

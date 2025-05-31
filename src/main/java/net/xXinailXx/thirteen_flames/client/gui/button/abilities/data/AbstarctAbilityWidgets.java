@@ -3,6 +3,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.data;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import lombok.EqualsAndHashCode;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -10,13 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
-import net.xXinailXx.enderdragonlib.interfaces.IHoveredWidget;
 import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.global.GiftGodPharaoh;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 
@@ -24,7 +25,7 @@ import java.util.List;
 
 @EqualsAndHashCode
 @Mod.EventBusSubscriber
-public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils implements IHoveredWidget, IAbilityData {
+public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils implements IHoverableWidget, IAbilityData {
     private static final ResourceLocation FRAME_BUTTON = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen.png");
     private final ResourceLocation ABILITY_ICON = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/ability/" + getScreenId() + "/" + getAbilityData().getAbilityName() + ".png");
     protected MutableComponent abilityName = Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".name");
@@ -49,8 +50,8 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         poseStack.pushPose();
         poseStack.scale(1F, 1F, 1F);
 
-        if (!isBuyAbility())
-            RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 1F);
+        if (!isBuyAbility() || isLockAbility())
+            RenderSystem.setShaderColor(0.75F, 0.75F, 0.75F, 1F);
 
         blit(poseStack, this.x + 5, this.y + 5, 0, 0, 24, 24, 24, 24);
 
@@ -65,7 +66,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
                 blit(poseStack, this.x - 2, this.y - 2, 454, 212, 38, 38, 512, 512);
         }
 
-        if (getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
+        if (isUnlock()) {
             if (isBuyAbility()) {
                 if (isActiveAbility())
                     blit(poseStack, this.x + 1, this.y + 1, 412, 215, 32, 32, 512, 512);
@@ -89,9 +90,9 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
     @Override
     public void onPress() {
         if (!guiLevelingData.isPlayerScreen()) {
-            if (getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
+            if (isUnlock()) {
                 if (isBuyAbility()) {
-                    if (! isActiveAbility()) {
+                    if (!isActiveAbility()) {
                         if (Screen.hasShiftDown()) {
                             setActiveAbility(true);
                         } else {
@@ -176,7 +177,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         entries.add(Component.literal(" "));
         entries.add(Component.literal(" "));
 
-        if (getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
+        if (isUnlock()) {
             if (isBuyAbility()) {
                 entries.add(Component.translatable("button.thirteen_flames.button.total_level", new Object[]{getLevelAbility(), getAbilityData().getMaxLevel()}));
                 entries.add(Component.literal(" " ));
@@ -268,7 +269,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
         description.clear();
 
-        if (getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
+        if (isUnlock()) {
             if (!isBuyAbility()) {
                 if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL))
                     GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX, renderIconY, 100, 373, 28, 24, 512, 512);
@@ -331,6 +332,23 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         return 0;
     }
 
+    private boolean isUnlock() {
+        if (isLockAbility())
+            return false;
+
+        if (this instanceof GiftGodPharaoh)
+            if (ModList.get().isLoaded("pocket_dimension"))
+                return true;
+            else
+                return false;
+
+        return getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL);
+    }
+
+    public boolean isLockAbility() {
+        return data.isLockAbility(getAbilityData().getAbilityName());
+    }
+
     public boolean isBuyAbility() {
         return data.isBuyAbility(getAbilityData().getAbilityName());
     }
@@ -341,6 +359,10 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
     public int getLevelAbility() {
         return data.getLevelAbility(getAbilityData().getAbilityName());
+    }
+
+    public void setLockAbility(boolean value) {
+        data.setLockAbility(getAbilityData().getAbilityName(), value);
     }
 
     public void setBuyAbility(boolean value) {

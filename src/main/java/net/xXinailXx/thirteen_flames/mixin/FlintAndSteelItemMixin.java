@@ -6,6 +6,7 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.FlintAndSteelItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.xXinailXx.thirteen_flames.client.progress.ProgressManager;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.data.IData;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,6 +27,14 @@ public class FlintAndSteelItemMixin {
             lightningbolt.moveTo(use.getClickLocation());
             lightningbolt.setDamage(8.5F);
             level.addFreshEntity(lightningbolt);
+        }
+    }
+
+    @Inject(method = "useOn", at = @At(value = "HEAD"), cancellable = true)
+    public void use(UseOnContext use, CallbackInfoReturnable<InteractionResult> cir) {
+        if (!ProgressManager.isAllowUsage(use.getItemInHand())) {
+            cir.setReturnValue(InteractionResult.SUCCESS);
+            cir.cancel();
         }
     }
 }

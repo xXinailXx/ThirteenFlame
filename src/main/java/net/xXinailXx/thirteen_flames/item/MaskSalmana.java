@@ -11,6 +11,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -69,6 +70,6 @@ public class MaskSalmana extends GeoArmorItem implements IAnimatable {
 
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("tooltip.st_thirteen_lights.maska_salmana.tooltip").withStyle(ChatFormatting.WHITE));
+        tooltip.add(Component.translatable("item." + ThirteenFlames.MODID + ".mask_salmana.tooltip").withStyle(ChatFormatting.WHITE));
     }
 }

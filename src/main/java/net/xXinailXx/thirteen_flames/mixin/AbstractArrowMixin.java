@@ -26,7 +26,7 @@ public class AbstractArrowMixin {
     protected void onHitEntity(EntityHitResult result, CallbackInfo ci) {
         if (data.isActiveAbility("cobra_poison")) {
             if (!data.isActiveAbility("arrow_anubis") && !data.isActiveAbility("fang_frost")) {
-                AbilityUtils.getSurroundingEntities((LivingEntity) result.getEntity(), 2).forEach(entity -> {
+                AbilityUtils.getEntities((LivingEntity) result.getEntity(), 2).forEach(entity -> {
                     if (this.owner != null && !entity.equals(this.owner)) {
                         if (AbilityUtils.isRandomSuccess(result.getEntity().getLevel(), data.getLevelAbility("cobra_poison") * 10))
                             entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 5));
@@ -37,7 +37,7 @@ public class AbstractArrowMixin {
 
         if (data.isActiveAbility("arrow_anubis")) {
             if (!data.isActiveAbility("cobra_poison") && !data.isActiveAbility("fang_frost")) {
-                AbilityUtils.getSurroundingEntities((LivingEntity) result.getEntity(), 2).forEach(entity -> {
+                AbilityUtils.getEntities((LivingEntity) result.getEntity(), 2).forEach(entity -> {
                     if (this.owner != null && ! entity.equals(this.owner)) {
                         if (AbilityUtils.isRandomSuccess(result.getEntity().getLevel(), data.getLevelAbility("arrow_anubis") * 10))
                             entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 5));
@@ -51,7 +51,7 @@ public class AbstractArrowMixin {
         if (data.isActiveAbility("fang_frost")) {
             if (!data.isActiveAbility("cobra_poison") && !data.isActiveAbility("arrow_anubis")) {
                 if (AbilityUtils.isRandomSuccess(result.getEntity().getLevel(), data.getLevelAbility("fang_frost") * 10)) {
-                    AbilityUtils.getSurroundingEntities((LivingEntity) result.getEntity(), 2).forEach(entity -> {
+                    AbilityUtils.getEntities((LivingEntity) result.getEntity(), 2).forEach(entity -> {
                         if (this.owner != null && ! entity.equals(this.owner))
                             entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), 100));
                     });

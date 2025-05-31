@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "I": {
+      "item": "thirteen_flames:lazotep_ingot"
+    }
+  },
+  "pattern": [
+    "SLS",
+    "L L",
+    "LLL"
+  ],
+  "result": {
+    "item": "thirteen_flames:bag_paint"
+  }
+}

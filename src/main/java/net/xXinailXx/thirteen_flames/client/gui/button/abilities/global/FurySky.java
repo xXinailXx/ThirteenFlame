@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.global;
 
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 public class FurySky extends AbstarctAbilityWidgets {
     public FurySky(int x, int y) {

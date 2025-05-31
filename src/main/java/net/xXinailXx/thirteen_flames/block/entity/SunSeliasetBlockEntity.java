@@ -27,36 +27,38 @@ public class SunSeliasetBlockEntity extends BlockEntity implements IAnimatable {
     private static boolean opportunityPickUp = true;
 
     public SunSeliasetBlockEntity(BlockPos pos, BlockState state) {
-        super( BlockEntityRegistry.SUN_SELIASET_BLOCK_ENTITY.get(), pos, state );
+        super( BlockEntityRegistry.STATUE_SELYA.get(), pos, state );
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        if (!isIdle()) {
-            if (isOn()) {
-                if (!isActive()) {
-                    event.getController().setAnimation( new AnimationBuilder().addAnimation( "open_sun", false ) );
-                    if (event.getController().getAnimationState().equals( AnimationState.Stopped )) {
-                        setActive(true);
-                    }
-                    return PlayState.CONTINUE;
-                } else {
-                    event.getController().setAnimation( new AnimationBuilder().addAnimation( "animation_sun", true ) );
-                    return PlayState.CONTINUE;
-                }
-            } else {
-                event.getController().setAnimation( new AnimationBuilder().addAnimation( "close_sun", false ) );
-                if (event.getController().getAnimationState().equals( AnimationState.Stopped )) {
-                    setIdle(true);
-                    setOpportunityPickUp(true);
-                }
-                return PlayState.CONTINUE;
-            }
-        } else {
-            event.getController().setAnimation( new AnimationBuilder().addAnimation( "animation_sun", true ) );
-            return PlayState.CONTINUE;
-//            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+        return PlayState.CONTINUE;
+
+//        if (!isIdle()) {
+//            if (isOn()) {
+//                if (!isActive()) {
+//                    event.getController().setAnimation( new AnimationBuilder().addAnimation( "open_sun", false ) );
+//                    if (event.getController().getAnimationState().equals( AnimationState.Stopped )) {
+//                        setActive(true);
+//                    }
+//                    return PlayState.CONTINUE;
+//                } else {
+//                    event.getController().setAnimation( new AnimationBuilder().addAnimation( "animation_sun", true ) );
+//                    return PlayState.CONTINUE;
+//                }
+//            } else {
+//                event.getController().setAnimation( new AnimationBuilder().addAnimation( "close_sun", false ) );
+//                if (event.getController().getAnimationState().equals( AnimationState.Stopped )) {
+//                    setIdle(true);
+//                    setOpportunityPickUp(true);
+//                }
+//                return PlayState.CONTINUE;
+//            }
+//        } else {
+//            event.getController().setAnimation( new AnimationBuilder().addAnimation( "animation_sun", true ) );
 //            return PlayState.CONTINUE;
-        }
+////            event.getController().setAnimation(new AnimationBuilder().addAnimation("idle", true));
+////            return PlayState.CONTINUE;
+//        }
     }
 
     @Override
@@ -64,51 +66,51 @@ public class SunSeliasetBlockEntity extends BlockEntity implements IAnimatable {
         animationData.addAnimationController(new AnimationController<SunSeliasetBlockEntity>
                 (this, "controller", 0, this::predicate));
     }
-
-    public static void startAnimation() {
-        if (isIdle()) {
-            setIdle(false);
-            setOn(true);
-            setActive(false);
-        } else if (!isIdle()) {
-            setOn(false);
-        }
-    }
+//
+//    public static void startAnimation() {
+//        if (isIdle()) {
+//            setIdle(false);
+//            setOn(true);
+//            setActive(false);
+//        } else if (!isIdle()) {
+//            setOn(false);
+//        }
+//    }
 
     @Override
     public AnimationFactory getFactory() {
         return this.factory;
     }
 
-    private static boolean isIdle() {
-        return idle;
-    }
-
-    private static void setIdle(boolean idle) {
-        SunSeliasetBlockEntity.idle = idle;
-    }
-
-    private static boolean isOn() {
-        return on;
-    }
-
-    private static void setOn(boolean on) {
-        SunSeliasetBlockEntity.on = on;
-    }
-
-    private static boolean isActive() {
-        return active;
-    }
-
-    public static boolean isOpportunityPickUp() {
-        return opportunityPickUp;
-    }
-
-    private static void setOpportunityPickUp(boolean opportunityPickUp) {
-        SunSeliasetBlockEntity.opportunityPickUp = opportunityPickUp;
-    }
-
-    private static void setActive(boolean active) {
-        SunSeliasetBlockEntity.active = active;
-    }
+//    private static boolean isIdle() {
+//        return idle;
+//    }
+//
+//    private static void setIdle(boolean idle) {
+//        SunSeliasetBlockEntity.idle = idle;
+//    }
+//
+//    private static boolean isOn() {
+//        return on;
+//    }
+//
+//    private static void setOn(boolean on) {
+//        SunSeliasetBlockEntity.on = on;
+//    }
+//
+//    private static boolean isActive() {
+//        return active;
+//    }
+//
+//    public static boolean isOpportunityPickUp() {
+//        return opportunityPickUp;
+//    }
+//
+//    private static void setOpportunityPickUp(boolean opportunityPickUp) {
+//        SunSeliasetBlockEntity.opportunityPickUp = opportunityPickUp;
+//    }
+//
+//    private static void setActive(boolean active) {
+//        SunSeliasetBlockEntity.active = active;
+//    }
 }

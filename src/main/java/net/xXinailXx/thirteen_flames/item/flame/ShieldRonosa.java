@@ -1,69 +1,101 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import it.hurts.sskirillss.relics.init.EffectRegistry;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import org.zeith.hammerlib.util.java.tuples.Tuple3;
+import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
+@Mod.EventBusSubscriber
 public class ShieldRonosa extends FlameItemSetting {
-    public static final int EFFECTIVE_BLOCK_DELAY = 5;
-    public static final float MINIMUM_DURABILITY_DAMAGE = 3.0F;
-    public static final String TAG_BASE_COLOR = "Base";
-
     public RelicData getRelicData() {
-        return RelicData.builder().abilityData( RelicAbilityData.builder().ability("ejection", RelicAbilityEntry.builder().maxLevel(15).stat("cooldown", RelicAbilityStat.builder().initialValue(56.0, 35.0).upgradeModifier(RelicAbilityStat.Operation.ADD, -2.0).formatValue((value) -> {
+        return RelicData.builder().abilityData(RelicAbilityData.builder().ability("spikes", RelicAbilityEntry.builder().maxLevel(10).stat("procent", RelicAbilityStat.builder().initialValue(15, 150).thresholdValue(15, 200).upgradeModifier(RelicAbilityStat.Operation.ADD, 10).formatValue((value) -> {
             return (int) MathUtils.round(value, 0);
-        }).build()).stat("radius", RelicAbilityStat.builder().initialValue(6.0, 11.0).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.0).formatValue((value) -> {
-            return (int)MathUtils.round(value, 1);
-        }).build()).build()).ability("digging", RelicAbilityEntry.builder().maxLevel(2).stat("mining", RelicAbilityStat.builder().initialValue(1.0, 1.0).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.0).formatValue((value) -> {
+        }).build()).stat("bleeding", RelicAbilityStat.builder().initialValue(5, 15).thresholdValue(5, 20).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
-        }).build()).build()).build()).levelingData(new RelicLevelingData(200, 15, 100)).styleData( RelicStyleData.builder().borders("#40D42F", "#35D922").build()).build();
+        }).build()).build()).build()).levelingData(new RelicLevelingData(200, 10, 100)).build();
     }
 
-    public String getDescriptionId(ItemStack p_43109_) {
-        return BlockItem.getBlockEntityData(p_43109_) != null ? this.getDescriptionId() + "." + getColor(p_43109_).getName() : super.getDescriptionId(p_43109_);
-    }
-
-    public void appendHoverText(ItemStack p_43094_, @Nullable Level p_43095_, List<Component> p_43096_, TooltipFlag p_43097_) {
-        BannerItem.appendHoverTextFromBannerBlockEntityTag(p_43094_, p_43096_);
-    }
-
-    public UseAnim getUseAnimation(ItemStack p_43105_) {
+    public UseAnim getUseAnimation(ItemStack stack) {
         return UseAnim.BLOCK;
     }
 
-    public int getUseDuration(ItemStack p_43107_) {
+    public int getUseDuration(ItemStack stack) {
         return 72000;
     }
 
-    public InteractionResultHolder<ItemStack> use(Level p_43099_, Player p_43100_, InteractionHand p_43101_) {
-        ItemStack itemstack = p_43100_.getItemInHand(p_43101_);
-        p_43100_.startUsingItem(p_43101_);
-        return InteractionResultHolder.consume(itemstack);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        ItemStack stack = player.getItemInHand(hand);
+
+        player.startUsingItem(hand);
+        NBTUtils.setInt(stack, "use", 1);
+
+        return InteractionResultHolder.consume(stack);
     }
 
-    public static DyeColor getColor(ItemStack p_43103_) {
-        CompoundTag compoundtag = BlockItem.getBlockEntityData(p_43103_);
-        return compoundtag != null ? DyeColor.byId(compoundtag.getInt("Base")) : DyeColor.WHITE;
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        NBTUtils.setInt(stack, "use", 0);
+
+        return super.finishUsingItem(stack, level, entity);
     }
 
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        return ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+    public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
+        return net.minecraftforge.common.ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+    }
+
+    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
+        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
+    }
+
+    @SubscribeEvent
+    public static void shieldUse(LivingAttackEvent event) {
+        LivingEntity living = event.getEntity();
+
+        if (!(living instanceof Player player))
+            return;
+
+        ItemStack stack;
+
+        if (player.getMainHandItem().is(ItemRegistry.SHIELD_RONOSA.get()))
+            stack = player.getMainHandItem();
+        else if (player.getOffhandItem().is(ItemRegistry.SHIELD_RONOSA.get()))
+            stack = player.getOffhandItem();
+        else
+            return;
+
+        if (NBTUtils.getInt(stack, "use", 0) == 0)
+            return;
+
+        Entity entity = event.getSource().getEntity();
+
+        if (!(entity instanceof LivingEntity))
+            return;
+
+        float damage = (float) (event.getAmount() * (AbilityUtils.getAbilityValue(stack, "spikes", "procent") * 0.01));
+
+        entity.hurt(DamageSource.playerAttack(player), damage);
+
+        ((LivingEntity) entity).addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 60 * (int) AbilityUtils.getAbilityValue(stack, "spikes", "bleeding")));
     }
 }

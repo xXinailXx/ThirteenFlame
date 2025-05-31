@@ -4,8 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
-import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenFight;
-import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
+import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenFight;
+import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 
 public class ButtonFightOpenGui extends AbstractWidgetUtils {
     public ButtonFightOpenGui(int x, int y, boolean active) {
@@ -13,14 +13,14 @@ public class ButtonFightOpenGui extends AbstractWidgetUtils {
     }
 
     public void onPress() {
-        this.MC.setScreen(new GodFaraonScreenFight());
+        this.MC.setScreen(new GodPharaohScreenFight());
     }
 
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, GodFaraonScreenMining.BACKGROUNG);
-        manager.bindForSetup(GodFaraonScreenMining.BACKGROUNG);
+        RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
+        manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
 
         blit(poseStack, this.x, this.y, 376, 29, 59, 27, 512, 512);
 

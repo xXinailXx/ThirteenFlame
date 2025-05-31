@@ -1,6 +1,5 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
@@ -8,26 +7,19 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
+import org.zeith.hammerlib.util.java.tuples.Tuple3;
+import oshi.util.tuples.Pair;
 
-import java.util.UUID;
-
+@Mod.EventBusSubscriber
 public class TravelersSword extends SwordItemTF {
     public TravelersSword() {
         super(ToolTierTF.THIRTEEN_FLAMES, 3, -2.4f);
@@ -40,7 +32,7 @@ public class TravelersSword extends SwordItemTF {
             return MathUtils.round( value, 1);
         }).build()).stat("climbing_height", RelicAbilityStat.builder().initialValue(3.0, 5.0).upgradeModifier( RelicAbilityStat.Operation.ADD, 1.0).formatValue((value) -> {
             return MathUtils.round(value, 1);
-        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).styleData( RelicStyleData.builder().borders("#40D42F", "#35D922").build()).build();
+        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();
     }
 
     @Override
@@ -68,25 +60,22 @@ public class TravelersSword extends SwordItemTF {
 //        for (int i = 0; i < 360; i++) {
 //            if (i % 40 == 0) {
 //                level.addParticle( StorytellingParticle.RONAS_FIRE_PARTICLE.get(), (pos.getX() + Math.cos(i * 2)) , (pos.getY() + Math.sin(i * 2)) + 0.5, pos.getZ() + 5.0, 0.0d, 0.0d, 0.0d);
-////                if (player.getDirection() == Direction.NORTH || player.getDirection() == Direction.SOUTH) {
-////
-////                } else if (player.getDirection() == Direction.EAST || player.getDirection() == Direction.WEST) {
-////                    level.addParticle( StorytellingParticle.RONAS_FIRE_PARTICLE.get(), lookX, lookY + Math.sin(i * 2), lookZ + Math.cos(i * 2), 0.0d, 0.0d, 0.0d);
-////                }
+//                if (player.getDirection() == Direction.NORTH || player.getDirection() == Direction.SOUTH) {
+//
+//                } else if (player.getDirection() == Direction.EAST || player.getDirection() == Direction.WEST) {
+//                    level.addParticle( StorytellingParticle.RONAS_FIRE_PARTICLE.get(), lookX, lookY + Math.sin(i * 2), lookZ + Math.cos(i * 2), 0.0d, 0.0d, 0.0d);
+//                }
 //            }
 //        }
         }
         return super.use( level, player, hand );
     }
 
-    private static AttributeModifier getSpeedBonus() {
-        double speedLevel = AbilityUtils.getAbilityValue( ItemsRegistry.TRAVELERS_SWORD.get().getDefaultInstance(), "wide_step", "speed");
-        return new AttributeModifier(UUID.fromString("ac7ab816-2b08-46b6-879d-e5dea34ff305"), ThirteenFlames.MODID + ":running_shoes_movement_speed", (speedLevel * 0.5), AttributeModifier.Operation.MULTIPLY_TOTAL);
+    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
+        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
     }
 
-    @Mod.EventBusSubscriber
-    public class Events {
-//        @SubscribeEvent
+    //        @SubscribeEvent
 //        public static void playerTick(TickEvent.PlayerTickEvent event) {
 //            Player player = event.player;
 //            ItemStack itemInMainHand = player.getMainHandItem();
@@ -110,5 +99,4 @@ public class TravelersSword extends SwordItemTF {
 //                movementSpeed.removeModifier( speedBonus );
 //            }
 //        }
-    }
 }

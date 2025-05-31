@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
@@ -46,13 +45,15 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveItemRenderer;
+import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.PoisonCloundEntity;
-import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
+import net.xXinailXx.thirteen_flames.init.EffectRegistry;
 import net.xXinailXx.thirteen_flames.init.EntityRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
+import org.zeith.hammerlib.util.java.tuples.Tuple3;
+import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -72,15 +73,15 @@ public class SwordRonosa extends SwordItemTF {
             return MathUtils.round(value, 1);
         }).build()).stat("amplifire", RelicAbilityStat.builder().initialValue(1, 1).thresholdValue(1, 6).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return MathUtils.round(value, 1);
-        }).build()).build()).ability("fart", RelicAbilityEntry.builder().maxLevel(3).stat("duration", RelicAbilityStat.builder().initialValue(6.0, 10.0).thresholdValue(6, 25).upgradeModifier( RelicAbilityStat.Operation.ADD, 5).formatValue((value) -> {
+        }).build()).build()).ability("fart", RelicAbilityEntry.builder().maxLevel(3).stat("duration", RelicAbilityStat.builder().initialValue(6, 10).thresholdValue(6, 25).upgradeModifier( RelicAbilityStat.Operation.ADD, 5).formatValue((value) -> {
             return MathUtils.round(value, 1);
         }).build()).stat("cooldown", RelicAbilityStat.builder().initialValue(30, 40).thresholdValue(12, 40).upgradeModifier(RelicAbilityStat.Operation.MULTIPLY_TOTAL, -6).formatValue((value) -> {
             return MathUtils.round(value, 1);
         }).build()).stat("radius", RelicAbilityStat.builder().initialValue(1, 2).thresholdValue(1, 4).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.67).formatValue((value) -> {
             return MathUtils.round(value, 1);
-        }).build()).build()).ability("anemia", RelicAbilityEntry.builder().maxLevel(5).stat("level", RelicAbilityStat.builder().initialValue(1.0, 1.0).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.0).formatValue((value) -> {
-            return MathUtils.round(value, 0);
-        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).styleData( RelicStyleData.builder().borders("#fffd75", "#ffbe00").build()).build();
+        }).build()).build()).ability("anemia", RelicAbilityEntry.builder().maxLevel(5).stat("level", RelicAbilityStat.builder().initialValue(0, 0).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.0).formatValue((value) -> {
+            return (int) MathUtils.round(value, 0);
+        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
@@ -141,9 +142,9 @@ public class SwordRonosa extends SwordItemTF {
 
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
-        if (event.getEntity().getMainHandItem().is(ItemsRegistry.SWORD_RONOSA.get())) {
+        if (event.getEntity().getMainHandItem().is(ItemRegistry.SWORD_RONOSA.get()) && event.getTarget() instanceof LivingEntity living) {
             poisonSwipe(event.getEntity(), event.getEntity().getMainHandItem());
-            event.getEntity().addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), 100, 0, false, true, false));
+            living.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), 100, 0, false, true, false));
         }
     }
 
@@ -155,8 +156,8 @@ public class SwordRonosa extends SwordItemTF {
         super.inventoryTick(stack, level, entity, slot, isSelected);
 
         if (entity instanceof Player player) {
-            if (stack.is(this) && (!player.hasEffect(EffectsRegistry.ANEMIA.get()) || player.hasEffect(EffectsRegistry.ANEMIA.get()) && player.getEffect(EffectsRegistry.ANEMIA.get()).getDuration() < 20)) {
-                player.addEffect(new MobEffectInstance(EffectsRegistry.ANEMIA.get(), 39, 1, true, false, true));
+            if (stack.is(this) && (!player.hasEffect(EffectRegistry.ANEMIA.get()) || player.hasEffect(EffectRegistry.ANEMIA.get()) && player.getEffect(EffectRegistry.ANEMIA.get()).getDuration() < 20) || AbilityUtils.getAbilityPoints(stack, "anemia") < 5) {
+                player.addEffect(new MobEffectInstance(EffectRegistry.ANEMIA.get(), 1, 0, true, false, true));
             }
         }
     }
@@ -203,19 +204,19 @@ public class SwordRonosa extends SwordItemTF {
         for(LivingEntity e : hashSet) {
             e.hurt(DamageSource.mobAttack(p), 1.0F);
 
-            if (e.hasEffect(EffectsRegistry.POISON.get())) {
-                int appliedAmplifier = e.getEffect(EffectsRegistry.POISON.get()).getAmplifier() + 1;
+            if (e.hasEffect(EffectRegistry.POISON.get())) {
+                int appliedAmplifier = e.getEffect(EffectRegistry.POISON.get()).getAmplifier() + 1;
 
                 if (appliedAmplifier <= maxAmp) {
-                    e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true));
+                    e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true));
 
                     if (random.nextFloat() < 0.25F)
                         LevelingUtils.addExperience(sword, 1);
                 } else {
-                    e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
+                    e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
                 }
             } else {
-                e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration, 0, false, true, false));
+                e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration, 0, false, true, false));
 
                 if (random.nextFloat() < 0.25F)
                     LevelingUtils.addExperience(sword, 1);
@@ -224,9 +225,13 @@ public class SwordRonosa extends SwordItemTF {
 
     }
 
+    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
+        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.45, 0));
+    }
+
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-            final Supplier<EmissiveItemRenderer> renderer = Suppliers.memoize(EmissiveItemRenderer::new);
+            final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
                 return (BlockEntityWithoutLevelRenderer)this.renderer.get();
@@ -234,21 +239,22 @@ public class SwordRonosa extends SwordItemTF {
         });
     }
 
-    @Mod.EventBusSubscriber
-    public class Event {
-        @SubscribeEvent
-        public static void prohibitThrowingItem(ItemTossEvent event) {
-            if (event.getPlayer().isCreative())
-                return;
+    @SubscribeEvent
+    public static void tossItem(ItemTossEvent event) {
+        if (event.getPlayer().isCreative())
+            return;
 
-            ItemStack stack = event.getEntity().getItem();
-            double levelAnemiya = AbilityUtils.getAbilityPoints(stack, "anemiya");
+        ItemStack stack = event.getEntity().getItem();
 
-            if (levelAnemiya < 5) {
-                if (event.getEntity().getItem().is(ItemsRegistry.SWORD_RONOSA.get())) {
-                    event.getEntity().setItem(Items.AIR.getDefaultInstance());
-                    event.getPlayer().addItem(new ItemStack( ItemsRegistry.SWORD_RONOSA.get()));
-                }
+        if (!(stack.getItem() instanceof SwordRonosa))
+            return;
+
+        double anemia = AbilityUtils.getAbilityPoints(stack, "anemia");
+
+        if (anemia < 5) {
+            if (event.getEntity().getItem().is(ItemRegistry.SWORD_RONOSA.get())) {
+                event.getEntity().setItem(Items.AIR.getDefaultInstance());
+                event.getPlayer().addItem(new ItemStack(ItemRegistry.SWORD_RONOSA.get()));
             }
         }
     }

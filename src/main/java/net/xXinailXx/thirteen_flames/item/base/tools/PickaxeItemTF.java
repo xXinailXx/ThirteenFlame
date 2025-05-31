@@ -5,7 +5,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 
-public class PickaxeItemTF extends DiggerItemTF {
+public abstract class PickaxeItemTF extends DiggerItemTF {
     public PickaxeItemTF(Tier tier, int attackDamage, float speedDamage) {
         super((float)attackDamage, speedDamage, tier, BlockTags.MINEABLE_WITH_PICKAXE);
     }

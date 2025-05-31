@@ -1,6 +1,7 @@
 package net.xXinailXx.thirteen_flames.utils;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -28,13 +29,11 @@ public class ItemSetting extends Item {
         this(new Properties());
     }
 
-    @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag isAdvanced) {
         if (this.tooltip != null)
             tooltip.add(this.tooltip);
     }
 
-    @Override
     public Rarity getRarity(ItemStack p_41461_) {
         return Rarity.COMMON;
     }

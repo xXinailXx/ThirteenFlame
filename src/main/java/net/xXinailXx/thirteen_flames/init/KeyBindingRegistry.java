@@ -11,11 +11,11 @@ import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = ThirteenFlames.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class KeyBindingRegistry {
-    private static final String CATEGORY = Component.translatable("key.category.st_thirteen_lights").getString();
-    public static final KeyMapping KEY_TEST = new KeyMapping("key.st_thirteen_lights.open_player_screen", GLFW.GLFW_KEY_P, CATEGORY);
+    private static final String CATEGORY = Component.translatable("key.category.thirteen_flames").getString();
+    public static final KeyMapping OPEN_GUI = new KeyMapping("key.thirteen_flames.open_player_screen", GLFW.GLFW_KEY_P, CATEGORY);
 
     @SubscribeEvent
     public static void onKeybindingRegistry(RegisterKeyMappingsEvent event) {
-        event.register(KEY_TEST);
+        event.register(OPEN_GUI);
     }
 }

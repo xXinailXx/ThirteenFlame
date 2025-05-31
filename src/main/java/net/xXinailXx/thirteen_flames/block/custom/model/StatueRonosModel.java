@@ -2,22 +2,19 @@ package net.xXinailXx.thirteen_flames.block.custom.model;
 
 import net.minecraft.resources.ResourceLocation;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.block.entity.StatueRonosBlockEntity;
+import net.xXinailXx.thirteen_flames.block.entity.StatueRonosBE;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 
-public class StatueRonosModel extends AnimatedGeoModel<StatueRonosBlockEntity> {
-    @Override
-    public ResourceLocation getModelResource(StatueRonosBlockEntity model) {
-        return new ResourceLocation( ThirteenFlames.MODID, "geo/statue_ronos_block.geo.json");
+public class StatueRonosModel extends AnimatedGeoModel<StatueRonosBE> {
+    public ResourceLocation getModelResource(StatueRonosBE model) {
+        return new ResourceLocation(ThirteenFlames.MODID, "geo/statue_ronos.geo.json");
     }
 
-    @Override
-    public ResourceLocation getTextureResource(StatueRonosBlockEntity textures) {
-        return new ResourceLocation( ThirteenFlames.MODID, "textures/block/statue_ronos_block.png");
+    public ResourceLocation getTextureResource(StatueRonosBE textures) {
+        return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_ronos.png");
     }
 
-    @Override
-    public ResourceLocation getAnimationResource(StatueRonosBlockEntity animation) {
-        return new ResourceLocation( ThirteenFlames.MODID, "animations/statue_ronos_block.animation.json");
+    public ResourceLocation getAnimationResource(StatueRonosBE animation) {
+        return new ResourceLocation(ThirteenFlames.MODID, "animations/statue.animation.json");
     }
 }

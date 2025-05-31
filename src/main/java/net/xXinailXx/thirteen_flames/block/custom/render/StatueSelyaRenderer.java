@@ -1,23 +1,12 @@
 package net.xXinailXx.thirteen_flames.block.custom.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
 import net.xXinailXx.thirteen_flames.block.custom.model.StatueSelyaModel;
-import net.xXinailXx.thirteen_flames.block.entity.StatueSelyaBlockEntity;
-import org.jetbrains.annotations.Nullable;
+import net.xXinailXx.thirteen_flames.block.entity.StatueSelyaBE;
 import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
 
-public class StatueSelyaRenderer extends GeoBlockRenderer<StatueSelyaBlockEntity> {
-    public StatueSelyaRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
-        super( rendererDispatcherIn, new StatueSelyaModel() );
-    }
-
-    @Override
-    public RenderType getRenderType(StatueSelyaBlockEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        return RenderType.entityTranslucent(getTextureLocation(animatable));
+public class StatueSelyaRenderer extends GeoBlockRenderer<StatueSelyaBE> {
+    public StatueSelyaRenderer(BlockEntityRendererProvider.Context context) {
+        super(context, new StatueSelyaModel());
     }
 }

@@ -5,8 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 import net.xXinailXx.thirteen_flames.data.IData;
-import net.xXinailXx.thirteen_flames.client.gui.GodFaraon.GodFaraonScreenMining;
 import net.xXinailXx.thirteen_flames.data.Data;
 
 public class ButtonConvernSilver_Gold extends AbstractWidgetUtils {
@@ -29,8 +29,8 @@ public class ButtonConvernSilver_Gold extends AbstractWidgetUtils {
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, GodFaraonScreenMining.BACKGROUNG);
-        manager.bindForSetup(GodFaraonScreenMining.BACKGROUNG);
+        RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
+        manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
 
         blit(poseStack, this.x, this.y, 376, 87, 93, 36, 512, 512);
 

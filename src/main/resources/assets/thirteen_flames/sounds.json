@@ -1,8 +1,39 @@
 {
-  "record": {
+  "moon_bow_shot": {
+    "sounds": [
+      "thirteen_flames:moon_bow_shot"
+    ]
+  },
+  "moon_bow_rain": {
     "sounds": [
       {
-        "name": "thirteen_flames:record",
+        "name": "thirteen_flames:moon_bow_rain",
+        "attenuation_distance": 100
+      }
+    ]
+  },
+  "moon_bow_splash": {
+    "sounds": [
+      {
+        "name": "thirteen_flames:moon_bow_splash",
+        "attenuation_distance": 100
+      }
+    ]
+  },
+  "moon_bow_storm": {
+    "sounds": [
+      {
+        "name": "thirteen_flames:moon_bow_storm",
+        "attenuation_distance": 100,
+        "stream": true
+      }
+    ]
+  },
+  "moon_bow_storm_2": {
+    "sounds": [
+      {
+        "name": "thirteen_flames:moon_bow_storm_2",
+        "attenuation_distance": 100,
         "stream": true
       }
     ]

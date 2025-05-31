@@ -3,7 +3,7 @@ package net.xXinailXx.thirteen_flames.item.flame;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.hurts.sskirillss.relics.client.tooltip.base.RelicStyleData;
+import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
@@ -16,32 +16,31 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.CubeDeformation;
-import net.minecraft.client.model.geom.builders.CubeListBuilder;
-import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.api.events.client.ItemEntityInteractEvent;
-import net.xXinailXx.enderdragonlib.client.curios.ICuriosRenderable;
-import net.xXinailXx.enderdragonlib.client.curios.model.CuriosModel;
-import net.xXinailXx.enderdragonlib.client.curios.model.CuriosHandsSidedModel;
-import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
+import net.xXinailXx.enderdragonlib.client.curios.ICurioRenderable;
+import net.xXinailXx.enderdragonlib.client.curios.model.CurioArmsModel;
+import net.xXinailXx.enderdragonlib.client.curios.model.CurioModel;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
+import org.zeith.hammerlib.util.java.tuples.Tuple3;
+import oshi.util.tuples.Pair;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -49,64 +48,77 @@ import top.theillusivec4.curios.api.client.ICurioRenderer;
 import java.util.List;
 import java.util.Optional;
 
-public class GlovesMontu extends FlameItemSetting {
+@Mod.EventBusSubscriber
+public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
     public RelicData getRelicData() {
-        return RelicData.builder().abilityData(RelicAbilityData.builder().ability("fixin", RelicAbilityEntry.builder().maxLevel(10).stat("effective", RelicAbilityStat.builder().initialValue(10.0, 25.0).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.5).formatValue((value) -> {
+        return RelicData.builder().abilityData(RelicAbilityData.builder().ability("fixin", RelicAbilityEntry.builder().maxLevel(10).stat("effective", RelicAbilityStat.builder().initialValue(10, 25).thresholdValue(10, 50).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.5).formatValue((value) -> {
             return MathUtils.round(value, 1);
-        }).build()).build()).ability("usin", RelicAbilityEntry.builder().requiredLevel(0).maxLevel(5).stat("boost", RelicAbilityStat.builder().initialValue(5.0, 15.0).upgradeModifier(RelicAbilityStat.Operation.ADD, 1.0).formatValue((value) -> {
-            return MathUtils.round(value, 1);
-        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).styleData(RelicStyleData.builder().build()).build();
+        }).build()).build()).ability("usin", RelicAbilityEntry.builder().maxLevel(5).stat("boost", RelicAbilityStat.builder().initialValue(5, 15).thresholdValue(5, 50).upgradeModifier(RelicAbilityStat.Operation.ADD, 2).formatValue((value) -> {
+            return (int) MathUtils.round(value, 0);
+        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 200)).build();
     }
 
-//    @Override
-//    public CuriosModel getModel(ItemStack stack) {
-//        return new CuriosHandsSidedModel(stack.getItem());
-//    }
-//
-//    @OnlyIn(Dist.CLIENT)
-//    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-//        CuriosModel model = getModel(stack);
-//
-//        if (!(model instanceof CuriosHandsSidedModel sidedModel))
-//            return;
-//
-//        sidedModel.setSlot(slotContext.index());
-//
-//        matrixStack.pushPose();
-//
-//        LivingEntity entity = slotContext.entity();
-//
-//        sidedModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-//        sidedModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-//
-//        ICurioRenderer.followBodyRotations(entity, sidedModel);
-//
-//        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
-//
-//        matrixStack.translate(0, 0, -0.025F);
-//
-//        sidedModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-//
-//        matrixStack.popPose();
-//    }
-//
-//    public LayerDefinition constructLayerDefinition() {
-//        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0);
-//
-//        mesh.getRoot().addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(0, 0).mirror().addBox(-4.0F, 6.0F, -2.5F, 3.0F, 7.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
-//                .texOffs(0, 13).mirror().addBox(-1.0F, 6.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false)
-//                .texOffs(0, 0).mirror().addBox(-4.5F, 8.0F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.0F, 2.0F, -0.5F));
-//
-//        mesh.getRoot().addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(0, 0).addBox(1.0F, 6.0F, -2.5F, 3.0F, 7.0F, 6.0F, new CubeDeformation(0.0F))
-//                .texOffs(0, 13).addBox(-2.0F, 6.0F, -2.5F, 3.0F, 6.0F, 6.0F, new CubeDeformation(0.0F))
-//                .texOffs(0, 0).addBox(3.5F, 8.0F, -0.5F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 2.0F, -0.5F));
-//
-//        return LayerDefinition.create(mesh, 32, 32);
-//    }
-//
-//    public List<String> bodyParts() {
-//        return Lists.newArrayList("right_arm", "left_arm");
-//    }
+    public CurioModel getModel(ItemStack stack) {
+        return new CurioArmsModel(stack.getItem());
+    }
+
+    public RenderData getRenderHandData(ItemStack stack, HumanoidArm arm) {
+        return switch (arm) {
+            case RIGHT -> new RenderData(Vector3f.ZN.rotationDegrees(-5.0F), null, new Tuple3<>(0D, -0.05, 0D));
+            case LEFT -> new RenderData(Vector3f.ZN.rotationDegrees(-5.0F), null, new Tuple3<>(0D, -0.05, 0D));
+        };
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        CurioModel model = getModel(stack);
+
+        if (!(model instanceof CurioArmsModel armsModel))
+            return;
+
+        matrixStack.pushPose();
+
+        LivingEntity entity = slotContext.entity();
+
+        armsModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
+        armsModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+        ICurioRenderer.followBodyRotations(entity, armsModel);
+
+        VertexConsumer vertexconsumer = ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(getTexture(stack)), false, stack.hasFoil());
+
+        matrixStack.translate(0, 0, -0.025F);
+
+        armsModel.renderToBuffer(matrixStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+
+        matrixStack.popPose();
+    }
+
+    public LayerDefinition constructLayerDefinition() {
+        MeshDefinition mesh = HumanoidModel.createMesh(new CubeDeformation(0.4F), 0);
+
+        PartDefinition right_arm = mesh.getRoot().addOrReplaceChild("right_arm", CubeListBuilder.create(), PartPose.offset(0, 0, 0));
+
+        PartDefinition bone_1_r = right_arm.addOrReplaceChild("bone_1", CubeListBuilder.create().texOffs(0, 0).mirror().addBox(-4, 3, -2.5F, 6, 9, 6, new CubeDeformation(0)).mirror(false)
+                 .texOffs(24, 0).addBox(-3, 10, -2, 6, 4, 5, new CubeDeformation(0))
+                 .texOffs(0, 21).addBox(-4, 3.5F, -2.5F, 6, 4, 6, new CubeDeformation(0.5F)), PartPose.offset(0, 0, 0));
+
+        PartDefinition bone_2_r = right_arm.addOrReplaceChild("bone_2", CubeListBuilder.create().texOffs(0, 15).mirror().addBox(-1.01F, 7.05F, 0.7F, 3, 4, 2, new CubeDeformation(0)).mirror(false), PartPose.offsetAndRotation(0, 0, 0, -((float)Math.PI / 7.2F), 0, 0));
+
+        PartDefinition left_arm = mesh.getRoot().addOrReplaceChild("left_arm", CubeListBuilder.create(), PartPose.offset(0, 0, 0));
+
+        PartDefinition bone_1_l = left_arm.addOrReplaceChild("bone_1", CubeListBuilder.create().texOffs(0, 0).addBox(-2, 3, -2.5F, 6, 9, 6, new CubeDeformation(0))
+                .texOffs(24, 0).mirror().addBox(-3, 10, -2, 6, 4, 5, new CubeDeformation(0)).mirror(false)
+                .texOffs(0, 21).mirror().addBox(-2, 3.5F, -2.5F, 6, 4, 6, new CubeDeformation(0.5F)).mirror(false), PartPose.offset(0, 0, 0));
+
+        PartDefinition bone_2_l = left_arm.addOrReplaceChild("bone_2", CubeListBuilder.create().texOffs(0, 15).addBox(-1.99F, 7.05F, 0.7F, 3, 4, 2, new CubeDeformation(0)), PartPose.offsetAndRotation(0, 0, 0, -((float)Math.PI / 7.2F), 0, 0));
+
+        return LayerDefinition.create(mesh, 48, 48);
+    }
+
+    public List<String> bodyParts() {
+        return Lists.newArrayList("right_arm", "left_arm");
+    }
 
     public boolean canEquip(String identifier, LivingEntity livingEntity, ItemStack stack) {
         return true;
@@ -116,42 +128,46 @@ public class GlovesMontu extends FlameItemSetting {
         return true;
     }
 
-    @Mod.EventBusSubscriber
-    public static class Event {
-        @SubscribeEvent
-        public static void itemEntityInteract(ItemEntityInteractEvent event) {
-            Player player = event.getEntity();
+    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
+        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.2, 0));
+    }
 
-            Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemsRegistry.GLOVES_MONTU.get(), player);
+    @SubscribeEvent
+    public static void itemEntityInteract(EntityInteractEvent event) {
+        Player player = event.getEntity();
 
-            if (optional.isEmpty())
-                return;
+        if (!(event.getTarget() instanceof ItemEntity))
+            return;
 
-            ItemStack curio = optional.get().getRight();
+        Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.GLOVES_MONTU.get(), player);
 
-            if (curio.isEmpty())
-                return;
+        if (optional.isEmpty())
+            return;
 
-            ItemEntity itemEntity = (ItemEntity) event.getEntityHitResult().getEntity();
+        ItemStack curio = optional.get().getRight();
 
-            if (itemEntity == null && !player.getLevel().isClientSide)
-                return;
+        if (curio.isEmpty())
+            return;
 
-            if (player.getMainHandItem().is(ItemsRegistry.AURITEH_NUGGET.get())) {
-                ItemStack stack = itemEntity.getItem().copy();
+        ItemEntity itemEntity = (ItemEntity) event.getEntityHitResult().getEntity();
 
-                if (stack.getDamageValue() < stack.getMaxDamage()) {
-                    double value = AbilityUtils.getAbilityValue(curio, "fixin", "effective");
+        if (itemEntity == null && !player.getLevel().isClientSide)
+            return;
 
-                    DurabilityUtils.repair(stack, (int) (stack.getMaxDamage() * ((int) value * 0.01)));
+        if (player.getMainHandItem().is(ItemRegistry.AURITEH_NUGGET.get())) {
+            ItemStack stack = itemEntity.getItem().copy();
 
-                    itemEntity.setItem(stack);
+            if (stack.getDamageValue() < stack.getMaxDamage()) {
+                double value = AbilityUtils.getAbilityValue(curio, "fixin", "effective");
 
-                    if (!player.isCreative())
-                        player.getMainHandItem().shrink(1);
+                DurabilityUtils.repair(stack, (int) (stack.getMaxDamage() * ((int) value * 0.01)));
 
-                    LevelingUtils.addExperience(player, curio, 5);
-                }
+                itemEntity.setItem(stack);
+
+                if (!player.isCreative())
+                    player.getMainHandItem().shrink(1);
+
+                LevelingUtils.addExperience(player, curio, 5);
             }
         }
     }

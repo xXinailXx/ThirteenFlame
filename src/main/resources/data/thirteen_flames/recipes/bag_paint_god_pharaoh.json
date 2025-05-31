@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "thirteen_flames:bag_paint"
+    },
+    "G": {
+      "item": "minecraft:gold_block"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "L": {
+      "item": "minecraft:lapis_block"
+    }
+  },
+  "pattern": [
+    "GRG",
+    "LBL",
+    "GRG"
+  ],
+  "result": {
+    "item": "thirteen_flames:bag_paint_god_pharaoh"
+  }
+}

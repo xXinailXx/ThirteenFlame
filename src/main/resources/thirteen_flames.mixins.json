@@ -5,6 +5,9 @@
   "refmap": "thirteen_flames.refmap.json",
   "mixins": [
     "AbstractArrowMixin",
+    "AxeItemMixin",
+    "BowItemMixin",
+    "CrossbowItemMixin",
     "DataSlotMixin",
     "EnderpearlItemMixin",
     "EntityMixin",
@@ -21,13 +24,19 @@
     "PlayerMixin",
     "PumpkinBlockMixin",
     "SheepMixin",
+    "ShieldItemMixin",
+    "ShovelMixin",
+    "SkillTreeKeybindsMixin",
     "SnowGolemMixin",
-    "client.AddXpButtonAbilityScreenMixin",
-    "client.SkillTreeKeyBindsMixin"
+    "TridenItemMixin"
   ],
   "client": [
-    "BakedOverrideAccessor",
+    "client.AddXpButtonAbilityScreenMixin",
     "client.AddXpButtonRelicScreen",
+    "client.BakedOverrideAccessor",
+    "client.GameRendererMixin",
+    "client.LivingEntityRenderer",
+    "client.LocalPlayerMixin",
     "client.PassiveSkillTreeMixin",
     "client.SkillButtomMixin"
   ],

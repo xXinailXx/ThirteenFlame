@@ -1,31 +1,29 @@
 package net.xXinailXx.thirteen_flames.block;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.xXinailXx.thirteen_flames.ThirteenFlames;
+import net.xXinailXx.thirteen_flames.block.custom.model.StatueMontuModel;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.Nullable;
+import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
-public class StatueMontu extends StatueHendler {
-    @Override
-    public void getBlockPlace(Block block) {
-        super.getBlockPlace(this);
+public class StatueMontu extends StatueHandler {
+    public StatueMontu() {
+        super(BlockRegistry.STATUE_MONTU_STRUCTURE.get(), Gods.MONTU, new GeoItemRenderer(new StatueMontuModel()) {
+            public ResourceLocation getTextureLocation(Object animatable) {
+                return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_montu.png");
+            }
+        });
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return BlockEntityRegistry.STATUE_MONTU_BLOCK_ENTITY.get().create(pos, state);
+        return BlockEntityRegistry.STATUE_MONTU.get().create(pos, state);
     }
-
-//    @Override
-//    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState blockState, boolean drop) {
-//        BlockPos mainPos = this.getMainPos(state, pos);
-//        getBlocksList(mainPos, true).forEach(blockPos -> level.setBlock(blockPos, BlockRegistry.STATUE_MONTU_STRUCTURE_BLOCK.get().defaultBlockState(), 5));
-//        getBlocksList(mainPos, true).forEach(blockPos -> level.destroyBlock(blockPos, false));
-//        getBlocksList(mainPos, true).forEach(blockPos -> level.setBlock(blockPos, BlockRegistry.STATUE_MONTU_STRUCTURE_BLOCK.get().defaultBlockState(), 5));
-//    }
 }
