@@ -37,22 +37,21 @@ public class PharaohsWings extends AbstarctAbilityWidgets {
                 if (player.getLevel().isClientSide) {
                     if (flyTime > 0) {
                         if (player.isOnGround()) {
-                            player.getAbilities().mayfly = false;
-                            player.getAbilities().flying = false;
                             flyTime = data.getLevelAbility("pharaohs_wings") * 2;
+
                             return;
-                        } else {
-                            player.getAbilities().mayfly = true;
-
-                            if (player.getAbilities().mayfly && player instanceof LocalPlayer local && local.input.jumping) {
-                                if (player.tickCount % 20 == 0)
-                                    flyTime--;
-
-                                MessageUtil.displayClientMessage(player, Component.literal(String.valueOf(flyTime / 2)));
-
-                                player.onUpdateAbilities();
-                            }
                         }
+
+                        player.getAbilities().mayfly = true;
+
+                        if (player.getAbilities().flying) {
+                            if (player.tickCount % 20 == 0)
+                                flyTime--;
+
+                            MessageUtil.displayClientMessage(player, Component.literal(String.valueOf(flyTime / 2)));
+                        }
+
+                        player.onUpdateAbilities();
                     } else {
                         player.getAbilities().mayfly = false;
                         player.getAbilities().flying = false;

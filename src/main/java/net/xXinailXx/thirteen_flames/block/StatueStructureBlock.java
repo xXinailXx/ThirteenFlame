@@ -18,7 +18,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ public class StatueStructureBlock extends Block {
     }
 
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (level.getBlockState(pos).is(BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get()) || level.isClientSide)
+        if (level.getBlockState(pos).is(BlocksRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get()) || level.isClientSide)
             return InteractionResult.FAIL;
 
         ItemStack stack = player.getItemInHand(hand);

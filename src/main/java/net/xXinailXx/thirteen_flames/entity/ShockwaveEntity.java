@@ -16,8 +16,7 @@ import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-import net.xXinailXx.enderdragonlib.utils.AABBUtils;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -35,7 +34,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
     }
 
     public ShockwaveEntity(Level level, int radius, float damage) {
-        super(EntityRegistry.SHOCKWAVE.get(), level);
+        super(EntitiesRegistry.SHOCKWAVE.get(), level);
 
         this.radius = radius;
     }

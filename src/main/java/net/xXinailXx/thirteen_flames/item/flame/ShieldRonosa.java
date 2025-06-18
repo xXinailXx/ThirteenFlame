@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.world.InteractionHand;
@@ -22,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
@@ -77,9 +78,9 @@ public class ShieldRonosa extends FlameItemSetting {
 
         ItemStack stack;
 
-        if (player.getMainHandItem().is(ItemRegistry.SHIELD_RONOSA.get()))
+        if (player.getMainHandItem().is(ItemsRegistry.SHIELD_RONOSA.get()))
             stack = player.getMainHandItem();
-        else if (player.getOffhandItem().is(ItemRegistry.SHIELD_RONOSA.get()))
+        else if (player.getOffhandItem().is(ItemsRegistry.SHIELD_RONOSA.get()))
             stack = player.getOffhandItem();
         else
             return;
@@ -97,5 +98,6 @@ public class ShieldRonosa extends FlameItemSetting {
         entity.hurt(DamageSource.playerAttack(player), damage);
 
         ((LivingEntity) entity).addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 60 * (int) AbilityUtils.getAbilityValue(stack, "spikes", "bleeding")));
+        LevelingUtils.addExperience(stack, 3);
     }
 }

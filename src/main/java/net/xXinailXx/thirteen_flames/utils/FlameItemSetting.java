@@ -8,7 +8,7 @@ import net.xXinailXx.enderdragonlib.client.glow.Beam;
 import net.xXinailXx.enderdragonlib.client.glow.GlowData;
 import net.xXinailXx.enderdragonlib.interfaces.IGlow;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
 
@@ -54,32 +54,32 @@ public abstract class FlameItemSetting extends RelicItem implements IGlow {
     public GlowData constructGlowData() {
         GlowData data = GlowData.builder(false).translateBeams(beamSetting().getB());
 
-        if (this.getDefaultInstance().is(ItemRegistry.HAMMER_MONTU.get()) || this.getDefaultInstance().is(ItemRegistry.GLOVES_MONTU.get())) {
+        if (this.getDefaultInstance().is(ItemsRegistry.HAMMER_MONTU.get()) || this.getDefaultInstance().is(ItemsRegistry.GLOVES_MONTU.get())) {
             data.addBeam(new Beam(new Color(255, 187, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(255, 251, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(162, 255, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(111, 255, 0), 4, 1, 1F, beamSetting().getA()));
-        } else if (this.getDefaultInstance().is(ItemRegistry.SWORD_RONOSA.get()) || this.getDefaultInstance().is(ItemRegistry.SHIELD_RONOSA.get())) {
+        } else if (this.getDefaultInstance().is(ItemsRegistry.SWORD_RONOSA.get()) || this.getDefaultInstance().is(ItemsRegistry.SHIELD_RONOSA.get())) {
             data.addBeam(new Beam(new Color(255, 0, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(214, 3, 30), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(168, 13, 13), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(151, 2, 2), 4, 1, 1F, beamSetting().getA()));
-        } else if (this.getDefaultInstance().is(ItemRegistry.MOON_BOW.get()) || this.getDefaultInstance().is(ItemRegistry.BLACK_ROSE.get())) {
+        } else if (this.getDefaultInstance().is(ItemsRegistry.MOON_BOW.get()) || this.getDefaultInstance().is(ItemsRegistry.BLACK_ROSE.get())) {
             data.addBeam(new Beam(new Color(0, 224, 255), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(0, 67, 255), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(0, 34, 177), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(38, 0, 172), 4, 1, 1F, beamSetting().getA()));
-        } else if (this.getDefaultInstance().is(ItemRegistry.SUN_SELIASET.get()) || this.getDefaultInstance().is(ItemRegistry.HORN_SELIASET.get())) {
+        } else if (this.getDefaultInstance().is(ItemsRegistry.SUN_SELIASET.get()) || this.getDefaultInstance().is(ItemsRegistry.HORN_SELIASET.get())) {
             data.addBeam(new Beam(new Color(255, 145, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(255, 115, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(232, 81, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(255, 77, 0), 4, 1, 1F, beamSetting().getA()));
-        } else if (this.getDefaultInstance().is(ItemRegistry.SCROLL_HET.get()) || this.getDefaultInstance().is(ItemRegistry.FLIGHT_HET.get())) {
+        } else if (this.getDefaultInstance().is(ItemsRegistry.SCROLL_HET.get()) || this.getDefaultInstance().is(ItemsRegistry.FLIGHT_HET.get())) {
             data.addBeam(new Beam(new Color(253, 251, 132), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(255, 249, 65), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(255, 221, 0), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(255, 166, 0), 4, 1, 1F, beamSetting().getA()));
-        } else if (this.getDefaultInstance().is(ItemRegistry.TRAVELERS_SWORD.get()) || this.getDefaultInstance().is(ItemRegistry.STAFF_JODAH.get()) || this.getDefaultInstance().is(ItemRegistry.MASK_DEMIURG.get())) {
+        } else if (this.getDefaultInstance().is(ItemsRegistry.TRAVELERS_SWORD.get()) || this.getDefaultInstance().is(ItemsRegistry.STAFF_JODAH.get()) || this.getDefaultInstance().is(ItemsRegistry.MASK_DEMIURG.get())) {
             data.addBeam(new Beam(new Color(0, 40, 243), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(1, 17, 197), 4, 1, 1F, beamSetting().getA()));
             data.addBeam(new Beam(new Color(48, 2, 234), 4, 1, 1F, beamSetting().getA()));

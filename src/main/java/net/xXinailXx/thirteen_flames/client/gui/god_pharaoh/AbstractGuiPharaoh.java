@@ -29,8 +29,8 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractGuiPharaoh extends Screen {
-    public static final ResourceLocation BACKGROUNG = new ResourceLocation( ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen.png");
-    public static final ResourceLocation BACKGROUNG_CURSE = new ResourceLocation( ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen_curse.png");
+    public static final ResourceLocation BACKGROUNG = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen.png");
+    public static final ResourceLocation BACKGROUNG_CURSE = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen_curse.png");
     protected static final IData.IGuiLevelingData guiLeveling = new Data.GuiLevelingData();
     protected static final IData.IXpScarabsData xpScarabsData = new Data.XpScarabsData();
     protected static final IData.IScarabsData scarabsData = new Data.ScarabsData();
@@ -47,7 +47,6 @@ public abstract class AbstractGuiPharaoh extends Screen {
         this.screenID = screenID;
     }
 
-    @Override
     public void tick() {
         this.player = minecraft.player;
     }
@@ -64,8 +63,8 @@ public abstract class AbstractGuiPharaoh extends Screen {
         this.addRenderableWidget(new ButtonOpenPassiveSkillTree(x - 8, y + 195));
 
         if (!guiLeveling.isPlayerScreen()) {
-            this.addRenderableWidget(new ButtonConvernSilver_Gold(x + 373, y + 56));
-            this.addRenderableWidget(new ButtonConvernLazotep_Auriteh(x + 373, y + 100));
+            this.addRenderableWidget(new ButtonConvernSilverGold(x + 373, y + 56));
+            this.addRenderableWidget(new ButtonConvernLazotepAuriteh(x + 373, y + 100));
         }
 
         switch (screenID) {
@@ -108,10 +107,10 @@ public abstract class AbstractGuiPharaoh extends Screen {
         poseStack.pushPose();
         poseStack.scale(1.1F, 1.1F, 1.1F);
 
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabSilver(player)), (x + 275) - this.font.width( String.valueOf(scarabsData.getScarabSilver(player))) / 2.0F, (y + 196), 0x673E09);
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabGold()), (x + 275) - this.font.width( String.valueOf(scarabsData.getScarabGold())) / 2.0F, (y + 157), 0x673E09);
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabAuriteh()), (x + 275) - this.font.width( String.valueOf(scarabsData.getScarabAuriteh())) / 2.0F, (y + 120), 0x673E09);
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabLazotep()), (x + 275) - this.font.width( String.valueOf(scarabsData.getScarabLazotep())) / 2.0F, (y + 82), 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabSilver(player)), x + 275 - this.font.width(String.valueOf(scarabsData.getScarabSilver(player))) / 2, y + 196, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabGold()), x + 275 - this.font.width(String.valueOf(scarabsData.getScarabGold())) / 2, y + 157, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabAuriteh()), x + 275 - this.font.width(String.valueOf(scarabsData.getScarabAuriteh())) / 2, y + 120, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabLazotep()), x + 275 - this.font.width(String.valueOf(scarabsData.getScarabLazotep())) / 2, y + 82, 0x673E09);
 
         poseStack.popPose();
 
@@ -123,7 +122,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
 
             poseStack.scale(1F, 1F, 1F);
 
-            this.MC.font.draw(poseStack, Component.translatable("gui.curse.info"), x + 153 - this.font.width(Component.translatable("gui.curse.info")) / 2.0F, y + 10, 0xFFFFFFFF);
+            this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.curse.info"), x + 153 - this.font.width(Component.translatable("gui.thirteen_flames.curse.info")) / 2.0F, y + 10, 0xFFFFFFFF);
 
             poseStack.popPose();
         }
@@ -249,7 +248,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
         for (FormattedCharSequence entry : tooltip) {
             poseStack.pushPose();
 
-            MC.font.draw(poseStack, entry, (x + 200), (y + 376 + yOff), 4269832);
+            MC.font.draw(poseStack, entry, x + 200, y + 376 + yOff, 4269832);
 
             yOff += 9;
 
@@ -271,7 +270,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
             if (!effectData.isCurseKnef())
                 extraYOff = 27;
 
-            blit(poseStack, (x + 752), (y + 618 + extraYOff), 197, 347, 22, 24, texWidth, texHeight);
+            blit(poseStack, x + 752, y + 618 + extraYOff, 197, 347, 22, 24, texWidth, texHeight);
 
             poseStack.scale(0.48F, 0.48F, 0.48F);
 
@@ -281,8 +280,8 @@ public abstract class AbstractGuiPharaoh extends Screen {
 
             poseStack.scale(1.4F, 1.4F, 1.4F);
 
-            this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.xp"), x - 5 - this.font.width(Component.translatable("gui.thirteen_flames.xp")) / 2.0F, (y + 178), 0x673E09);
-            this.MC.font.draw(poseStack, Component.literal("__"), x - 12, (y + 182), 0x673E09);
+            this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.xp"), x - 5 - this.font.width(Component.translatable("gui.thirteen_flames.xp")) / 2, y + 178, 0x673E09);
+            this.MC.font.draw(poseStack, Component.literal("__"), x - 12, y + 182, 0x673E09);
             this.MC.font.draw(poseStack, String.valueOf(player.totalExperience), x - 6 - this.font.width(String.valueOf(player.totalExperience)) / 2.0F, (y + 193), 0x673E09);
 
             poseStack.popPose();

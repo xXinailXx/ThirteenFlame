@@ -7,6 +7,9 @@ import net.minecraft.world.phys.Vec3;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
+import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
+import org.zeith.hammerlib.net.Network;
 
 import java.awt.*;
 
@@ -18,18 +21,26 @@ public class ParticleUtils {
                 .diameter(0.2F)
                 .lifetime(50)
                 .physical(false)
-                .runnableType(ParticleMoveRunnableType.CUP_FIRE)
                 .build());
 
-        Vec3 vec3 = new Vec3(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
+        Vec3 vec3 = new Vec3(pos.getX() + 0.5F, pos.getY() + 0.95F, pos.getZ() + 0.5F);
 
         AABB box = new AABB(vec3.add(-0.1, 0, -0.1), vec3.add(0.2, 0, 0.2));
 
         double deltaX = box.getXsize() / 2;
-        double deltaY = box.getYsize() / 2;
+        double deltaY = box.getYsize() / 2 + 0.1;
         double deltaZ = box.getZsize() / 2;
 
-        ParticleActions.spawnParticles(level, particle, vec3.x, vec3.y, vec3.z, 10, deltaX, deltaY, deltaZ, 0.003);
+        for(int i = 0; i < 15; ++i) {
+            double d1 = level.random.nextGaussian() * deltaX;
+            double d3 = level.random.nextGaussian() * deltaY;
+            double d5 = level.random.nextGaussian() * deltaZ;
+            double d6 = level.random.nextGaussian() * 0.003;
+            double d7 = level.random.nextGaussian() * 0.003;
+            double d8 = level.random.nextGaussian() * 0.003;
+
+            Network.sendToAll(new SpawnParticlePacket(particle, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8));
+        }
     }
 
     public static ColoredParticle.Options createStatueParticle(Color color, float diameter, int lifetime, float scaleModifier) {

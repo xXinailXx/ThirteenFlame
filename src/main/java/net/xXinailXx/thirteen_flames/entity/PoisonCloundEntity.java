@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
-import net.xXinailXx.thirteen_flames.init.EffectRegistry;
+import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
 
 import java.awt.*;
 import java.util.List;
@@ -62,19 +62,19 @@ public class PoisonCloundEntity extends Projectile {
                 int maxAmp = this.getAmplifire();
                 int duration = this.getDuration();
 
-                if (e.hasEffect(EffectRegistry.POISON.get())) {
-                    int appliedAmplifier = e.getEffect(EffectRegistry.POISON.get()).getAmplifier() + 1;
+                if (e.hasEffect(EffectsRegistry.POISON.get())) {
+                    int appliedAmplifier = e.getEffect(EffectsRegistry.POISON.get()).getAmplifier() + 1;
 
                     if (appliedAmplifier <= maxAmp) {
-                        e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true, false));
+                        e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true, false));
 
                         if (this.random.nextFloat() < 0.25F)
                             LevelingUtils.addExperience(this.getSword(), 1);
                     } else {
-                        e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
+                        e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
                     }
                 } else {
-                    e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration, 0, false, true, false));
+                    e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration, 0, false, true, false));
 
                     if (this.random.nextFloat() < 0.25F)
                         LevelingUtils.addExperience(this.getSword(), 1);

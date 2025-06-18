@@ -24,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 import net.xXinailXx.thirteen_flames.init.SoundsRegistry;
 
 import java.awt.*;
@@ -102,7 +102,7 @@ public class MoonProjectileEntity extends ThrowableProjectile {
         }
 
         float vol = this.getOwner() == null ? 10.0F : (float)(10 / this.getOwner().distanceToSqr(this.position()));
-        this.getLevel().playSound(null, this.getOwner() == null ? this : this.getOwner(), SoundsRegistry.MOON_BOW_SPLASH.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.05F * vol + vol, this.random.nextFloat() * 0.1F + 0.6F);
+        this.getLevel().playSound(null, this.getOwner() == null ? this : this.getOwner(), net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SPLASH.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.05F * vol + vol, this.random.nextFloat() * 0.1F + 0.6F);
         this.discard();
     }
 
@@ -116,7 +116,7 @@ public class MoonProjectileEntity extends ThrowableProjectile {
         List<MoonProjectileEntity> list = new ArrayList();
 
         for(int i = 0; i < count; ++i) {
-            MoonProjectileEntity proj = new MoonProjectileEntity(EntityRegistry.MOON_PROJECTILE.get(), level);
+            MoonProjectileEntity proj = new MoonProjectileEntity(EntitiesRegistry.MOON_PROJECTILE.get(), level);
             proj.setOwner(owner);
             proj.setPos(center);
             proj.setDeltaMovement(move);

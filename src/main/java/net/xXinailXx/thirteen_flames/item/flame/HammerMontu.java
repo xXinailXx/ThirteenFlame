@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.ShockwaveEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.PickaxeItemTF;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
@@ -44,7 +44,7 @@ public class HammerMontu extends PickaxeItemTF {
         return RelicData.builder().abilityData(RelicAbilityData.builder().ability("ejection", RelicAbilityEntry.builder().maxLevel(15).stat("cooldown", RelicAbilityStat.builder().initialValue(56, 35).thresholdValue(15, 56).upgradeModifier(RelicAbilityStat.Operation.ADD, -2).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
         }).build()).stat("radius", RelicAbilityStat.builder().initialValue(6, 11).thresholdValue(6, 19).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
-            return (int)MathUtils.round(value, 1);
+            return (int)MathUtils.round(value, 0);
         }).build()).build()).ability("digging", RelicAbilityEntry.builder().maxLevel(2).stat("mining", RelicAbilityStat.builder().initialValue(1, 1).thresholdValue(1, 3).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
         }).build()).build()).build()).levelingData(new RelicLevelingData(200, 15, 100)).build();
@@ -91,7 +91,7 @@ public class HammerMontu extends PickaxeItemTF {
         Level level = event.getPlayer().getLevel();
         double maxLevel = AbilityUtils.getAbilityValue(stack, "digging", "mining");
 
-        if (stack.getItem() == ItemRegistry.HAMMER_MONTU.get()) {
+        if (stack.getItem() == ItemsRegistry.HAMMER_MONTU.get()) {
             switch ((int) maxLevel) {
                 case 2 -> {
                     BlockState state = level.getBlockState(pos.below());

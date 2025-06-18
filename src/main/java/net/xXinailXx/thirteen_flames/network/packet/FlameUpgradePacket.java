@@ -75,7 +75,6 @@ public class FlameUpgradePacket implements IPacket {
                 .lifetime(100)
                 .scaleModifier(0.98F)
                 .physical(false)
-                .runnableType(RunnableType.NONE)
                 .build());
 
         Vec3 center = new Vec3(player.getX(), player.getY() + 1, player.getZ());

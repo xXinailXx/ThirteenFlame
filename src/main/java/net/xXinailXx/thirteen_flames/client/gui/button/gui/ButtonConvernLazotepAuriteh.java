@@ -9,10 +9,10 @@ import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 import net.xXinailXx.thirteen_flames.data.Data;
 
-public class ButtonConvernLazotep_Auriteh extends AbstractWidgetUtils {
+public class ButtonConvernLazotepAuriteh extends AbstractWidgetUtils {
     private static final IData.IScarabsData scarabsData = new Data.ScarabsData();
 
-    public ButtonConvernLazotep_Auriteh(int x, int y) {
+    public ButtonConvernLazotepAuriteh(int x, int y) {
         super(x, y, 93, 36);
     }
 

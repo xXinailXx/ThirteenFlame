@@ -10,8 +10,8 @@ import net.minecraft.world.level.block.Block;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.StatueHandler;
 import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
-import net.xXinailXx.thirteen_flames.init.BlockRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.UpdateStatueBlockPacket;
 import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.net.Network;
@@ -28,7 +28,7 @@ public class BagPaintUtils extends ItemSetting {
     public InteractionResult useOn(UseOnContext use) {
         ItemStack stack = use.getItemInHand();
 
-        if (stack.is(ItemRegistry.BAG_PAINT.get()))
+        if (stack.is(ItemsRegistry.BAG_PAINT.get()))
             return InteractionResult.SUCCESS;
 
         Level level = use.getLevel();
@@ -52,7 +52,7 @@ public class BagPaintUtils extends ItemSetting {
             return handler.getBE(pos).isFinished();
         else if (block instanceof StatueStructureBlock structureBlock)
             return structureBlock.getMainBlockBE(pos).isFinished();
-        else if (block.defaultBlockState().is(BlockRegistry.STATUE_CUP_UNFINISHED.get()))
+        else if (block.defaultBlockState().is(BlocksRegistry.STATUE_CUP_UNFINISHED.get()))
             return false;
         else
             return false;

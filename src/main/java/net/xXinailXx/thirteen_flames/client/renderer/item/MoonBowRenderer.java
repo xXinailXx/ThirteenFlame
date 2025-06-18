@@ -12,7 +12,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class MoonBowRenderer extends ZeithTechISTER {
@@ -29,7 +29,7 @@ public class MoonBowRenderer extends ZeithTechISTER {
         for(int i = overrides.size() - 1; i >= 0; --i) {
             ItemOverrides.BakedOverride override = (ItemOverrides.BakedOverride)overrides.get(i);
             int lightmap = 16711935;
-            float pull = ItemProperties.getProperty(ItemRegistry.MOON_BOW.get(), new ResourceLocation(ThirteenFlames.MODID, "pull")).call(stack, mc.level, mc.player, 0);
+            float pull = ItemProperties.getProperty(ItemsRegistry.MOON_BOW.get(), new ResourceLocation(ThirteenFlames.MODID, "pull")).call(stack, mc.level, mc.player, 0);
 
             if ((double)pull < 0.1) {
                 this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(7), transformType, pose, stack, bufferSource, null, uv2, overlay);

@@ -15,6 +15,7 @@
     "FlintAndSteelItemMixin",
     "FoodPropertiesMixin",
     "ForgeHooksMixin",
+    "GuiEventHandlerMixin",
     "HoeItemMixin",
     "ItemEntityMixin",
     "ItemMixin",

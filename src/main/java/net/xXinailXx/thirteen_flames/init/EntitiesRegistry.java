@@ -9,7 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.entity.*;
 
-public class EntityRegistry {
+public class EntitiesRegistry {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, ThirteenFlames.MODID);
 
     public static final RegistryObject<EntityType<ShockwaveEntity>> SHOCKWAVE = ENTITIES.register("shockwave", () ->

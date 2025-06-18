@@ -40,7 +40,7 @@ public class MoonCarrierEntity extends ThrowableProjectile {
 
             Vec3 x = motion.normalize().x < 0.001 && motion.normalize().z < 0.001 ? motion.normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius) : motion.normalize().cross(new Vec3(0, 1, 0).normalize().scale(radius));
             Vec3 z = motion.normalize().cross(x).normalize().scale(radius);
-            Vec3 pos = this.getPosition(1.0F).add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
+            Vec3 pos = this.getPosition(1F).add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
 
             if (i % 2 == 0) {
                 pos = pos.add(motion.scale(0.3));

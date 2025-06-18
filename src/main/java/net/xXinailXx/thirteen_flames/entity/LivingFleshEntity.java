@@ -18,7 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -42,7 +42,7 @@ public class LivingFleshEntity extends Mob implements IAnimatable {
     }
 
     public LivingFleshEntity(Level level, int size, int procSeparation, int piece, ItemStack stack) {
-        super(EntityRegistry.LIVING_FLESH.get(), level);
+        super(EntitiesRegistry.LIVING_FLESH.get(), level);
         setSize(size * 10);
         setProcSeparation(procSeparation);
         setPiece(piece);

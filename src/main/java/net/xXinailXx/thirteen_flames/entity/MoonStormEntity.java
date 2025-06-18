@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -25,7 +24,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 import net.xXinailXx.thirteen_flames.init.SoundsRegistry;
 
 import java.awt.*;
@@ -103,7 +102,7 @@ public class MoonStormEntity extends Projectile {
             List<LivingEntity> targets = new ArrayList(this.getLevel().getEntitiesOfClass(LivingEntity.class, box, (entity) -> !entity.equals(this.getOwner())));
 
             if (this.tickCount % freq == 0) {
-                MoonRaindropEntity drop = new MoonRaindropEntity(EntityRegistry.MOON_RAINDROP.get(), this.getLevel());
+                MoonRaindropEntity drop = new MoonRaindropEntity(EntitiesRegistry.MOON_RAINDROP.get(), this.getLevel());
                 Vec3 pos = this.getPosition(1).add(MathUtils.randomFloat(this.random) * this.radius, -1, MathUtils.randomFloat(this.random) * this.radius);
 
                 if (this.random.nextFloat() < 0.2 && !targets.isEmpty()) {

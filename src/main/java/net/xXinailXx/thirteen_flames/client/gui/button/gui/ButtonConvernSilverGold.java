@@ -9,10 +9,10 @@ import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMini
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 
-public class ButtonConvernSilver_Gold extends AbstractWidgetUtils {
+public class ButtonConvernSilverGold extends AbstractWidgetUtils {
     private static final IData.IScarabsData scarabsData = new Data.ScarabsData();
 
-    public ButtonConvernSilver_Gold(int x, int y) {
+    public ButtonConvernSilverGold(int x, int y) {
         super(x, y, 93, 36);
     }
 

@@ -36,7 +36,7 @@ import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.client.curios.ICurioRenderable;
 import net.xXinailXx.enderdragonlib.client.curios.model.CurioArmsModel;
 import net.xXinailXx.enderdragonlib.client.curios.model.CurioModel;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
@@ -139,7 +139,7 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
         if (!(event.getTarget() instanceof ItemEntity))
             return;
 
-        Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.GLOVES_MONTU.get(), player);
+        Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemsRegistry.GLOVES_MONTU.get(), player);
 
         if (optional.isEmpty())
             return;
@@ -154,7 +154,7 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
         if (itemEntity == null && !player.getLevel().isClientSide)
             return;
 
-        if (player.getMainHandItem().is(ItemRegistry.AURITEH_NUGGET.get())) {
+        if (player.getMainHandItem().is(ItemsRegistry.AURITEH_NUGGET.get())) {
             ItemStack stack = itemEntity.getItem().copy();
 
             if (stack.getDamageValue() < stack.getMaxDamage()) {

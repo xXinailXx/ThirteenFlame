@@ -4,11 +4,9 @@ import lombok.Builder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
-import software.bernie.geckolib3.core.AnimationState;
+import net.xXinailXx.thirteen_flames.init.BlockEntitiesRegistry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
@@ -27,7 +25,7 @@ public class SunSeliasetBlockEntity extends BlockEntity implements IAnimatable {
     private static boolean opportunityPickUp = true;
 
     public SunSeliasetBlockEntity(BlockPos pos, BlockState state) {
-        super( BlockEntityRegistry.STATUE_SELYA.get(), pos, state );
+        super( BlockEntitiesRegistry.STATUE_SELYA.get(), pos, state );
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {

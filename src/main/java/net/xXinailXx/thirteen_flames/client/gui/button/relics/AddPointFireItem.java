@@ -87,7 +87,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
             List<MutableComponent> entries = Lists.newArrayList(new MutableComponent[]{});
 
             if (!(isMaxLevelRelic))
-                entries.add(Component.translatable("gui.thirteen_flames.relic.button_add_point.add_level").append(Component.literal(String.valueOf(scarabsSilver))));
+                entries.add(Component.translatable("gui.thirteen_flames.relic.button_add_point.add_level", String.valueOf(scarabsSilver)));
             else
                 entries.add(Component.translatable("gui.thirteen_flames.relic.button_add_point.max_level"));
 

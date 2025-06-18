@@ -6,10 +6,13 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -26,9 +29,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
+import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.thirteen_flames.entity.HornSeliasetEntity;
 import net.xXinailXx.thirteen_flames.entity.HornWindSeliasetEntity;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
 
@@ -36,15 +41,15 @@ import oshi.util.tuples.Pair;
 public class HornSeliaset extends FlameItemSetting {
     public RelicData getRelicData() {
         return RelicData.builder().abilityData(RelicAbilityData.builder().ability("wind", RelicAbilityEntry.builder().maxLevel(10).stat("effective", RelicAbilityStat.builder().initialValue(1, 3.5).thresholdValue(1, 6).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.25).formatValue((value) -> {
-            return MathUtils.round(value, 0);
+            return MathUtils.round(value, 2);
         }).build()).stat("distance", RelicAbilityStat.builder().initialValue(8, 20).thresholdValue(8, 30).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.5).formatValue((value) -> {
-            return MathUtils.round(value, 0);
+            return MathUtils.round(value, 1);
         }).build()).build()).ability("rhythm", RelicAbilityEntry.builder().maxLevel(10).stat("waves", RelicAbilityStat.builder().initialValue(2, 2).thresholdValue(2, 12).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
         }).build()).stat("cooldown", RelicAbilityStat.builder().initialValue(72, 52).thresholdValue(5, 72).upgradeModifier(RelicAbilityStat.Operation.ADD, -3).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
-        }).build()).stat("stun", RelicAbilityStat.builder().initialValue(1, 1.5).thresholdValue(1, 5).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.3).formatValue((value) -> {
-            return MathUtils.round(value, 0);
+        }).build()).stat("stun", RelicAbilityStat.builder().initialValue(1, 1.5).thresholdValue(1, 10).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.5).formatValue((value) -> {
+            return (int)MathUtils.round(value, 0);
         }).build()).build()).build()).levelingData(new RelicLevelingData(200, 15, 200)).build();
     }
 
@@ -53,7 +58,7 @@ public class HornSeliaset extends FlameItemSetting {
         Level level = use.getLevel();
         ItemStack stack = use.getItemInHand();
 
-        HornSeliasetEntity horn = new HornSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "rhythm", "waves"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "cooldown"), (float) AbilityUtils.getAbilityValue(stack, "rhythm", "stun"));
+        HornSeliasetEntity horn = new HornSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "rhythm", "waves"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "cooldown"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "stun"));
         horn.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         horn.setOwner(use.getPlayer());
 
@@ -79,10 +84,7 @@ public class HornSeliaset extends FlameItemSetting {
 
         level.addFreshEntity(horn);
 
-        CompoundManager.add(horn.getStringUUID(), stack.save(stack.getTag()));
-
-        System.out.println(horn.getStringUUID());
-
+        CompoundManager.add(horn.getStringUUID(), stack.save(stack.getOrCreateTag()));
         use.getPlayer().setItemInHand(use.getHand(), Items.AIR.getDefaultInstance());
 
         return InteractionResult.SUCCESS;
@@ -96,16 +98,20 @@ public class HornSeliaset extends FlameItemSetting {
     }
 
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        if (count % 2 == 0) {
-            Vec3 startPos = player.getEyePosition().add(player.getLookAngle().scale(1.5));
+        Vec3 startPos = player.getEyePosition().add(player.getLookAngle().scale(1.5));
 
-            HornWindSeliasetEntity entity = new HornWindSeliasetEntity(player.level, (float) AbilityUtils.getAbilityValue(stack, "wind", "effective"), (float) AbilityUtils.getAbilityValue(stack, "wind", "distance"), startPos, player.isShiftKeyDown());
-            entity.setOwner(player);
-            entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.75F, 0.1F, 0);
-            entity.setPos(startPos);
+        HornWindSeliasetEntity entity = new HornWindSeliasetEntity(player.level, (float) AbilityUtils.getAbilityValue(stack, "wind", "effective"), (float) AbilityUtils.getAbilityValue(stack, "wind", "distance"), startPos, player.isShiftKeyDown(), stack);
+        entity.setOwner(player);
+        entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.75F, 0.25F, 0);
+        entity.setPos(startPos);
 
-            player.level.addFreshEntity(entity);
-        }
+        player.level.addFreshEntity(entity);
+
+        RandomSource source = player.getRandom();
+        Vec3 randomVec = new Vec3(Math.random() * 2 * 0.5 - 0.5, Math.random() * 2 * 0.5 - 0.5, Math.random() * 2 * 0.5 - 0.5).normalize();
+        Vec3 result = (player.getLookAngle().normalize().scale(3).add(randomVec)).normalize().scale(source.nextDouble() * 0.35 + 0.35);
+
+        Network.sendToAll(new SpawnParticlePacket(ParticleTypes.CLOUD, startPos.x, startPos.y, startPos.z, result.x * 1.5, result.y * 1.5, result.z * 1.5));
     }
 
     public boolean canContinueUsing(ItemStack oldStack, ItemStack newStack) {
@@ -145,12 +151,13 @@ public class HornSeliaset extends FlameItemSetting {
         if (!(entity instanceof HornSeliasetEntity horn))
             return;
 
-        if (player.isShiftKeyDown() && horn.getPhase() == 0) {
+        if (player.isShiftKeyDown() && horn.getPhase() != 1) {
             ItemStack stack = ItemStack.of(CompoundManager.get(horn.getStringUUID()));
 
             if (horn.getCooldownTimer() > 0)
                 NBTUtils.setInt(stack, "horn_entity_cooldown", horn.getCooldownTimer());
 
+            LevelingUtils.addExperience(stack, horn.getAddExp());
             horn.remove(Entity.RemovalReason.KILLED);
             player.addItem(stack);
         } else if (horn.getPhase() == 0) {

@@ -34,7 +34,7 @@ public class ConquerorDunes extends AbstarctAbilityWidgets {
                 return;
 
             AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-            AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("ability_conqueror_dunes"), ThirteenFlames.MODID + ":conqueror_dunes", data.getLevelAbility("conqueror_dunes") * 0.01, AttributeModifier.Operation.ADDITION);
+            AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_ability_conqueror_dunes"), ThirteenFlames.MODID + ":conqueror_dunes", data.getLevelAbility("conqueror_dunes") * 0.01, AttributeModifier.Operation.ADDITION);
 
             if (player.getMainHandItem().is(Items.AIR) && player.getOffhandItem().is(Items.AIR) || data.getLevelAbility("conqueror_dunes") == bonus.getAmount() * 100) {
                 if (!speed.hasModifier(bonus))

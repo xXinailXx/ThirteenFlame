@@ -32,7 +32,7 @@ import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.*;
-import net.xXinailXx.thirteen_flames.init.EffectRegistry;
+import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.SetSkillPointPacket;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.zeith.hammerlib.net.Network;
@@ -829,7 +829,7 @@ public class Data implements IData {
                 guiLevelingData.setProcentCurse(70 - (abilitiesData.isActiveAbility("recovery") ? abilitiesData.getLevelAbility("recovery") * 5 : 0));
             }
 
-            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getGuiFightLevelAmount() * 0.01), AttributeModifier.Operation.ADDITION);
+            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getGuiFightLevelAmount() * 0.01), AttributeModifier.Operation.ADDITION);
             AttributeInstance attack_damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
             if (!attack_damage.hasModifier(attack_damage_bonus)) {
@@ -837,27 +837,27 @@ public class Data implements IData {
             }
 
             if (effectData.getEffectMontuAmount() <= 0) {
-                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_MONTU.get(), 18000, 1, true, true));
+                player.addEffect(new MobEffectInstance(EffectsRegistry.BLESSING_MONTU.get(), 18000, 1, true, true));
                 MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.montu.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectMontuAmount(750);
             }
             if (effectData.getEffectRonosAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_RONOSA.get(), 18000, 1, true, true));
+                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_RONOSA.get(), 18000, 1, true, true));
                 MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.ronos.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectRonosAmount(750);
             }
             if (effectData.getEffectKnefAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_KNEF.get(), 18000, 1, true, true));
+                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_KNEF.get(), 18000, 1, true, true));
                 MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.knef.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectKnefAmount(350);
             }
             if (effectData.getEffectSelyaAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_SELIASET.get(), 18000, 1, true, true));
+                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_SELIASET.get(), 18000, 1, true, true));
                 MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.seliaset.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectSelyaAmount(500);
             }
             if (effectData.getEffectHetAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_HET.get(), 18000, 1, true, true));
+                player.addEffect(new MobEffectInstance( EffectsRegistry.BLESSING_HET.get(), 18000, 1, true, true));
                 MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.het.add_effect", ChatFormatting.GRAY);
                 effectData.setEffectHetAmount(750);
             }

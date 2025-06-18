@@ -6,6 +6,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -45,9 +46,6 @@ public class SunSeliaset extends FlameItemSetting {
         level.addFreshEntity(sun);
 
         CompoundManager.add(sun.getStringUUID(), stack.save(stack.getTag()));
-
-        System.out.println(sun.getStringUUID());
-
         use.getPlayer().setItemInHand(use.getHand(), Items.AIR.getDefaultInstance());
 
         return InteractionResult.SUCCESS;
@@ -73,6 +71,7 @@ public class SunSeliaset extends FlameItemSetting {
         if (player.isShiftKeyDown() && sun.getPhase() == 0) {
             ItemStack stack = ItemStack.of(CompoundManager.get(sun.getStringUUID()));
 
+            LevelingUtils.addExperience(stack, sun.getAddExp());
             sun.remove(Entity.RemovalReason.KILLED);
             player.addItem(stack);
         } else if (sun.getPhase() == 0) {

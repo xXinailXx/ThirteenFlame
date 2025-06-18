@@ -164,10 +164,8 @@ public class BlackRose extends FlameItemSetting {
             heldStack.shrink(count);
         }
 
-        LevelingUtils.addExperience(player, slotStack, count);
-
+        LevelingUtils.addExperience(player, slotStack, count / 2);
         player.playSound(SoundEvents.BLAZE_SHOOT, 0.75F, 2F / (time * 0.025F));
-
         event.setCanceled(true);
     }
 }

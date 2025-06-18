@@ -1,7 +1,6 @@
 package net.xXinailXx.thirteen_flames.block;
 
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -15,8 +14,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.init.BlockRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 
 public class StatueCup extends Block {
     public StatueCup() {
@@ -57,9 +56,9 @@ public class StatueCup extends Block {
             ItemStack mainHandStack = player.getMainHandItem();
             ItemStack offHandStack = player.getOffhandItem();
 
-            if (state.is(Blocks.SANDSTONE) && (mainHandStack.is(ItemRegistry.HAMMER_CARVER.get()) && offHandStack.is(ItemRegistry.CHISEL_CARVER.get())) || (mainHandStack.is(ItemRegistry.CHISEL_CARVER.get()) && offHandStack.is(ItemRegistry.HAMMER_CARVER.get()))) {
+            if (state.is(Blocks.SANDSTONE) && (mainHandStack.is(ItemsRegistry.HAMMER_CARVER.get()) && offHandStack.is(ItemsRegistry.CHISEL_CARVER.get())) || (mainHandStack.is(ItemsRegistry.CHISEL_CARVER.get()) && offHandStack.is(ItemsRegistry.HAMMER_CARVER.get()))) {
                 level.destroyBlock(pos, false);
-                level.setBlock(pos, BlockRegistry.STATUE_CUP_UNFINISHED.get().defaultBlockState(), 11);
+                level.setBlock(pos, BlocksRegistry.STATUE_CUP_UNFINISHED.get().defaultBlockState(), 11);
                 DurabilityUtils.hurt(mainHandStack, 5);
                 DurabilityUtils.hurt(offHandStack, 5);
             }

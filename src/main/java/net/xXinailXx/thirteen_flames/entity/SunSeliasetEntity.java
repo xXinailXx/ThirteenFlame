@@ -21,8 +21,7 @@ import net.xXinailXx.enderdragonlib.client.glow.Beam;
 import net.xXinailXx.enderdragonlib.client.glow.GlowData;
 import net.xXinailXx.enderdragonlib.interfaces.IGlow;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -41,6 +40,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
     private static final EntityDataAccessor<Integer> COOLDOWN_TIMER = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ANIM_TIME = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> ADD_EXP = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
     private AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private boolean isAnim = false;
 
@@ -49,7 +49,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
     }
 
     public SunSeliasetEntity(Level level, int radius, int cooldown, ItemStack stack) {
-        this(EntityRegistry.SUN_SELIASET.get(), level);
+        this(EntitiesRegistry.SUN_SELIASET.get(), level);
 
         setRadius(radius);
         setCooldown(cooldown);
@@ -72,9 +72,12 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
 
                 BlockState state = this.level.getBlockState(pos1);
 
-                if (state.getBlock() instanceof CropBlock block)
-                    if (block.isValidBonemealTarget(this.level, pos, state, this.level.isClientSide) && block.isBonemealSuccess(this.level, this.level.getRandom(), pos, state))
+                if (state.getBlock() instanceof CropBlock block) {
+                    if (block.isValidBonemealTarget(this.level, pos, state, this.level.isClientSide) && block.isBonemealSuccess(this.level, this.level.getRandom(), pos, state)) {
                         ((BonemealableBlock) block).performBonemeal((ServerLevel) this.level, this.level.getRandom(), pos1, state);
+                        setAddExp(getAddExp() + 2);
+                    }
+                }
             }
 
             List<Entity> entities = AABBUtils.getEntities(this, getRadius());
@@ -82,6 +85,8 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
             for (Entity entity : entities) {
                 if (entity instanceof Monster monster) {
                     monster.setSecondsOnFire(8);
+
+                    setAddExp(getAddExp() + 2);
                 }
             }
 
@@ -162,6 +167,14 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
         isAnim = anim;
     }
 
+    public int getAddExp() {
+        return this.getEntityData().get(ADD_EXP);
+    }
+
+    public void setAddExp(int exp) {
+        this.getEntityData().set(ADD_EXP, exp);
+    }
+
     public int getAnimTime() {
         return this.getEntityData().get(ANIM_TIME);
     }
@@ -214,6 +227,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
         this.setCooldownTimer(compound.getInt("cooldown_timer"));
         this.setPhase(compound.getInt("phase"));
         this.setAnimTime(compound.getInt("open_anim_time"));
+        this.setAddExp(compound.getInt("add_item_exp"));
     }
 
     public void addAdditionalSaveData(CompoundTag compound) {
@@ -223,6 +237,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
         compound.putInt("cooldown_timer", this.getCooldownTimer());
         compound.putInt("phase", this.getPhase());
         compound.putInt("open_anim_time", this.getAnimTime());
+        compound.putInt("add_item_exp", this.getAddExp());
     }
 
     protected void defineSynchedData() {
@@ -231,6 +246,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
         this.entityData.define(COOLDOWN_TIMER, 10);
         this.entityData.define(PHASE, 0);
         this.entityData.define(ANIM_TIME, 0);
+        this.entityData.define(ADD_EXP, 0);
     }
 
     public Packet<?> getAddEntityPacket() {

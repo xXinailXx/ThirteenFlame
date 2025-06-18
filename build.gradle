@@ -133,12 +133,10 @@ dependencies {
     implementation fg.deobf("curse.maven:alex_mobs-426558:4159154")
     implementation fg.deobf("curse.maven:citadel-331936:4556677")
     implementation fg.deobf("curse.maven:hammerlib-247401:4558470")
+    implementation fg.deobf("curse.maven:jei-238222:4405346")
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.19:3.1.40')
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.6.4")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.19.2-5.1.6.4:api")
-    compileOnly(fg.deobf("mezz.jei:jei-1.19.2-common-api:11.4.0.286"))
-    compileOnly(fg.deobf("mezz.jei:jei-1.19.2-forge-api:11.4.0.286"))
-    runtimeOnly(fg.deobf("mezz.jei:jei-1.19.2-forge:11.4.0.286"))
 
     if (file("libs").isDirectory()) {
         file("libs").eachFile { file ->

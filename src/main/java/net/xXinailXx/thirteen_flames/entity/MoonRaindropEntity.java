@@ -76,7 +76,7 @@ public class MoonRaindropEntity extends ThrowableProjectile {
     protected void onHitBlock(BlockHitResult pResult) {
         HitResult result = this.level.clip(new ClipContext(this.position(), this.position().add((double)0.0F, (double)-5.0F, (double)0.0F), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
         Vec3 loc = pResult.getLocation();
-        this.getLevel().playSound((Player)null, loc.x, loc.y, loc.z, (SoundEvent)SoundsRegistry.MOON_BOW_SPLASH.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.2F + 0.1F, this.random.nextFloat() * 0.6F + 0.7F);
+        this.getLevel().playSound((Player)null, loc.x, loc.y, loc.z, (SoundEvent) net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SPLASH.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.2F + 0.1F, this.random.nextFloat() * 0.6F + 0.7F);
 
         if (result.getType() == HitResult.Type.BLOCK) {
             ParticleActions.spawnParticleLine(this.level, new CircleTintData(this.color, 0.1F, 80, 0.9F, false), this.position(), result.getLocation(), (int)Math.round(Math.sqrt(this.position().distanceToSqr(result.getLocation())) * this.tickCount * this.tickCount / 156 + 2), 0);

@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.interfaces.ITickBlockEntity;
@@ -21,7 +22,7 @@ import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.effect.StatueEffect;
-import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import net.xXinailXx.thirteen_flames.utils.ParticleUtils;
 import org.zeith.hammerlib.net.Network;
@@ -99,9 +100,9 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
             Iterable<BlockPos> iterable = null;
 
             if (getGod().equals(Gods.GOD_PHARAOH))
-                iterable = BlockPos.betweenClosed(this.worldPosition.offset(- 2, 0, - 2), this.worldPosition.offset(2, 0, 2));
+                iterable = BlockPos.betweenClosed(this.worldPosition.offset(-2, 0, -2), this.worldPosition.offset(2, 0, 2));
             else
-                iterable = BlockPos.betweenClosed(this.worldPosition.offset(- 1, 0, - 1), this.worldPosition.offset(1, 0, 1));
+                iterable = BlockPos.betweenClosed(this.worldPosition.offset(-1, 0, -1), this.worldPosition.offset(1, 0, 1));
 
             List<BlockPos> posList = new ArrayList<>();
 
@@ -125,21 +126,19 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                         .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                         .diameter(0.2F)
                         .lifetime(100)
-                        .scaleModifier(0.98F)
+                        .scaleModifier(0.95F)
                         .physical(false)
                         .build());
 
-                for (int i = 0; i < 360; i++) {
-                    if (i % 5 == 0) {
-                        double a = 72 * i - this.tickCount * 10;
-                        double radius = 1 + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.04 + this.tickCount;
+                for (int i = 0; i < 180; i++) {
+                    double a = 2 * i - this.tickCount * 200;
+                    double radius = 1 + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.02 + this.tickCount * 0.001;
 
-                        Vec3 x = center.normalize().x < 0.001 && center.normalize().z < 0.001 ? center.normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius) : center.normalize().cross(new Vec3(0, 1, 0).normalize().scale(radius));
-                        Vec3 z = center.normalize().cross(x).normalize().scale(radius);
-                        Vec3 pos = center.add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a)))).xRot(90);
+                    Vec3 x = new Vec3(0, 1, 0).normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius);
+                    Vec3 z = new Vec3(0, 1, 0).normalize().cross(x).normalize().scale(radius);
+                    Vec3 pos = center.add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
 
-                        Network.sendToAll(new SpawnParticlePacket(particle, pos.x, pos.y, pos.z, 0, 0.01, 0));
-                    }
+                    Network.sendToAll(new SpawnParticlePacket(particle, pos.x, pos.y + 0.3, pos.z, 0, 0.01, 0));
                 }
             }
 
@@ -149,81 +148,83 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
 
                 Collection<MobEffectInstance> collection = player.getActiveEffects();
 
-                for (MobEffectInstance inst : collection) {
-                    if (inst.getEffect() instanceof StatueEffect eff && eff.getGod().equals(this.god)) {
-                        effect = (StatueEffect) inst.getEffect();
-                        amplifier = inst.getAmplifier();
-                    }
-                }
-
-                if (effect != null) {
-                    Direction direction = this.getBlockState().getValue(CustomStatueUtils.FACING);
-                    BlockPos posCups = null;
-
-                    switch (direction) {
-                        case NORTH:
-                            posCups = this.worldPosition.north(2);
-                            break;
-                        case SOUTH:
-                            posCups = this.worldPosition.south(2);
-                            break;
-                        case WEST:
-                            posCups = this.worldPosition.west(2);
-                            break;
-                        case EAST:
-                            posCups = this.worldPosition.east(2);
-                            break;
-                        default:
-                            posCups = this.worldPosition.north(2);
-                    }
-
-                    BlockPos pos = null;
-
-                    for (int i = 0; i <= 1; i++) {
-                        BlockState state = this.level.getBlockState(i == 0 ? posCups : posCups.below());
-
-                        if (state.is(BlockRegistry.STATUE_CUP.get())) {
-                            pos = i == 0 ? posCups : posCups.below();
-                            break;
+                if (collection != null && !collection.isEmpty()) {
+                    for (MobEffectInstance inst : collection) {
+                        if (inst.getEffect() instanceof StatueEffect eff && eff.getGod().equals(getGod())) {
+                            effect = (StatueEffect) inst.getEffect();
+                            amplifier = inst.getAmplifier();
                         }
                     }
 
-                    if (pos != null) {
-                        BlockPos cup1 = null;
-                        BlockPos cup2 = pos;
-                        BlockPos cup3 = null;
+                    if (effect != null) {
+                        Direction direction = this.getBlockState().getValue(CustomStatueUtils.FACING);
+                        BlockPos posCups = null;
 
                         switch (direction) {
                             case NORTH:
-                                cup1 = pos.east();
-                                cup3 = pos.west();
+                                posCups = this.worldPosition.north(2);
                                 break;
                             case SOUTH:
-                                cup1 = pos.west();
-                                cup3 = pos.east();
+                                posCups = this.worldPosition.south(2);
                                 break;
                             case WEST:
-                                cup1 = pos.north();
-                                cup3 = pos.south();
+                                posCups = this.worldPosition.west(2);
                                 break;
                             case EAST:
-                                cup1 = pos.south();
-                                cup3 = pos.north();
+                                posCups = this.worldPosition.east(2);
                                 break;
                             default:
-                                cup1 = pos.east();
-                                cup3 = pos.west();
+                                posCups = this.worldPosition.north(2);
                         }
 
-                        if (cup1 != null && cup3 != null) {
-                            if (this.level.getBlockState(cup1).is(BlockRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlockRegistry.STATUE_CUP.get())) {
-                                ParticleUtils.spawnCupFire(level, color, cup1);
+                        BlockPos pos = null;
 
-                                if (amplifier >= 2 && amplifier <= 256)
-                                    ParticleUtils.spawnCupFire(level, color, cup2);
+                        for (int i = 0; i <= 1; i++) {
+                            BlockState state = this.level.getBlockState(i == 0 ? posCups : posCups.below());
 
-                                if (amplifier >= 3 && amplifier <= 256)
-                                    ParticleUtils.spawnCupFire(level, color, cup3);
+                            if (state.is(BlocksRegistry.STATUE_CUP.get())) {
+                                pos = i == 0 ? posCups : posCups.below();
+                                break;
+                            }
+                        }
+
+                        if (pos != null) {
+                            BlockPos cup1 = null;
+                            BlockPos cup2 = pos;
+                            BlockPos cup3 = null;
+
+                            switch (direction) {
+                                case NORTH:
+                                    cup1 = pos.east();
+                                    cup3 = pos.west();
+                                    break;
+                                case SOUTH:
+                                    cup1 = pos.west();
+                                    cup3 = pos.east();
+                                    break;
+                                case WEST:
+                                    cup1 = pos.north();
+                                    cup3 = pos.south();
+                                    break;
+                                case EAST:
+                                    cup1 = pos.south();
+                                    cup3 = pos.north();
+                                    break;
+                                default:
+                                    cup1 = pos.east();
+                                    cup3 = pos.west();
+                            }
+
+                            if (cup1 != null && cup3 != null) {
+                                if (this.level.getBlockState(cup1).is(BlocksRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlocksRegistry.STATUE_CUP.get())) {
+                                    ParticleUtils.spawnCupFire(level, color, cup1);
+
+                                    if (amplifier >= 2 && amplifier <= 256)
+                                        ParticleUtils.spawnCupFire(level, color, cup2);
+
+                                    if (amplifier >= 3 && amplifier <= 256)
+                                        ParticleUtils.spawnCupFire(level, color, cup3);
+                                }
                             }
                         }
                     }
@@ -235,6 +236,18 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
         this.tickCount++;
 
         setChanged();
+    }
+
+    protected void saveAdditional(CompoundTag tag) {
+        tag.putInt("tick_count", this.tickCount);
+        tag.putInt("time_to_upgrade", this.timeToUpgrade);
+        super.saveAdditional(tag);
+    }
+
+    public void load(CompoundTag tag) {
+        super.load(tag);
+        this.tickCount = tag.getInt("tick_count");
+        this.timeToUpgrade = tag.getInt("time_to_upgrade");
     }
 
     public boolean isFinished() {
@@ -251,14 +264,6 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
 
     public void resetFlameUpgradeData() {
         this.timeToUpgrade = ThirteenFlamesConfig.TIME_TO_FLAME_UPGRADE.get();
-    }
-
-    public CompoundTag serializeNBT() {
-        return super.serializeNBT();
-    }
-
-    public void deserializeNBT(CompoundTag nbt) {
-        super.deserializeNBT(nbt);
     }
 
     public void registerControllers(AnimationData data) {

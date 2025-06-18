@@ -21,8 +21,8 @@ import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.block.entity.StatueGodPharaohBE;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
-import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
-import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.init.BlockEntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.network.packet.AddStatueBuilderDataPacket;
 import net.xXinailXx.thirteen_flames.utils.Gods;
@@ -34,7 +34,7 @@ import java.util.List;
 
 public class StatueGodPharaoh extends CustomStatueUtils<StatueGodPharaohBE> {
     public StatueGodPharaoh() {
-        super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get(), Block.box(0.0D, 0.0D, 0.0D, 80.0D, 112.0D, 80.0D).move(-2, 0, -2));
+        super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlocksRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get(), Block.box(0.0D, 0.0D, 0.0D, 80.0D, 112.0D, 80.0D).move(-2, 0, -2));
     }
 
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
@@ -72,7 +72,7 @@ public class StatueGodPharaoh extends CustomStatueUtils<StatueGodPharaohBE> {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return BlockEntityRegistry.STATUE_GOD_PHARAOH.get().create(pos, state);
+        return BlockEntitiesRegistry.STATUE_GOD_PHARAOH.get().create(pos, state);
     }
 
     public List<BlockPos> getBlockPoses(BlockPos pos, boolean isMain) {

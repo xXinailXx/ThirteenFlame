@@ -36,7 +36,7 @@ import net.xXinailXx.thirteen_flames.entity.MoonCarrierEntity;
 import net.xXinailXx.thirteen_flames.entity.MoonProjectileEntity;
 import net.xXinailXx.thirteen_flames.entity.MoonProjectileSpecialEntity;
 import net.xXinailXx.thirteen_flames.entity.MoonStormcallerEntity;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 import net.xXinailXx.thirteen_flames.init.SoundsRegistry;
 import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 import org.jetbrains.annotations.NotNull;
@@ -87,9 +87,9 @@ public class MoonBow extends FlameItemSetting {
             if (player.isCrouching() && AbilityUtils.canUseAbility(stack, "storm") && !AbilityUtils.isAbilityOnCooldown(stack, "storm")) {
                 if (this.getUseDuration(stack) - timeCharged > 19 && !AbilityUtils.isAbilityOnCooldown(stack, "storm")) {
                     level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.7F, 0.6F);
-                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.6F, 0.3F);
+                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.6F, 0.3F);
 
-                    MoonStormcallerEntity stormcaller = new MoonStormcallerEntity(EntityRegistry.MOON_STORMCALLER.get(), level);
+                    MoonStormcallerEntity stormcaller = new MoonStormcallerEntity(EntitiesRegistry.MOON_STORMCALLER.get(), level);
                     Vec3 pos = entity.getEyePosition(1.0F).add(entity.getLookAngle().scale(0.3)).add(entity.getLookAngle().cross(entity.getLookAngle().x < 0.001 && entity.getLookAngle().z < 0.001 ? Vec3.directionFromRotation(0.0F, entity.getYHeadRot()).scale(entity.getLookAngle().y > 0 ? -1 : 1).normalize() : new Vec3(0, 1, 0)).normalize().scale(0.2)).add(0, -0.13, 0).subtract(entity.getLookAngle().scale(1.4));
                     stormcaller.setPos(pos);
                     stormcaller.setOwner(entity);
@@ -106,11 +106,11 @@ public class MoonBow extends FlameItemSetting {
                 } else if (this.getUseDuration(stack) - timeCharged > 5) {
                     if (!level.isClientSide()) {
                         float fl = this.random.nextFloat();
-                        level.playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.75F + fl * 0.1F);
+                        level.playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.75F + fl * 0.1F);
                     }
 
                     Vec3 pos = entity.getEyePosition(1.0F).add(entity.getLookAngle().scale(0.3)).add(entity.getLookAngle().cross(entity.getLookAngle().x < 0.001 && entity.getLookAngle().z < 0.001 ? Vec3.directionFromRotation(0.0F, entity.getYHeadRot()).scale(entity.getLookAngle().y > 0 ? -1 : 1).normalize() : new Vec3(0, 1, 0)).normalize().scale(0.2)).add(0, -0.13, 0).subtract(entity.getLookAngle().scale(1.4));
-                    MoonProjectileEntity proj = new MoonProjectileEntity(EntityRegistry.MOON_PROJECTILE.get(), level);
+                    MoonProjectileEntity proj = new MoonProjectileEntity(EntitiesRegistry.MOON_PROJECTILE.get(), level);
                     proj.setPos(pos);
                     proj.setOwner(entity);
                     proj.setPowerEnch(stack.getEnchantmentLevel(Enchantments.POWER_ARROWS));
@@ -122,13 +122,13 @@ public class MoonBow extends FlameItemSetting {
             } else if (this.getUseDuration(stack) - timeCharged > 19) {
                 if (!level.isClientSide()) {
                     float fl = this.random.nextFloat();
-                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.8F - fl * 0.15F);
-                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 0.6F);
+                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.8F - fl * 0.15F);
+                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 0.6F);
                 }
 
                 int count = (int)AbilityUtils.getAbilityValue(stack, "shot", "rays");
                 Vec3 pos = entity.getEyePosition(1.0F).add(entity.getLookAngle().scale(0.3)).add(entity.getLookAngle().cross(entity.getLookAngle().x < 0.001 && entity.getLookAngle().z < 0.001 ? Vec3.directionFromRotation(0.0F, entity.getYHeadRot()).scale(entity.getLookAngle().y > 0 ? -1 : 1).normalize() : new Vec3(0, 1, 0)).normalize().scale(0.2)).add(0, -0.13, 0).subtract(entity.getLookAngle().scale(1.4));
-                MoonCarrierEntity carrier = (new MoonCarrierEntity(EntityRegistry.MOON_CARRIES.get(), level)).setRays(MoonProjectileEntity.makeList(count, level, entity, pos, entity.getLookAngle().scale(0.3), stack.getEnchantmentLevel(Enchantments.POWER_ARROWS), stack));
+                MoonCarrierEntity carrier = (new MoonCarrierEntity(EntitiesRegistry.MOON_CARRIES.get(), level)).setRays(MoonProjectileEntity.makeList(count, level, entity, pos, entity.getLookAngle().scale(0.3), stack.getEnchantmentLevel(Enchantments.POWER_ARROWS), stack));
                 carrier.setPos(pos);
                 carrier.setOwner(entity);
                 carrier.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.75F, 1.0F, 0.0F);
@@ -140,11 +140,11 @@ public class MoonBow extends FlameItemSetting {
             } else if (this.getUseDuration(stack) - timeCharged > 5) {
                 if (!level.isClientSide()) {
                     float fl = this.random.nextFloat();
-                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.75F + fl * 0.1F);
+                    level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.75F + fl * 0.1F);
                 }
 
                 Vec3 pos = entity.getEyePosition(1.0F).add(entity.getLookAngle().scale(0.3)).add(entity.getLookAngle().cross(entity.getLookAngle().x < 0.001 && entity.getLookAngle().z < 0.001 ? Vec3.directionFromRotation(0.0F, entity.getYHeadRot()).scale(entity.getLookAngle().y > 0 ? -1 : 1).normalize() : new Vec3(0, 1, 0)).normalize().scale(0.2)).add(0, -0.13, 0).subtract(entity.getLookAngle().scale(1.4));
-                MoonProjectileEntity proj = new MoonProjectileEntity(EntityRegistry.MOON_PROJECTILE.get(), level);
+                MoonProjectileEntity proj = new MoonProjectileEntity(EntitiesRegistry.MOON_PROJECTILE.get(), level);
                 proj.setPos(pos);
                 proj.setOwner(entity);
                 proj.setPowerEnch(stack.getEnchantmentLevel(Enchantments.POWER_ARROWS));

@@ -29,7 +29,7 @@ public class Trader extends AbstarctAbilityWidgets {
             return;
 
         if (data.isActiveAbility("trader")) {
-            if (! player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE))
+            if (!player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE))
                 player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 2, 255, true, true));
         }
     }

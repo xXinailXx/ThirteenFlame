@@ -11,14 +11,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +29,7 @@ public class OreBlockSimulationEntity extends Entity {
     }
 
     public OreBlockSimulationEntity(Level level, BlockState state) {
-        super(EntityRegistry.ORE_SIMULATION.get(), level);
+        super(EntitiesRegistry.ORE_SIMULATION.get(), level);
         setBlockState(state);
         this.noPhysics = true;
     }

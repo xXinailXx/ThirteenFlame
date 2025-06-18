@@ -23,8 +23,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
-import net.xXinailXx.thirteen_flames.init.EntityRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
 import net.xXinailXx.thirteen_flames.init.SoundsRegistry;
 
 import java.awt.*;
@@ -99,12 +99,12 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
                 }
             }
 
-            if (this.getBow().is(ItemRegistry.MOON_BOW.get())) {
+            if (this.getBow().is(ItemsRegistry.MOON_BOW.get())) {
                 Entity owner = this.getOwner();
 
                 if (owner instanceof Player) {
                     Player player = (Player)owner;
-                    MoonStormEntity storm = new MoonStormEntity(EntityRegistry.MOON_STORM.get(), this.getLevel());
+                    MoonStormEntity storm = new MoonStormEntity(EntitiesRegistry.MOON_STORM.get(), this.getLevel());
                     storm.setPos(this.getPosition(1.0F));
                     storm.setRadius((float) AbilityUtils.getAbilityValue(this.getBow(), "storm", "radius"));
                     storm.setLifeTime((int)(AbilityUtils.getAbilityValue(this.getBow(), "storm", "duration") * 20));
@@ -116,7 +116,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
                     this.getLevel().addFreshEntity(storm);
 
                     if (!this.getLevel().isClientSide())
-                        this.getLevel().playSound(null, this.getOwner(), AbilityUtils.getAbilityValue(this.getBow(), "storm", "radius") > 5 ? (SoundEvent) SoundsRegistry.MOON_BOW_STORM.get() : (SoundEvent)SoundsRegistry.MOON_BOW_STORM_SHORT.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.6F + 1.0F, this.random.nextFloat() * 0.2F + 0.8F);
+                        this.getLevel().playSound(null, this.getOwner(), AbilityUtils.getAbilityValue(this.getBow(), "storm", "radius") > 5 ? (SoundEvent) SoundsRegistry.MOON_BOW_STORM.get() : (SoundEvent) net.xXinailXx.thirteen_flames.init.SoundsRegistry.MOON_BOW_STORM_SHORT.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.6F + 1.0F, this.random.nextFloat() * 0.2F + 0.8F);
                 }
             }
 
@@ -125,7 +125,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
     }
 
     protected void onHitBlock(BlockHitResult pResult) {
-        MoonDischargeEntity discharge = new MoonDischargeEntity(EntityRegistry.MOON_DISCHARGE.get(), this.level);
+        MoonDischargeEntity discharge = new MoonDischargeEntity(EntitiesRegistry.MOON_DISCHARGE.get(), this.level);
         Vec3 pos = this.position();
         discharge.setPos(pos);
         discharge.setOwner(this.getOwner());
@@ -149,7 +149,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
         this.setPos(result.getEntity().getBoundingBox().getCenter());
 
         if (!this.level.isClientSide()) {
-            MoonDischargeEntity discharge = new MoonDischargeEntity(EntityRegistry.MOON_DISCHARGE.get(), this.level);
+            MoonDischargeEntity discharge = new MoonDischargeEntity(EntitiesRegistry.MOON_DISCHARGE.get(), this.level);
             Vec3 pos = result.getEntity().getBoundingBox().getCenter();
             discharge.setPos(pos);
             discharge.setOwner(this.getOwner());

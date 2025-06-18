@@ -12,8 +12,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.capability.managers.TimeManager;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
@@ -172,7 +172,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         entries.add(abilityName);
         entries.add(Component.literal("§l_________________________________________"));
         entries.add(Component.literal(" "));
-        entries.add(Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".description"));
+        entries.add(Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".description", getTime()));
         entries.add(Component.literal("§l_________________________________________"));
         entries.add(Component.literal(" "));
         entries.add(Component.literal(" "));
@@ -287,6 +287,19 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
         poseStack.scale(1F, 1F, 1F);
         poseStack.popPose();
+    }
+
+    private int getTime() {
+        if (getAbilityData().getAbilityName().equals("egyptian_strength")) {
+            int time = TimeManager.get("ability_egyptian_strength");
+
+            if (time < 20 && time > 0)
+                return 1;
+
+            return (time - (time % 20)) / 20;
+        }
+
+        return 0;
     }
 
     public Data.AbilitiesData.Handler getInfo() {

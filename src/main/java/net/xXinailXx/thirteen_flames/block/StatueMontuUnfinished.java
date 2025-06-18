@@ -6,15 +6,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.custom.model.StatueMontuModel;
-import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
-import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.init.BlockEntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class StatueMontuUnfinished extends StatueHandler {
     public StatueMontuUnfinished() {
-        super(BlockRegistry.STATUE_MONTU_STRUCTURE.get(), Gods.MONTU, new GeoItemRenderer(new StatueMontuModel()) {
+        super(BlocksRegistry.STATUE_MONTU_STRUCTURE.get(), Gods.MONTU, new GeoItemRenderer(new StatueMontuModel()) {
             public ResourceLocation getTextureLocation(Object animatable) {
                 return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_montu.png");
             }
@@ -24,6 +24,6 @@ public class StatueMontuUnfinished extends StatueHandler {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return BlockEntityRegistry.STATUE_MONTU_UNFINISHED.get().create(pos, state);
+        return BlockEntitiesRegistry.STATUE_MONTU_UNFINISHED.get().create(pos, state);
     }
 }
