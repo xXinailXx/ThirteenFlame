@@ -21,7 +21,7 @@ import net.xXinailXx.enderdragonlib.client.glow.Beam;
 import net.xXinailXx.enderdragonlib.client.glow.GlowData;
 import net.xXinailXx.enderdragonlib.interfaces.IGlow;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -49,7 +49,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
     }
 
     public SunSeliasetEntity(Level level, int radius, int cooldown, ItemStack stack) {
-        this(EntitiesRegistry.SUN_SELIASET.get(), level);
+        this(EntityRegistry.SUN_SELIASET.get(), level);
 
         setRadius(radius);
         setCooldown(cooldown);
@@ -80,14 +80,12 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
                 }
             }
 
-            List<Entity> entities = AABBUtils.getEntities(this, getRadius());
+            List<Monster> entities = AABBUtils.getEntities(Monster.class, this, getRadius());
 
-            for (Entity entity : entities) {
-                if (entity instanceof Monster monster) {
-                    monster.setSecondsOnFire(8);
+            for (Monster entity : entities) {
+                entity.setSecondsOnFire(8);
 
-                    setAddExp(getAddExp() + 2);
-                }
+                setAddExp(getAddExp() + 2);
             }
 
             setCooldownTimer(getCooldown());

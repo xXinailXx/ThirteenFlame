@@ -23,7 +23,7 @@ import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.interfaces.IGlow;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import org.zeith.hammerlib.net.Network;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -55,7 +55,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
     }
 
     public HornSeliasetEntity(Level level, int waves, int cooldown, float stun) {
-        this(EntitiesRegistry.HORN_SELIASET.get(), level);
+        this(EntityRegistry.HORN_SELIASET.get(), level);
 
         setWavesMax(waves);
         setCooldown(cooldown);
@@ -102,22 +102,17 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
                         poses.add(mainPos.offset(i, 0, j));
                 }
 
-                Iterator<Entity> iterator = AABBUtils.getEntities(this, 8).stream().filter(entity -> !(entity.is(this.getOwner()))).iterator();
-                List<Entity> entities = new ArrayList<>();
+                List<LivingEntity> entities = AABBUtils.getEntities(LivingEntity.class, this, 8);
 
-                for (Iterator<Entity> it = iterator; it.hasNext();) {
-                    Entity entity = it.next();
-                    entities.add(entity);
-                }
+                for (LivingEntity entity : entities) {
+                    if (entity.is(getOwner()))
+                        continue;
 
-                for (Entity entity : entities) {
-                    if (entity instanceof LivingEntity) {
-                        Vec3 delta = entity.position().subtract(this.position());
+                    Vec3 delta = entity.position().subtract(this.position());
 
-                        ((LivingEntity) entity).knockback(0.5, -delta.x, -delta.z);
-                        ((LivingEntity) entity).addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) (getStun() * 20)));
-                        setAddExp(getAddExp() + 2);
-                    }
+                    ((LivingEntity) entity).knockback(0.5, -delta.x, -delta.z);
+                    ((LivingEntity) entity).addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) (getStun() * 20)));
+                    setAddExp(getAddExp() + 2);
                 }
 
                 setWaves(getWaves() + 1);

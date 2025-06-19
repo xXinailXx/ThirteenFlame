@@ -72,12 +72,7 @@ public class AbilityUtils {
         if (entity == null || entity.getLevel() == null)
             return List.of();
 
-        List<Entity> entities = AABBUtils.getEntities(entity, radius);
-        List<LivingEntity> entityList = new ArrayList<>();
-
-        entities.stream().filter(entity1 -> entities instanceof LivingEntity).forEach(entity1 -> entities.add(entity1));
-
-        return entityList;
+        return AABBUtils.getEntities(LivingEntity.class, entity, radius);
     }
 
     public static PlayerPosYState playerLevelSea(Player player) {

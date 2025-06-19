@@ -9,7 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.entity.*;
 
-public class EntitiesRegistry {
+public class EntityRegistry {
     private static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, ThirteenFlames.MODID);
 
     public static final RegistryObject<EntityType<ShockwaveEntity>> SHOCKWAVE = ENTITIES.register("shockwave", () ->
@@ -72,6 +72,10 @@ public class EntitiesRegistry {
             EntityType.Builder.<HornWindSeliasetEntity>of(HornWindSeliasetEntity::new, MobCategory.MISC)
                     .sized(1F, 1F)
                     .build("horn_wind_seliaset"));
+    public static final RegistryObject<EntityType<SoulEntity>> SOUL = ENTITIES.register("soul", () ->
+            EntityType.Builder.<SoulEntity>of(SoulEntity::new, MobCategory.MISC)
+                    .sized(1F, 1F)
+                    .build("soul"));
 
     public static void registerEntities() {
         ENTITIES.register( FMLJavaModLoadingContext.get().getModEventBus());

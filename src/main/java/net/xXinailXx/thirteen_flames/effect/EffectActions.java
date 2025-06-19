@@ -23,7 +23,7 @@ import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
+import net.xXinailXx.thirteen_flames.init.EffectRegistry;
 import net.xXinailXx.thirteen_flames.utils.ParticleUtils;
 import org.zeith.hammerlib.net.Network;
 
@@ -35,8 +35,8 @@ public class EffectActions {
     public static void onLivingHeal(LivingHealEvent event) {
         LivingEntity entity = event.getEntity();
 
-        if (entity.hasEffect(EffectsRegistry.ANEMIA.get())) {
-            int amp = event.getEntity().getEffect(EffectsRegistry.ANEMIA.get()).getAmplifier() + 1;
+        if (entity.hasEffect(EffectRegistry.ANEMIA.get())) {
+            int amp = event.getEntity().getEffect(EffectRegistry.ANEMIA.get()).getAmplifier() + 1;
 
             event.setAmount(event.getAmount() * (0.8F / (float)amp));
         }
@@ -46,16 +46,16 @@ public class EffectActions {
     public static void doublingXP(PlayerXpEvent.XpChange event) {
         Player player = event.getEntity();
 
-        if (player.hasEffect(EffectsRegistry.BLESSING_HET.get()))
-            if (MathUtils.isRandom(player.getLevel(), Math.round(1 + (0.39F * player.getEffect(EffectsRegistry.BLESSING_HET.get()).getAmplifier()))))
+        if (player.hasEffect(EffectRegistry.BLESSING_HET.get()))
+            if (MathUtils.isRandom(player.getLevel(), Math.round(1 + (0.39F * player.getEffect(EffectRegistry.BLESSING_HET.get()).getAmplifier()))))
                 event.setAmount(event.getAmount() * 2);
     }
 
     @SubscribeEvent
     public static void livingHeal(LivingAttackEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
-            if (player.hasEffect(EffectsRegistry.BLESSING_KNEF.get())) {
-                if (MathUtils.isRandom(player.getLevel(), Math.round(1 + (0.39F * player.getEffect(EffectsRegistry.BLESSING_KNEF.get()).getAmplifier()))))
+            if (player.hasEffect(EffectRegistry.BLESSING_KNEF.get())) {
+                if (MathUtils.isRandom(player.getLevel(), Math.round(1 + (0.39F * player.getEffect(EffectRegistry.BLESSING_KNEF.get()).getAmplifier()))))
                     event.getEntity().hurt(DamageSource.playerAttack(player), 10000000);
             }
         }
@@ -68,8 +68,8 @@ public class EffectActions {
         if (player == null)
             return;
 
-        if (player.hasEffect(EffectsRegistry.BLESSING_RONOSA.get()))
-            event.getTarget().hurt(DamageSource.playerAttack(player), 0.5F * player.getEffect(EffectsRegistry.BLESSING_RONOSA.get()).getAmplifier());
+        if (player.hasEffect(EffectRegistry.BLESSING_RONOSA.get()))
+            event.getTarget().hurt(DamageSource.playerAttack(player), 0.5F * player.getEffect(EffectRegistry.BLESSING_RONOSA.get()).getAmplifier());
     }
 
     @SubscribeEvent
@@ -80,21 +80,21 @@ public class EffectActions {
             return;
 
         AttributeInstance speed_attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_effect_bless_montu"), ThirteenFlames.MODID + ":effect_bless_montu", player.hasEffect(EffectsRegistry.BLESSING_MONTU.get()) ? (0.01 * player.getEffect(EffectsRegistry.BLESSING_MONTU.get()).getAmplifier()) : 0, AttributeModifier.Operation.ADDITION);
+        AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_effect_bless_montu"), ThirteenFlames.MODID + ":effect_bless_montu", player.hasEffect(EffectRegistry.BLESSING_MONTU.get()) ? (0.01 * player.getEffect(EffectRegistry.BLESSING_MONTU.get()).getAmplifier()) : 0, AttributeModifier.Operation.ADDITION);
 
-        if (player.hasEffect(EffectsRegistry.BLESSING_MONTU.get())) {
+        if (player.hasEffect(EffectRegistry.BLESSING_MONTU.get())) {
             if (!speed_attribute.hasModifier(bonus))
                 speed_attribute.addTransientModifier(bonus);
         } else {
             speed_attribute.removeModifier(bonus);
         }
 
-        if (player.hasEffect(EffectsRegistry.BLESSING_SELIASET.get())) {
+        if (player.hasEffect(EffectRegistry.BLESSING_SELIASET.get())) {
             Level level = player.getLevel();
             BlockPos pos = player.getOnPos();
 
             BlockPos.betweenClosed(pos.offset(-15, -15, -15), pos.offset(15, 15, 15)).iterator().forEachRemaining(blockPos -> {
-                int amplifire = player.getEffect(EffectsRegistry.BLESSING_SELIASET.get()).getAmplifier();
+                int amplifire = player.getEffect(EffectRegistry.BLESSING_SELIASET.get()).getAmplifier();
 
                 if (0.39F * amplifire > 1) {
                     if (MathUtils.isRandom(level, (int) (1 + (0.39F * amplifire))) && MathUtils.isRandom(level, (int) (1 + (0.39F * amplifire)))) {

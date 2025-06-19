@@ -11,8 +11,8 @@ import net.minecraft.world.level.block.Block;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.block.StatueHandler;
 import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
-import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.utils.BagPaintUtils;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.zeith.hammerlib.net.IPacket;
@@ -46,11 +46,11 @@ public class UpdateStatueBlockPacket implements IPacket {
 
         Block block = level.getBlockState(this.pos).getBlock();
 
-        if (utils.getGod() == null && this.stack.is(ItemsRegistry.BAG_PAINT_CUP.get())) {
-            if (block.defaultBlockState().is(BlocksRegistry.STATUE_CUP_UNFINISHED.get())) {
-                level.setBlock(this.pos, BlocksRegistry.STATUE_CUP.get().defaultBlockState(), 11);
+        if (utils.getGod() == null && this.stack.is(ItemRegistry.BAG_PAINT_CUP.get())) {
+            if (block.defaultBlockState().is(BlockRegistry.STATUE_CUP_UNFINISHED.get())) {
+                level.setBlock(this.pos, BlockRegistry.STATUE_CUP.get().defaultBlockState(), 11);
 
-                player.setItemInHand(InteractionHand.MAIN_HAND, ItemsRegistry.BAG_PAINT.get().getDefaultInstance());
+                player.setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.BAG_PAINT.get().getDefaultInstance());
             } else {
                 return;
             }
@@ -61,7 +61,7 @@ public class UpdateStatueBlockPacket implements IPacket {
                 return;
 
             if (utils.getGod().equals(Gods.GOD_PHARAOH)) {
-                CustomStatueUtils newStatue = (CustomStatueUtils) BlocksRegistry.STATUE_GOD_PHARAOH.get();
+                CustomStatueUtils newStatue = (CustomStatueUtils) BlockRegistry.STATUE_GOD_PHARAOH.get();
                 Direction direction = level.getBlockState(this.pos).getValue(CustomStatueUtils.FACING);
 
                 level.setBlock(this.pos, newStatue.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
@@ -70,23 +70,23 @@ public class UpdateStatueBlockPacket implements IPacket {
                 StatueHandler newHadler = null;
 
                 switch (statueHandler.getGod()) {
-                    case KNEF -> newHadler = (StatueHandler) BlocksRegistry.STATUE_KNEF.get();
-                    case SELYA -> newHadler = (StatueHandler) BlocksRegistry.STATUE_SELYA.get();
-                    case MONTU -> newHadler = (StatueHandler) BlocksRegistry.STATUE_MONTU.get();
-                    case RONOS -> newHadler = (StatueHandler) BlocksRegistry.STATUE_RONOS.get();
-                    case HET -> newHadler = (StatueHandler) BlocksRegistry.STATUE_HET.get();
+                    case KNEF -> newHadler = (StatueHandler) BlockRegistry.STATUE_KNEF.get();
+                    case SELYA -> newHadler = (StatueHandler) BlockRegistry.STATUE_SELYA.get();
+                    case MONTU -> newHadler = (StatueHandler) BlockRegistry.STATUE_MONTU.get();
+                    case RONOS -> newHadler = (StatueHandler) BlockRegistry.STATUE_RONOS.get();
+                    case HET -> newHadler = (StatueHandler) BlockRegistry.STATUE_HET.get();
                 }
 
                 Direction direction = level.getBlockState(this.pos).getValue(CustomStatueUtils.FACING);
                 level.setBlock(this.pos, newHadler.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
             }
-            player.setItemInHand(InteractionHand.MAIN_HAND, ItemsRegistry.BAG_PAINT.get().getDefaultInstance());
+            player.setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.BAG_PAINT.get().getDefaultInstance());
         } else if (block instanceof StatueStructureBlock structure) {
             if (!utils.getGod().equals(structure.getMainBlockBE(this.pos).getGod()))
                 return;
 
             if (utils.getGod().equals(Gods.GOD_PHARAOH)) {
-                CustomStatueUtils newStatue = (CustomStatueUtils) BlocksRegistry.STATUE_GOD_PHARAOH.get();
+                CustomStatueUtils newStatue = (CustomStatueUtils) BlockRegistry.STATUE_GOD_PHARAOH.get();
                 Direction direction = level.getBlockState(structure.getBuilder(this.pos).mainPos()).getValue(CustomStatueUtils.FACING);
 
                 level.setBlock(structure.getBuilder(this.pos).mainPos(), newStatue.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
@@ -95,18 +95,18 @@ public class UpdateStatueBlockPacket implements IPacket {
                 StatueHandler newHadler = null;
 
                 switch (handler.getGod()) {
-                    case KNEF -> newHadler = (StatueHandler) BlocksRegistry.STATUE_KNEF.get();
-                    case SELYA -> newHadler = (StatueHandler) BlocksRegistry.STATUE_SELYA.get();
-                    case MONTU -> newHadler = (StatueHandler) BlocksRegistry.STATUE_MONTU.get();
-                    case RONOS -> newHadler = (StatueHandler) BlocksRegistry.STATUE_RONOS.get();
-                    case HET -> newHadler = (StatueHandler) BlocksRegistry.STATUE_HET.get();
+                    case KNEF -> newHadler = (StatueHandler) BlockRegistry.STATUE_KNEF.get();
+                    case SELYA -> newHadler = (StatueHandler) BlockRegistry.STATUE_SELYA.get();
+                    case MONTU -> newHadler = (StatueHandler) BlockRegistry.STATUE_MONTU.get();
+                    case RONOS -> newHadler = (StatueHandler) BlockRegistry.STATUE_RONOS.get();
+                    case HET -> newHadler = (StatueHandler) BlockRegistry.STATUE_HET.get();
                 }
 
                 Direction direction = level.getBlockState(structure.getBuilder(this.pos).mainPos()).getValue(CustomStatueUtils.FACING);
                 level.setBlock(structure.getBuilder(this.pos).mainPos(), newHadler.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
             }
 
-            player.setItemInHand(InteractionHand.MAIN_HAND, ItemsRegistry.BAG_PAINT.get().getDefaultInstance());
+            player.setItemInHand(InteractionHand.MAIN_HAND, ItemRegistry.BAG_PAINT.get().getDefaultInstance());
         }
     }
 }

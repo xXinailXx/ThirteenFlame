@@ -16,7 +16,7 @@ import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.*;
 import net.xXinailXx.thirteen_flames.utils.StatueBlockItem;
 
-public class BlocksRegistry {
+public class BlockRegistry {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ThirteenFlames.MODID);
     private static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ThirteenFlames.MODID);
 

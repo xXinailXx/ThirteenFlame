@@ -19,32 +19,32 @@ public class ThirteenFlames {
     public static final String MODID = "thirteen_flames";
     public static final CreativeModeTab FLAME_TAB = new CreativeModeTab("thirteen_flames_flame_tab") {
         public ItemStack makeIcon() {
-            return ItemsRegistry.HAMMER_MONTU.get().getDefaultInstance();
+            return ItemRegistry.HAMMER_MONTU.get().getDefaultInstance();
         }
     };
     public static final CreativeModeTab ITEMS_TAB = new CreativeModeTab("thirteen_flames_items_tab") {
         public ItemStack makeIcon() {
-            return ItemsRegistry.LAZOTEP_INGOT.get().getDefaultInstance();
+            return ItemRegistry.LAZOTEP_INGOT.get().getDefaultInstance();
         }
     };
     public static final CreativeModeTab STATUES_TAB = new CreativeModeTab("thirteen_flames_statues_tab") {
         public ItemStack makeIcon() {
-            return ItemsRegistry.MARKUP_KNEF.get().getDefaultInstance();
+            return ItemRegistry.MARKUP_KNEF.get().getDefaultInstance();
         }
     };
 
     public ThirteenFlames() {
         MinecraftForge.EVENT_BUS.register(this);
 
-        ItemsRegistry.register();
-        BlocksRegistry.register();
-        BlockEntitiesRegistry.register();
-        CommandsRegistry.register();
-        EffectsRegistry.register();
-        net.xXinailXx.thirteen_flames.init.SoundsRegistry.register();
-        EntitiesRegistry.registerEntities();
-        FeaturesRegistry.register();
-        MenusRegistry.register();
+        ItemRegistry.register();
+        BlockRegistry.register();
+        BlockEntityRegistry.register();
+        CommandRegistry.register();
+        EffectRegistry.register();
+        SoundRegistry.register();
+        EntityRegistry.registerEntities();
+        FeatureRegistry.register();
+        MenuRegistry.register();
 
         GeckoLib.initialize();
 
@@ -53,6 +53,6 @@ public class ThirteenFlames {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
-        MenuScreens.register(MenusRegistry.SCROLL_MENU.get(), ScrollScreen::new);
+        MenuScreens.register(MenuRegistry.SCROLL_MENU.get(), ScrollScreen::new);
     }
 }

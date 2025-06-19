@@ -15,7 +15,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import net.xXinailXx.thirteen_flames.utils.ParticleUtils;
 
@@ -35,7 +35,7 @@ public class StatueShcemeEntity extends Projectile {
     }
 
     public StatueShcemeEntity(Level level, Gods god) {
-        this(EntitiesRegistry.SHCEME.get(), level);
+        this(EntityRegistry.SHCEME.get(), level);
         this.god = god;
     }
 

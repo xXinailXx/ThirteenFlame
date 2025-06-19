@@ -13,7 +13,7 @@ import net.xXinailXx.thirteen_flames.item.flame.*;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.utils.*;
 
-public class ItemsRegistry {
+public class ItemRegistry {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, ThirteenFlames.MODID);
 
     public static final RegistryObject<Item> HAMMER_MONTU = ITEMS.register("hammer_montu", HammerMontu::new);

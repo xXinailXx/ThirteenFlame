@@ -7,19 +7,19 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 
 import java.util.function.Supplier;
 
 public enum ArmorMaterialsTF implements ArmorMaterial {
     TOIFETUN_WHITE("toifetun_white", 33, new int[]{3, 6, 8, 3}, 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () ->
-        Ingredient.of(ItemsRegistry.LAZOTEP_INGOT.get())),
+        Ingredient.of(ItemRegistry.LAZOTEP_INGOT.get())),
     TOIFETUN_SILVER("toifetun_silver", 33, new int[]{3, 6, 8, 3}, 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () ->
-        Ingredient.of(ItemsRegistry.LAZOTEP_INGOT.get())),
+        Ingredient.of(ItemRegistry.LAZOTEP_INGOT.get())),
     TOIFETUN_GOLD("toifetun_gold", 33, new int[]{3, 6, 8, 3}, 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () ->
-        Ingredient.of(ItemsRegistry.LAZOTEP_INGOT.get())),
+        Ingredient.of(ItemRegistry.LAZOTEP_INGOT.get())),
     SALMAN("salman", 33, new int[]{3, 6, 8, 3}, 10, SoundEvents.ARMOR_EQUIP_DIAMOND, 2.0F, 0.0F, () ->
-        Ingredient.of(ItemsRegistry.LAZOTEP_INGOT.get()));
+        Ingredient.of(ItemRegistry.LAZOTEP_INGOT.get()));
 
     private static final int[] HEALTH_PER_SLOT = new int[]{13, 15, 16, 11};
     private final String name;

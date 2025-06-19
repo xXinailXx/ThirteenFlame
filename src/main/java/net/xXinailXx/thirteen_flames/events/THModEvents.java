@@ -103,7 +103,7 @@ public class THModEvents {
             ItemStack offHandStack = player.getOffhandItem();
             Level level = event.getLevel();
 
-            if ((mainHandStack.is(ItemsRegistry.HAMMER_CARVER.get()) && offHandStack.is(ItemsRegistry.CHISEL_CARVER.get())) || (mainHandStack.is(ItemsRegistry.CHISEL_CARVER.get()) && offHandStack.is(ItemsRegistry.HAMMER_CARVER.get()))) {
+            if ((mainHandStack.is(ItemRegistry.HAMMER_CARVER.get()) && offHandStack.is(ItemRegistry.CHISEL_CARVER.get())) || (mainHandStack.is(ItemRegistry.CHISEL_CARVER.get()) && offHandStack.is(ItemRegistry.HAMMER_CARVER.get()))) {
                 if (level.isClientSide)
                     return;
 
@@ -145,12 +145,12 @@ public class THModEvents {
                     StatueHandler statue = null;
 
                     switch (shceme.getGod()) {
-                        case KNEF -> statue = (StatueHandler) BlocksRegistry.STATUE_KNEF_UNFINISHED.get();
-                        case SELYA -> statue = (StatueHandler) BlocksRegistry.STATUE_SELYA_UNFINISHED.get();
-                        case MONTU -> statue = (StatueHandler) BlocksRegistry.STATUE_MONTU_UNFINISHED.get();
-                        case RONOS -> statue = (StatueHandler) BlocksRegistry.STATUE_RONOS_UNFINISHED.get();
-                        case HET -> statue = (StatueHandler) BlocksRegistry.STATUE_HET_UNFINISHED.get();
-                        case GOD_PHARAOH -> statue = (StatueHandler) BlocksRegistry.STATUE_GOD_PHARAOH_UNFINISHED.get();
+                        case KNEF -> statue = (StatueHandler) BlockRegistry.STATUE_KNEF_UNFINISHED.get();
+                        case SELYA -> statue = (StatueHandler) BlockRegistry.STATUE_SELYA_UNFINISHED.get();
+                        case MONTU -> statue = (StatueHandler) BlockRegistry.STATUE_MONTU_UNFINISHED.get();
+                        case RONOS -> statue = (StatueHandler) BlockRegistry.STATUE_RONOS_UNFINISHED.get();
+                        case HET -> statue = (StatueHandler) BlockRegistry.STATUE_HET_UNFINISHED.get();
+                        case GOD_PHARAOH -> statue = (StatueHandler) BlockRegistry.STATUE_GOD_PHARAOH_UNFINISHED.get();
                     }
 
                     Direction direction = null;
@@ -189,7 +189,7 @@ public class THModEvents {
     public static class CommonEvents {
         @SubscribeEvent
         public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
-            event.put(EntitiesRegistry.LIVING_FLESH.get(), LivingFleshEntity.setAttrebutes());
+            event.put(EntityRegistry.LIVING_FLESH.get(), LivingFleshEntity.setAttrebutes());
         }
     }
 }

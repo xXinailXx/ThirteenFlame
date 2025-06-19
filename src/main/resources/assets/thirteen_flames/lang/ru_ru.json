@@ -53,10 +53,10 @@
   "message.thirteen_flames.scarab_type.auriteh": "ауритеховый",
   "message.thirteen_flames.scarab_type.lazotep": "лазотеповый",
   "message.thirteen_flames.montu.add_effect": "§6Монту доволен вашими деяниями и дарует вам своё благословление.",
-  "message.thirteen_flames.ronos.add_effect": "§6Роноса доволен вашими деяниями и дарует вам своё благословление.",
+  "message.thirteen_flames.ronos.add_effect": "§6Ронос доволен вашими деяниями и дарует вам своё благословление.",
   "message.thirteen_flames.knef.add_effect": "§6Кнефмтити довольна вашими деяниями и дарует вам своё благословление.",
   "message.thirteen_flames.seliaset.add_effect": "§6Селиасэт довольна вашими деяниями и дарует вам своё благословление.",
-  "message.thirteen_flames.het.add_effect": "§6Хэтентепа доволен вашими деяниями и дарует вам своё благословление.",
+  "message.thirteen_flames.het.add_effect": "§6Хэтентеп доволен вашими деяниями и дарует вам своё благословление.",
 
   "item.thirteen_flames.record": "§6Великое пламя",
   "item.thirteen_flames.record.desc": "Восход, PryAnnya, AE, MrLololoshka - Великое пламя (CCB)",
@@ -259,10 +259,12 @@
   "tooltip.relics.scroll_het.ability.techn.stat.level.title": "Уровень эффекта",
   "tooltip.relics.scroll_het.ability.techn.stat.level.value": "%1$s уровень.",
 
+  "item.thirteen_flames.flight_het": "Перо Хэтентепа",
+
   "item.thirteen_flames.travelers_sword": "Меч Путешественника",
   "tooltip.relics.travelers_sword.leveling": "Меч Путешественника. Один из \"Огней\", легендарных артефактов,\n разбросанных по всему Мисру. Будучи осколком\n  Временного парадокса, клинок воодушевляет\n владельца на приключения и путешествия по\n    мультивселенной.",
   "tooltip.relics.travelers_sword.ability.wind_wandering": "Ветер Странствий",
-  "tooltip.relics.travelers_sword.ability.wind_wandering.description": "Почувствуй тягу к преключениям! Зажатие ПКМ\nнемедленно устремит вас в напровлении взгляда.\nУлучшение повышает скорость полёта.",
+  "tooltip.relics.travelers_sword.ability.wind_wandering.description": "Почувствуй тягу к преключениям! Зажатие ПКМ немедленно устремит вас в напровлении взгляда. Улучшение повышает скорость полёта.",
   "tooltip.relics.travelers_sword.ability.wind_wandering.stat.speed.title": "Скорость",
   "tooltip.relics.travelers_sword.ability.wind_wandering.stat.speed.value": "%1$s блоков",
   "tooltip.relics.travelers_sword.ability.wide_step": "Широкий шаг",
@@ -272,9 +274,23 @@
   "tooltip.relics.travelers_sword.ability.wide_step.stat.speed.title": "Скорость",
   "tooltip.relics.travelers_sword.ability.wide_step.stat.speed.value": "%1$s блоков в секунду",
 
-  // СПОСОБНОСТИ БУДУТ ПРИДУМАНЫ ПОЗЖЕ
-  "item.thirteen_flames.flight_het": "Перо Хэтентепа",
   "item.thirteen_flames.staff_jodah": "Посах Джодаха",
+  "tooltip.relics.staff_jodah.leveling": "Посах Джодаха. Один из \"Огней\", легендарных\nартефактов, разбросанных по всему Мисру.\nСозданный богом Фароном, посох наделяет\nигрока способностями Бога-Фараона.",
+  "tooltip.relics.staff_jodah.ability.rage": "Сила Ави",
+  "tooltip.relics.staff_jodah.ability.rage.description": "Ударьте существо посохом, чтобы с небольшим шансом высосать из него душу и использовать часть его жизненных сил для восстановления сил владельца. Улучшение повышает шанс использования и процент восстанавливаемых хп.",
+  "tooltip.relics.staff_jodah.ability.rage.stat.procent.title": "Шанс",
+  "tooltip.relics.staff_jodah.ability.rage.stat.procent.value": "%1$s%%",
+  "tooltip.relics.staff_jodah.ability.rage.stat.heal.title": "Процент восстаналваемых хп",
+  "tooltip.relics.staff_jodah.ability.rage.stat.heal.value": "%1$s%%",
+  "tooltip.relics.staff_jodah.ability.backlight": "Тысяча глаз",
+  "tooltip.relics.staff_jodah.ability.backlight.description": "Поглощённые демоны даруют игроку способность видеть существ сквозь стены. Улучшение увеличивает длительность видения этих существ и радиус, в котором они видны.",
+  "tooltip.relics.staff_jodah.ability.backlight.stat.durability.title": "Длительность",
+  "tooltip.relics.staff_jodah.ability.backlight.stat.durability.value": "%1$s сек",
+  "tooltip.relics.staff_jodah.ability.backlight.stat.radius.title": "Радус",
+  "tooltip.relics.staff_jodah.ability.backlight.stat.radius.value": "%1$s блоков",
+  "tooltip.relics.staff_jodah.ability.backlight.stat.cooldown.title": "Откат",
+  "tooltip.relics.staff_jodah.ability.backlight.stat.cooldown.value": "%1$s сек",
+
   "item.thirteen_flames.mask_demiurg": "Маска Междумирца",
 
   "gui.thirteen_flames.relic.button_add_point.add_level": "Конвертировать 1 серебрянного скарабея в 50 единиц опыта реликвии\n\nТекущий баланс: %1$s",

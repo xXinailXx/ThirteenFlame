@@ -58,6 +58,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
         manager.bindForSetup(ADD_POINT_FIRE);
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
         RenderSystem.setShaderTexture(0, ADD_POINT_FIRE);
+
         poseStack.pushPose();
 
         blit(poseStack, this.x, this.y + 2, 0.0F, 0.0F, 79, 22, 512, 512);
@@ -67,7 +68,9 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
             blit(poseStack, this.x, this.y - 1, 85.0f, 0.0f, 85, 31, 512, 512);
 
         poseStack.scale(1.2F, 1.2F, 1.2F);
-        drawString(poseStack, MC.font, String.valueOf(50), (int) (this.x - ((float)MC.font.width(String.valueOf(50)) / 2.0F) - 20), this.y - 16, 16777215);
+
+        drawString(poseStack, MC.font, String.valueOf(50), this.x - MC.font.width(String.valueOf(50)) / 2 - 20, this.y - 16, 16777215);
+
         poseStack.scale(1.0F, 1.0F, 1.0F);
         poseStack.popPose();
     }

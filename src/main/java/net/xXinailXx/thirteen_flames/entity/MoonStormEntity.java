@@ -24,8 +24,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
-import net.xXinailXx.thirteen_flames.init.SoundsRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.SoundRegistry;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class MoonStormEntity extends Projectile {
             List<LivingEntity> targets = new ArrayList(this.getLevel().getEntitiesOfClass(LivingEntity.class, box, (entity) -> !entity.equals(this.getOwner())));
 
             if (this.tickCount % freq == 0) {
-                MoonRaindropEntity drop = new MoonRaindropEntity(EntitiesRegistry.MOON_RAINDROP.get(), this.getLevel());
+                MoonRaindropEntity drop = new MoonRaindropEntity(EntityRegistry.MOON_RAINDROP.get(), this.getLevel());
                 Vec3 pos = this.getPosition(1).add(MathUtils.randomFloat(this.random) * this.radius, -1, MathUtils.randomFloat(this.random) * this.radius);
 
                 if (this.random.nextFloat() < 0.2 && !targets.isEmpty()) {
@@ -127,7 +127,7 @@ public class MoonStormEntity extends Projectile {
                     vec3 = pos.add(0, -102, 0);
 
                 float vol = (float)(20 / (this.getOwner() != null ? this.getOwner().distanceToSqr(pos.subtract(0, pos.y() - this.getOwner().getY(), 0)) : 20));
-                this.getLevel().playSound(null, vec3.x, vec3.y, vec3.z, SoundsRegistry.MOON_BOW_RAIN.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.15F * vol + vol, this.random.nextFloat() * 0.6F + 0.7F);
+                this.getLevel().playSound(null, vec3.x, vec3.y, vec3.z, SoundRegistry.MOON_BOW_RAIN.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.15F * vol + vol, this.random.nextFloat() * 0.6F + 0.7F);
             }
 
             if (this.tickCount % (35L + Math.round((freq * freq) * (freq / 1.9))) == 0L) {

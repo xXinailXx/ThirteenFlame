@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class MoonProjectileSpecialEntity extends ThrowableProjectile {
         List<MoonProjectileSpecialEntity> list = new ArrayList();
 
         for(int i = 0; i < count; ++i) {
-            MoonProjectileSpecialEntity proj = new MoonProjectileSpecialEntity(EntitiesRegistry.MOON_PROJECTILE_SPECIAL.get(), level);
+            MoonProjectileSpecialEntity proj = new MoonProjectileSpecialEntity(EntityRegistry.MOON_PROJECTILE_SPECIAL.get(), level);
             proj.setOwner(owner);
             proj.setPos(center);
             proj.setDeltaMovement(move);

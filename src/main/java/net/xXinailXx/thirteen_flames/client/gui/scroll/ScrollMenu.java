@@ -10,20 +10,17 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.xXinailXx.thirteen_flames.init.MenusRegistry;
+import net.xXinailXx.thirteen_flames.init.MenuRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
 import org.zeith.hammerlib.net.Network;
-import oshi.util.tuples.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ScrollMenu extends AbstractContainerMenu {
@@ -48,7 +45,7 @@ public class ScrollMenu extends AbstractContainerMenu {
     public boolean rebuild = false;
 
     public ScrollMenu(int id, Inventory inventory, ItemStack scrollStack, ItemStack slotStack, int action, int enchLevel, int scroll0, int scroll1, Supplier<EnchantmentUtils.Ench> ench, Supplier<Map<Enchantment, Integer>> enchs, Supplier<Map<Enchantment, EnchantmentUtils.Ench>> possibleEnchs) {
-        super(MenusRegistry.SCROLL_MENU.get(), id);
+        super(MenuRegistry.SCROLL_MENU.get(), id);
         this.level = inventory.player.level;
         this.scrollStack = scrollStack;
         this.stack = slotStack;

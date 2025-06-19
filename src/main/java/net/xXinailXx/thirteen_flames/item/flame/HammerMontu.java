@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.ShockwaveEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.PickaxeItemTF;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
@@ -53,18 +53,20 @@ public class HammerMontu extends PickaxeItemTF {
     @Override
     public InteractionResult useOn(UseOnContext use) {
         Player player = use.getPlayer();
+        ItemStack stack = use.getItemInHand();
 
-        if (!AbilityUtils.isAbilityOnCooldown(use.getItemInHand(), "ejection")) {
+        if (!AbilityUtils.isAbilityOnCooldown(stack, "ejection")) {
             Level level = player.getCommandSenderWorld();
 
-            ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(use.getItemInHand(), "ejection", "radius"), 0);
+            ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(stack, "ejection", "radius"), 0);
             shockwave.setOwner(player);
             shockwave.setPos(use.getClickedPos().getX(), use.getClickedPos().getY(), use.getClickedPos().getZ());
             level.addFreshEntity(shockwave);
 
-            LevelingUtils.addExperience(player, use.getItemInHand(), 5);
+            LevelingUtils.addExperience(player, stack, 5);
 
-            player.getCooldowns().addCooldown(use.getItemInHand().getItem(), (int) (AbilityUtils.getAbilityValue(use.getItemInHand(), "ejection", "cooldown") * 20));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) (AbilityUtils.getAbilityValue(stack, "ejection", "cooldown") * 20));
+            AbilityUtils.addAbilityCooldown(stack, "ejection", (int) (AbilityUtils.getAbilityValue(stack, "ejection", "cooldown") * 20));
         }
 
         return super.useOn(use);
@@ -91,7 +93,7 @@ public class HammerMontu extends PickaxeItemTF {
         Level level = event.getPlayer().getLevel();
         double maxLevel = AbilityUtils.getAbilityValue(stack, "digging", "mining");
 
-        if (stack.getItem() == ItemsRegistry.HAMMER_MONTU.get()) {
+        if (stack.getItem() == ItemRegistry.HAMMER_MONTU.get()) {
             switch ((int) maxLevel) {
                 case 2 -> {
                     BlockState state = level.getBlockState(pos.below());

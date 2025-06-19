@@ -15,7 +15,7 @@ import net.xXinailXx.thirteen_flames.commands.AbilityArgumentsType;
 import net.xXinailXx.thirteen_flames.commands.ThirteenFlamesCommands;
 
 @Mod.EventBusSubscriber
-public class CommandsRegistry {
+public class CommandRegistry {
     private static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENTS = DeferredRegister.create(Registry.COMMAND_ARGUMENT_TYPE_REGISTRY, ThirteenFlames.MODID);
     public static final RegistryObject<ArgumentTypeInfo<?, ?>> RELIC_ABILITY = COMMAND_ARGUMENTS.register("relic_ability", () -> ArgumentTypeInfos.registerByClass(AbilityArgumentsType.class, SingletonArgumentInfo.contextFree(AbilityArgumentsType::abilityType)));
 

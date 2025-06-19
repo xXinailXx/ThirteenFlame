@@ -8,7 +8,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 
-public class SoundsRegistry {
+public class SoundRegistry {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ThirteenFlames.MODID);
 
     public static final RegistryObject<SoundEvent> RECORD = SOUNDS.register("record", () -> new SoundEvent(new ResourceLocation(ThirteenFlames.MODID, "record")));

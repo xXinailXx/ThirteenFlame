@@ -2,6 +2,9 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +33,8 @@ public class ButtonItemEnchant extends AbstractWidgetUtils {
     public void onPress() {
         if (this.isActive) {
             if (this.MC.player.experienceLevel >= this.screen.getExpCost()) {
+                int exp = 0;
+
                 for (Enchantment ench : this.screen.enchs.keySet()) {
                     int level = this.screen.enchs.get(ench);
 
@@ -37,7 +42,11 @@ public class ButtonItemEnchant extends AbstractWidgetUtils {
                         this.stack.getAllEnchantments().put(ench, level);
                     else
                         this.stack.enchant(ench, level);
+
+                    exp += level;
                 }
+
+                LevelingUtils.addExperience(this.stack, exp);
 
                 if (!this.MC.player.isCreative() && !this.MC.player.isSpectator())
                     this.MC.player.giveExperienceLevels(-this.screen.getExpCost());

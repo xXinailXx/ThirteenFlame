@@ -1,5 +1,7 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
@@ -10,6 +12,8 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -25,7 +29,7 @@ import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 import org.zeith.hammerlib.net.Network;
@@ -37,7 +41,7 @@ import java.awt.*;
 @Mod.EventBusSubscriber
 public class TravelersSword extends SwordItemTF {
     public TravelersSword() {
-        super(ToolTierTF.THIRTEEN_FLAMES, 5, -1.4f);
+        super(ToolTierTF.THIRTEEN_FLAMES, 7, -2.4F);
     }
 
     public RelicData getRelicData() {
@@ -91,6 +95,17 @@ public class TravelersSword extends SwordItemTF {
         return super.use(level, player, hand);
     }
 
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+
+        if (slot == EquipmentSlot.MAINHAND) {
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, ThirteenFlames.MODID + ":attack_damage", 8, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, ThirteenFlames.MODID + ":attack_speed", 0.7, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+        }
+
+        return builder.build();
+    }
+
     protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
         return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
     }
@@ -108,7 +123,7 @@ public class TravelersSword extends SwordItemTF {
         AttributeModifier speedBonus = new AttributeModifier(UUIDManager.getOrCreate("tf_travel_sword_speed"), ThirteenFlames.MODID + ":ts_speed_bonus", (speed - 1D) / 2, AttributeModifier.Operation.MULTIPLY_BASE);
         AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
-        if (stack.is(ItemsRegistry.TRAVELERS_SWORD.get())) {
+        if (stack.is(ItemRegistry.TRAVELERS_SWORD.get())) {
             if (!movementSpeed.hasModifier(speedBonus))
                 movementSpeed.addTransientModifier(speedBonus);
 

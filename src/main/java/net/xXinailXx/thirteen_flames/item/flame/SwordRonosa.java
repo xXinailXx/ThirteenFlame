@@ -38,8 +38,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -47,9 +45,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.PoisonCloundEntity;
-import net.xXinailXx.thirteen_flames.init.EffectsRegistry;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
-import net.xXinailXx.thirteen_flames.init.ItemsRegistry;
+import net.xXinailXx.thirteen_flames.init.EffectRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
@@ -63,7 +61,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber
 public class SwordRonosa extends SwordItemTF {
     public SwordRonosa() {
-        super(ToolTierTF.THIRTEEN_FLAMES, 6, -2.2f);
+        super(ToolTierTF.THIRTEEN_FLAMES, 3, -2.4F);
     }
 
     public RelicData getRelicData() {
@@ -94,7 +92,7 @@ public class SwordRonosa extends SwordItemTF {
             int lifetime = (int)AbilityUtils.getAbilityValue(sword, "fart", "duration") * 20;
             float radius = (float)AbilityUtils.getAbilityValue(sword, "fart", "radius");
 
-            PoisonCloundEntity cloud = new PoisonCloundEntity(EntitiesRegistry.POISON_CLOUD.get(), level);
+            PoisonCloundEntity cloud = new PoisonCloundEntity(EntityRegistry.POISON_CLOUD.get(), level);
             cloud.setRadius(radius);
             cloud.setLifeTime(lifetime);
             cloud.setAmplifire((int)Math.round(AbilityUtils.getAbilityValue(sword, "spit", "amplifire") - 1.0F));
@@ -118,22 +116,17 @@ public class SwordRonosa extends SwordItemTF {
         if (slot == EquipmentSlot.MAINHAND) {
             float level = (float)AbilityUtils.getAbilityValue(stack, "anemia", "level");
 
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, ThirteenFlames.MODID + ":attack_damage", 3.0F, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, ThirteenFlames.MODID + ":attack_speed", (-2.6F + level), net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, ThirteenFlames.MODID + ":attack_damage", 7, net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, ThirteenFlames.MODID + ":attack_speed", (-2.4 + level), net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation.ADDITION));
         }
 
         return builder.build();
-    }
-
-    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
-        return ToolActions.DEFAULT_SWORD_ACTIONS.contains(toolAction);
     }
 
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return slotChanged;
     }
 
-    @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity living, LivingEntity entity) {
         living.addEffect(new MobEffectInstance(MobEffects.POISON, 100), entity);
 
@@ -142,9 +135,9 @@ public class SwordRonosa extends SwordItemTF {
 
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
-        if (event.getEntity().getMainHandItem().is(ItemsRegistry.SWORD_RONOSA.get()) && event.getTarget() instanceof LivingEntity living) {
+        if (event.getEntity().getMainHandItem().is(ItemRegistry.SWORD_RONOSA.get()) && event.getTarget() instanceof LivingEntity living) {
             poisonSwipe(event.getEntity(), event.getEntity().getMainHandItem());
-            living.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), 100, 0, false, true, false));
+            living.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), 100, 0, false, true, false));
         }
     }
 
@@ -156,8 +149,8 @@ public class SwordRonosa extends SwordItemTF {
         super.inventoryTick(stack, level, entity, slot, isSelected);
 
         if (entity instanceof Player player) {
-            if (stack.is(this) && (!player.hasEffect(EffectsRegistry.ANEMIA.get()) || player.hasEffect(EffectsRegistry.ANEMIA.get()) && player.getEffect(EffectsRegistry.ANEMIA.get()).getDuration() < 20) || AbilityUtils.getAbilityPoints(stack, "anemia") < 5) {
-                player.addEffect(new MobEffectInstance(EffectsRegistry.ANEMIA.get(), 1, 0, true, false, true));
+            if (stack.is(this) && (!player.hasEffect(EffectRegistry.ANEMIA.get()) || player.hasEffect(EffectRegistry.ANEMIA.get()) && player.getEffect(EffectRegistry.ANEMIA.get()).getDuration() < 20) || AbilityUtils.getAbilityValue(stack, "anemia", "level") < 5) {
+                player.addEffect(new MobEffectInstance(EffectRegistry.ANEMIA.get(), 1, 0, true, false, true));
             }
         }
     }
@@ -204,19 +197,19 @@ public class SwordRonosa extends SwordItemTF {
         for(LivingEntity e : hashSet) {
             e.hurt(DamageSource.mobAttack(p), 1.0F);
 
-            if (e.hasEffect(EffectsRegistry.POISON.get())) {
-                int appliedAmplifier = e.getEffect(EffectsRegistry.POISON.get()).getAmplifier() + 1;
+            if (e.hasEffect(EffectRegistry.POISON.get())) {
+                int appliedAmplifier = e.getEffect(EffectRegistry.POISON.get()).getAmplifier() + 1;
 
                 if (appliedAmplifier <= maxAmp) {
-                    e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true));
+                    e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + appliedAmplifier * 20, appliedAmplifier, false, true));
 
                     if (random.nextFloat() < 0.25F)
                         LevelingUtils.addExperience(sword, 1);
                 } else {
-                    e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
+                    e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration + maxAmp * 20, maxAmp, false, true, false));
                 }
             } else {
-                e.addEffect(new MobEffectInstance(EffectsRegistry.POISON.get(), duration, 0, false, true, false));
+                e.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), duration, 0, false, true, false));
 
                 if (random.nextFloat() < 0.25F)
                     LevelingUtils.addExperience(sword, 1);
@@ -252,9 +245,9 @@ public class SwordRonosa extends SwordItemTF {
         double anemia = AbilityUtils.getAbilityPoints(stack, "anemia");
 
         if (anemia < 5) {
-            if (event.getEntity().getItem().is(ItemsRegistry.SWORD_RONOSA.get())) {
+            if (event.getEntity().getItem().is(ItemRegistry.SWORD_RONOSA.get())) {
                 event.getEntity().setItem(Items.AIR.getDefaultInstance());
-                event.getPlayer().addItem(new ItemStack(ItemsRegistry.SWORD_RONOSA.get()));
+                event.getPlayer().addItem(new ItemStack(ItemRegistry.SWORD_RONOSA.get()));
             }
         }
     }

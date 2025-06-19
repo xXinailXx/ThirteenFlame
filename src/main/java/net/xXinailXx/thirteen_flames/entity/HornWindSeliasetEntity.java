@@ -18,7 +18,7 @@ import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
-import net.xXinailXx.thirteen_flames.init.EntitiesRegistry;
+import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import org.zeith.hammerlib.net.Network;
 
 import java.awt.*;
@@ -35,7 +35,7 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
     }
 
     public HornWindSeliasetEntity(Level level, float effective, float maxBlockDistance, Vec3 startPos, boolean reverce, ItemStack stack) {
-        this(EntitiesRegistry.HORN_WIND_SELIASET.get(), level);
+        this(EntityRegistry.HORN_WIND_SELIASET.get(), level);
 
         setEffective(effective);
         setMaxBD(maxBlockDistance);

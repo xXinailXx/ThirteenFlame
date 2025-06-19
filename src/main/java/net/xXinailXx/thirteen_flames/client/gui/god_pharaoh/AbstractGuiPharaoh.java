@@ -153,7 +153,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
             level = levelGui;
         }
 
-        this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.id." + screenName + ".info", level), (x + 2), (y * 2 + 2), 0x673E09);
+        this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.id." + screenName + ".info", level), x + 2, y * 2 + 2, 0x673E09);
 
         poseStack.scale(0.42F, 0.42F, 0.42F);
 
@@ -217,7 +217,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
                 bonusInfo.add(Component.literal(" "));
             }
 
-            MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.global_scarab_info", xpScarabsData.getXpScarabSilver(), xpScarabsData.getXpScarabGold(), xpScarabsData.getXpScarabAuriteh(), xpScarabsData.getXpScarabLazotep()), (x + 200), (y + 417), 4269832);
+            MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.global_scarab_info", xpScarabsData.getXpScarabSilver(), xpScarabsData.getXpScarabGold(), xpScarabsData.getXpScarabAuriteh(), xpScarabsData.getXpScarabLazotep()), x + 200, y + 417, 4269832);
         }
 
         if (effectData.isCurseKnef()) {
@@ -225,7 +225,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
                 bonusInfo.add(Component.literal(" "));
                 bonusInfo.add(Component.translatable("gui.thirteen_flames.curse_knef").withStyle(ChatFormatting.DARK_PURPLE));
             } else {
-                MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.curse_knef"), (x + 200), (y + 429), 11141290);
+                MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.curse_knef"), x + 200, y + 429, 11141290);
             }
         }
 
@@ -282,7 +282,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
 
             this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.xp"), x - 5 - this.font.width(Component.translatable("gui.thirteen_flames.xp")) / 2, y + 178, 0x673E09);
             this.MC.font.draw(poseStack, Component.literal("__"), x - 12, y + 182, 0x673E09);
-            this.MC.font.draw(poseStack, String.valueOf(player.totalExperience), x - 6 - this.font.width(String.valueOf(player.totalExperience)) / 2.0F, (y + 193), 0x673E09);
+            this.MC.font.draw(poseStack, String.valueOf(player.totalExperience), x - 6 - this.font.width(String.valueOf(player.totalExperience)) / 2, y + 193, 0x673E09);
 
             poseStack.popPose();
         }

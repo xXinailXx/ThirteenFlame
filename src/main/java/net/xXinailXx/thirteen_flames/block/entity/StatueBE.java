@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.interfaces.ITickBlockEntity;
@@ -22,7 +21,7 @@ import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.effect.StatueEffect;
-import net.xXinailXx.thirteen_flames.init.BlocksRegistry;
+import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import net.xXinailXx.thirteen_flames.utils.ParticleUtils;
 import org.zeith.hammerlib.net.Network;
@@ -118,7 +117,7 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
         if (this.tickCount % 5 == 0 && this.finished && !getGod().equals(Gods.GOD_PHARAOH)) {
             Player player = Minecraft.getInstance().player;
 
-            if (this.timeToUpgrade <= 0) {
+            if (this.tickCount >= 0) {
                 Vec3 center = new Vec3(this.worldPosition.getX() + 0.5, this.worldPosition.getY(), this.worldPosition.getZ() + 0.5);
 
                 ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
@@ -131,8 +130,8 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                         .build());
 
                 for (int i = 0; i < 180; i++) {
-                    double a = 2 * i - this.tickCount * 200;
-                    double radius = 1 + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.02 + this.tickCount * 0.001;
+                    double a = 2 * i + this.tickCount * 10;
+                    double radius = 1 + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.02;
 
                     Vec3 x = new Vec3(0, 1, 0).normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius);
                     Vec3 z = new Vec3(0, 1, 0).normalize().cross(x).normalize().scale(radius);
@@ -182,7 +181,7 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                         for (int i = 0; i <= 1; i++) {
                             BlockState state = this.level.getBlockState(i == 0 ? posCups : posCups.below());
 
-                            if (state.is(BlocksRegistry.STATUE_CUP.get())) {
+                            if (state.is(BlockRegistry.STATUE_CUP.get())) {
                                 pos = i == 0 ? posCups : posCups.below();
                                 break;
                             }
@@ -216,7 +215,7 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                             }
 
                             if (cup1 != null && cup3 != null) {
-                                if (this.level.getBlockState(cup1).is(BlocksRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlocksRegistry.STATUE_CUP.get())) {
+                                if (this.level.getBlockState(cup1).is(BlockRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlockRegistry.STATUE_CUP.get())) {
                                     ParticleUtils.spawnCupFire(level, color, cup1);
 
                                     if (amplifier >= 2 && amplifier <= 256)
@@ -232,7 +231,9 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
             }
         }
 
-        this.timeToUpgrade = 0;
+        if (this.timeToUpgrade > 0)
+            this.timeToUpgrade--;
+
         this.tickCount++;
 
         setChanged();
