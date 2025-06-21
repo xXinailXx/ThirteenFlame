@@ -28,18 +28,9 @@ public class ScrollScreenClosePacket implements IPacket {
         if (player == null)
             return;
 
-        boolean full = true;
-
-        for (ItemStack stack1 : player.getInventory().items) {
-            if (stack1.isEmpty()) {
-                full = false;
-                break;
-            }
-        }
-
-        if (!full)
-            player.addItem(this.stack);
-        else
+        if (player.getInventory().getFreeSlot() == -1)
             player.drop(this.stack, false);
+        else
+            player.addItem(this.stack);
     }
 }

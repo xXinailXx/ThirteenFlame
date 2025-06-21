@@ -27,6 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
+import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
@@ -70,6 +71,7 @@ public class TravelersSword extends SwordItemTF {
             Vec3 motion = player.getDeltaMovement();
             ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                     .color(new Color(255, 255, 255).getRGB())
+                    .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                     .diameter(0.1F)
                     .lifetime(1)
                     .scaleModifier(1F)

@@ -13,9 +13,11 @@ import org.lwjgl.glfw.GLFW;
 public class KeyBindingRegistry {
     private static final String CATEGORY = Component.translatable("key.category.thirteen_flames").getString();
     public static final KeyMapping OPEN_GUI = new KeyMapping("key.thirteen_flames.open_player_screen", GLFW.GLFW_KEY_P, CATEGORY);
+    public static final KeyMapping USE_MASK = new KeyMapping("key.thirteen_flames.use_mask_demiurg", GLFW.GLFW_KEY_Y, CATEGORY);
 
     @SubscribeEvent
     public static void onKeybindingRegistry(RegisterKeyMappingsEvent event) {
         event.register(OPEN_GUI);
+        event.register(USE_MASK);
     }
 }

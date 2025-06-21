@@ -71,6 +71,7 @@ public class FlameUpgradePacket implements IPacket {
 
         ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                 .color(new Color(255, 140, 0).getRGB())
+                .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                 .diameter(0.2F)
                 .lifetime(100)
                 .scaleModifier(0.98F)

@@ -5,6 +5,7 @@
 
   "key.category.thirteen_flames": "Storytelling: Thirteen Flames",
   "key.thirteen_flames.open_player_screen": "Открыть меню игрока",
+  "key.thirteen_flames.use_mask_demiurg": "Использовать маску",
 
   "block.thirteen_flames.auriteh_block": "Ауритэховый блок",
   "block.thirteen_flames.auriteh_ore": "Ауритэховая руда",
@@ -223,7 +224,7 @@
   "tooltip.relics.black_rose.ability.bonfire.stat.resist.value": "%1$s хп/кость",
 
   "item.thirteen_flames.sun_seliaset": "Солнце Селиасэт",
-  "tooltip.relics.sun_seliaset.leveling": "Солнце Селиасэт. Один из \"Огней\", легендарных\nартефактов,разбросанных по всему Мисру.\nСозданное богиней плодородия, солнце дарует\nсвоему владельцу силу нести свет и разгонять тьму.",
+  "tooltip.relics.sun_seliaset.leveling": "Солнце Селиасэт. Один из \"Огней\", легендарных\nартефактов,разбросанных по всему Мисру.\nСозданное богиней Селиасэт, солнце дарует\nсвоему владельцу силу нести свет и разгонять тьму.",
   "tooltip.relics.sun_seliaset.ability.light": "Благодатный свет",
   "tooltip.relics.sun_seliaset.ability.light.description": "Разместите солнце Селиасэт в мире, чтобы вернуть ему истинную форму. В этой форме солнце ускоряет рост любых растений в огромном радиусе, а также сжигает нечисть. Улучшение увеличивает радиус, а также повышает температуру солнца, что делает его эффективнее.",
   "tooltip.relics.sun_seliaset.ability.light.stat.radius.title": "Радиус",
@@ -260,9 +261,14 @@
   "tooltip.relics.scroll_het.ability.techn.stat.level.value": "%1$s уровень.",
 
   "item.thirteen_flames.flight_het": "Перо Хэтентепа",
+  "tooltip.relics.flight_het.leveling": "Перо Хэтентепа. Один из \"Огней\", легендарных\nартефактов, разбросанных по всему Мисру.\nСозданныйбогом Хэтентепом, перо дарует\nвладельцу знаниявеликих мастеров.",
+  "tooltip.relics.flight_het.ability.mapmaster": "Карта-мастер",
+  "tooltip.relics.flight_het.ability.mapmaster.description": "Знания великих картографов способны превратить обычный лист бумаги в карту. Используйте перо, держа бумагу в соседней руке. Улучшение уменьшает затраты опыта на создание карты.",
+  "tooltip.relics.flight_het.ability.mapmaster.stat.price.title": "Стоимоть",
+  "tooltip.relics.flight_het.ability.mapmaster.stat.price.value": "%1$s уровней",
 
   "item.thirteen_flames.travelers_sword": "Меч Путешественника",
-  "tooltip.relics.travelers_sword.leveling": "Меч Путешественника. Один из \"Огней\", легендарных артефактов,\n разбросанных по всему Мисру. Будучи осколком\n  Временного парадокса, клинок воодушевляет\n владельца на приключения и путешествия по\n    мультивселенной.",
+  "tooltip.relics.travelers_sword.leveling": "Меч Путешественника. Один из \"Огней\", легендарных артефактов,\nразбросанных по всему Мисру. Будучи осколком\nВременного парадокса, клинок воодушевляет\nвладельца на приключения и путешествия по\nмультивселенной.",
   "tooltip.relics.travelers_sword.ability.wind_wandering": "Ветер Странствий",
   "tooltip.relics.travelers_sword.ability.wind_wandering.description": "Почувствуй тягу к преключениям! Зажатие ПКМ немедленно устремит вас в напровлении взгляда. Улучшение повышает скорость полёта.",
   "tooltip.relics.travelers_sword.ability.wind_wandering.stat.speed.title": "Скорость",
@@ -292,6 +298,13 @@
   "tooltip.relics.staff_jodah.ability.backlight.stat.cooldown.value": "%1$s сек",
 
   "item.thirteen_flames.mask_demiurg": "Маска Междумирца",
+  "tooltip.relics.mask_demiurg.leveling": "Маска Междумирца. Один из \"Огней\", легендарных\nартефактов. Маска, дарованная неизвестным\nсуществом, пришедшим из пустоты, дарует\nвладельцу способность к дематериализации.",
+  "tooltip.relics.mask_demiurg.ability.dematerialization": "Дематериализация",
+  "tooltip.relics.mask_demiurg.ability.dematerialization.description": "Используйте маску для дематериализации. Дематериализовавшись, владелец ускоряется и становится невидимым. Улучшение увеличивает время дематериализации.",
+  "tooltip.relics.mask_demiurg.ability.dematerialization.stat.time.title": "Длительность",
+  "tooltip.relics.mask_demiurg.ability.dematerialization.stat.time.value": "%1$s сек",
+  "tooltip.relics.mask_demiurg.ability.dematerialization.stat.cooldown.title": "Откат",
+  "tooltip.relics.mask_demiurg.ability.dematerialization.stat.cooldown.value": "%1$s сек",
 
   "gui.thirteen_flames.relic.button_add_point.add_level": "Конвертировать 1 серебрянного скарабея в 50 единиц опыта реликвии\n\nТекущий баланс: %1$s",
   "gui.thirteen_flames.relic.button_add_point.max_level": "Реликвия достигла максимального уровня",

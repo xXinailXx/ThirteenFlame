@@ -50,11 +50,11 @@ public class THModEvents {
         public static void keyPressed(InputEvent.Key event) {
             Minecraft minecraft = Minecraft.getInstance();
 
-            if (minecraft.player != null && minecraft.screen == null) {
-                if (event.getKey() == new KeyMapping("key.display_skill_tree", 79, "key.categories.skilltree").getKey().getValue()) {
-                    event.setCanceled(true);
-                }
-            }
+            if (minecraft.player == null || minecraft.screen != null)
+                return;
+
+            if (event.getKey() == new KeyMapping("key.display_skill_tree", 79, "key.categories.skilltree").getKey().getValue())
+                event.setCanceled(true);
         }
 
         @SubscribeEvent
@@ -85,7 +85,10 @@ public class THModEvents {
 
         @SubscribeEvent
         public static void openFaraonScreen(InputEvent event) {
-            if (KeyBindingRegistry.OPEN_GUI.isDown() && Minecraft.getInstance().player != null) {
+            if (Minecraft.getInstance().player == null)
+                return;
+
+            if (KeyBindingRegistry.OPEN_GUI.isDown()) {
                 IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
                 guiLevelingData.setPlayerScreen(true);
                 Minecraft.getInstance().setScreen(new GodPharaohScreenMining());

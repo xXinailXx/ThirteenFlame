@@ -72,6 +72,8 @@ public class AbilityUtils {
         if (entity == null || entity.getLevel() == null)
             return List.of();
 
+
+
         return AABBUtils.getEntities(LivingEntity.class, entity, radius);
     }
 

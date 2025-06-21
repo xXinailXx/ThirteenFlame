@@ -302,7 +302,6 @@ public abstract class AbstractGuiPharaoh extends Screen {
         }
     }
 
-    @Override
     public boolean isPauseScreen() {
         return false;
     }

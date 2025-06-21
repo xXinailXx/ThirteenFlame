@@ -20,6 +20,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.glow.Beam;
 import net.xXinailXx.enderdragonlib.client.glow.GlowData;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
+import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.interfaces.IGlow;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
@@ -77,6 +78,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
             if (getCooldownTimerWaves() == 0) {
                 ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                         .color(new Color(255, 255, 255, 150).getRGB())
+                        .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                         .diameter(0.5F)
                         .lifetime(40)
                         .physical(false)
@@ -102,9 +104,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
                         poses.add(mainPos.offset(i, 0, j));
                 }
 
-                List<LivingEntity> entities = AABBUtils.getEntities(LivingEntity.class, this, 8);
-
-                for (LivingEntity entity : entities) {
+                for (LivingEntity entity : AABBUtils.getEntities(LivingEntity.class, this, 8)) {
                     if (entity.is(getOwner()))
                         continue;
 

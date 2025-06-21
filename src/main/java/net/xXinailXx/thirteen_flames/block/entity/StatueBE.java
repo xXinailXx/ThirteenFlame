@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -117,12 +118,12 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
         if (this.tickCount % 5 == 0 && this.finished && !getGod().equals(Gods.GOD_PHARAOH)) {
             Player player = Minecraft.getInstance().player;
 
-            if (this.tickCount >= 0) {
+            if (this.timeToUpgrade == 0) {
                 Vec3 center = new Vec3(this.worldPosition.getX() + 0.5, this.worldPosition.getY(), this.worldPosition.getZ() + 0.5);
 
                 ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                         .color(new Color(255, 140, 0).getRGB())
-                        .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
+                        .renderType(getGod().equals(Gods.KNEF) ? ColoredParticleRendererTypes.DISABLE_RENDER_LIGHT_COLOR : ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                         .diameter(0.2F)
                         .lifetime(100)
                         .scaleModifier(0.95F)
@@ -133,11 +134,12 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                     double a = 2 * i + this.tickCount * 10;
                     double radius = 1 + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.02;
 
-                    Vec3 x = new Vec3(0, 1, 0).normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius);
-                    Vec3 z = new Vec3(0, 1, 0).normalize().cross(x).normalize().scale(radius);
-                    Vec3 pos = center.add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
+                    Vec3 motion = new Vec3(0, this.tickCount * 0.1, 0);
+                    Vec3 x = motion.normalize().x < 0.001 && motion.normalize().z < 0.001 ? motion.normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius) : motion.normalize().cross(new Vec3(0, 1, 0)).normalize().scale(radius);
+                    Vec3 z = motion.normalize().cross(x).normalize().scale(radius);
+                    Vec3 pos = this.getPosition(1, new Vec3(0, (this.tickCount - 1) * 0.1, 0)).add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
 
-                    Network.sendToAll(new SpawnParticlePacket(particle, pos.x, pos.y + 0.3, pos.z, 0, 0.01, 0));
+                    Network.sendToAll(new SpawnParticlePacket(particle, pos.x + 0.5, pos.y + 0.3, pos.z + 0.5, 0, 0.02, 0));
                 }
             }
 
@@ -237,6 +239,13 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
         this.tickCount++;
 
         setChanged();
+    }
+
+    public final Vec3 getPosition(float v, Vec3 vec3) {
+        double d0 = Mth.lerp((double)v, vec3.x, this.worldPosition.getX());
+        double d1 = Mth.lerp((double)v, vec3.y, this.worldPosition.getY());
+        double d2 = Mth.lerp((double)v, vec3.z, this.worldPosition.getZ());
+        return new Vec3(d0, d1, d2);
     }
 
     protected void saveAdditional(CompoundTag tag) {

@@ -6,18 +6,16 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
-import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
-import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import org.zeith.hammerlib.net.Network;
 
 import java.awt.*;
 
 public class ParticleUtils {
     public static void spawnCupFire(Level level, Color color, BlockPos pos) {
-        ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
+        ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                 .color(color.getRGB())
-                .renderType(color.equals(new Color(0, 0, 0)) ? ColoredParticleRendererTypes.DISABLE_RENDER_LIGHT_COLOR : ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
+                .renderType(color.getRGB() == new Color(0, 0, 0).getRGB() ? ColoredParticleRendererTypes.DISABLE_RENDER_LIGHT_COLOR : ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                 .diameter(0.2F)
                 .lifetime(50)
                 .physical(false)
@@ -39,7 +37,7 @@ public class ParticleUtils {
             double d7 = level.random.nextGaussian() * 0.003;
             double d8 = level.random.nextGaussian() * 0.003;
 
-            Network.sendToAll(new SpawnParticlePacket(particle, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8));
+            Network.sendToAll(new SpawnParticlePacket(options, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8));
         }
     }
 

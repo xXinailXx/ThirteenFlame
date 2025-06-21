@@ -52,16 +52,16 @@ public class StaffJodah extends SwordItemTF {
         }).build()).build()).ability("backlight", RelicAbilityEntry.builder().maxLevel(5).stat("durability", RelicAbilityStat.builder().initialValue(0.5, 1.5).thresholdValue(0.5, 5).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.5).formatValue((value) -> {
             return MathUtils.round(value, 1);
         }).build()).stat("radius", RelicAbilityStat.builder().initialValue(10, 20).thresholdValue(10, 40).upgradeModifier(RelicAbilityStat.Operation.ADD, 2).formatValue((value) -> {
-            return MathUtils.round(value, 0);
+            return (int)MathUtils.round(value, 0);
         }).build()).stat("cooldown", RelicAbilityStat.builder().initialValue(60, 40).thresholdValue(10, 60).upgradeModifier(RelicAbilityStat.Operation.ADD, -5).formatValue((value) -> {
-            return MathUtils.round(value, 0);
+            return (int)MathUtils.round(value, 0);
         }).build()).build()).build()).levelingData(new RelicLevelingData(150, 10, 200)).build();
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (player.isShiftKeyDown() && !AbilityUtils.isAbilityOnCooldown(stack, "backlight")) {
+        if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && !AbilityUtils.isAbilityOnCooldown(stack, "backlight")) {
             ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                     .color(new Color(255, 255, 255).getRGB())
                     .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
@@ -74,9 +74,7 @@ public class StaffJodah extends SwordItemTF {
             for (int i = 0; i < 360; i++)
                 Network.sendTo(new SpawnParticlePacket(options, player.position().x, player.position().y, player.position().z, Math.cos(i), 0, Math.sin(i)), player);
 
-            List<LivingEntity> entities = AABBUtils.getEntities(LivingEntity.class, player, AbilityUtils.getAbilityValue(stack,"backlight", "radius"));
-
-            for (LivingEntity entity : entities) {
+            for (LivingEntity entity : AABBUtils.getEntities(LivingEntity.class, player, AbilityUtils.getAbilityValue(stack,"backlight", "radius"))) {
                 if (entity.is(player))
                     continue;
 

@@ -48,7 +48,7 @@ public class ButtonItemEnchant extends AbstractWidgetUtils {
 
                 LevelingUtils.addExperience(this.stack, exp);
 
-                if (!this.MC.player.isCreative() && !this.MC.player.isSpectator())
+                if (!this.MC.player.isCreative())
                     this.MC.player.giveExperienceLevels(-this.screen.getExpCost());
             }
 

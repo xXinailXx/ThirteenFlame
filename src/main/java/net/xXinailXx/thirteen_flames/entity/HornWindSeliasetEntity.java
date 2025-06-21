@@ -17,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
+import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import org.zeith.hammerlib.net.Network;
@@ -60,6 +61,7 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
 
         ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                 .color(new Color(255, 255, 255, 51).getRGB())
+                .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                 .diameter(0.1F)
                 .lifetime(1)
                 .scaleModifier(1F)
@@ -70,9 +72,9 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
             double a = 5 * i - this.tickCount * 10;
             double radius = 1 + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.02;
 
-            Vec3 x = motion.normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius);
+            Vec3 x = motion.normalize().x < 0.001 && motion.normalize().z < 0.001 ? motion.normalize().cross(new Vec3(1, 0, 0)).normalize().scale(radius) : motion.normalize().cross(new Vec3(0, 1, 0)).normalize().scale(radius);
             Vec3 z = motion.normalize().cross(x).normalize().scale(radius);
-            Vec3 pos = this.getPosition(1F).add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
+            Vec3 pos = this.getPosition(1).add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
 
             Network.sendToAll(new SpawnParticlePacket(particle, pos.x, pos.y, pos.z, 0, 0, 0));
         }

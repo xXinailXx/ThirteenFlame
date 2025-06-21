@@ -26,7 +26,7 @@ public class StaminaHud {
         Window window = MC.getWindow();
         LocalPlayer player = MC.player;
 
-        if (player != null && ! player.isCreative() && ! player.isSpectator()) {
+        if (player != null && !player.isCreative() && !player.isSpectator()) {
             RandomSource random = player.getRandom();
             IStaminaData staminaData = new StaminaData.Utils();
 

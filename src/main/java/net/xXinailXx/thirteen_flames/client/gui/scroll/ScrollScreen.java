@@ -356,4 +356,8 @@ public class ScrollScreen extends AbstractContainerScreen<ScrollMenu> {
     public int getExpCost() {
         return expCost;
     }
+
+    public boolean isPauseScreen() {
+        return false;
+    }
 }

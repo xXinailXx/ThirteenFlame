@@ -65,9 +65,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
             setAnim(true);
 
         if (getCooldownTimer() == 0 && getPhase() == 1) {
-            List<BlockPos> posList = AABBUtils.getBlockPoses(this, getRadius());
-
-            for (BlockPos pos : posList) {
+            for (BlockPos pos : AABBUtils.getBlockPoses(this, getRadius())) {
                 BlockPos pos1 = new BlockPos(pos.getX(), pos.getY(), pos.getZ());
 
                 BlockState state = this.level.getBlockState(pos1);
@@ -80,9 +78,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
                 }
             }
 
-            List<Monster> entities = AABBUtils.getEntities(Monster.class, this, getRadius());
-
-            for (Monster entity : entities) {
+            for (Monster entity : AABBUtils.getEntities(Monster.class, this, getRadius())) {
                 entity.setSecondsOnFire(8);
 
                 setAddExp(getAddExp() + 2);

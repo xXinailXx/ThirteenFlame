@@ -32,7 +32,7 @@ import oshi.util.tuples.Pair;
 public class ShieldRonosa extends FlameItemSetting {
     public RelicData getRelicData() {
         return RelicData.builder().abilityData(RelicAbilityData.builder().ability("spikes", RelicAbilityEntry.builder().maxLevel(10).stat("procent", RelicAbilityStat.builder().initialValue(15, 150).thresholdValue(15, 200).upgradeModifier(RelicAbilityStat.Operation.ADD, 10).formatValue((value) -> {
-            return (int) MathUtils.round(value, 0);
+            return (int)MathUtils.round(value, 0);
         }).build()).stat("bleeding", RelicAbilityStat.builder().initialValue(5, 15).thresholdValue(5, 20).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
         }).build()).build()).build()).levelingData(new RelicLevelingData(200, 10, 100)).build();
