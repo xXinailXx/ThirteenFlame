@@ -40,7 +40,6 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         this.locationNumber = locationNumber;
     }
 
-    @Override
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
@@ -50,7 +49,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         poseStack.pushPose();
         poseStack.scale(1F, 1F, 1F);
 
-        if (!isBuyAbility() || isLockAbility())
+        if (!isBuyAbility() || isLockAbility() || getScreenLevel() < getAbilityData().getRequiredLevel())
             RenderSystem.setShaderColor(0.75F, 0.75F, 0.75F, 1F);
 
         blit(poseStack, this.x + 5, this.y + 5, 0, 0, 24, 24, 24, 24);
@@ -82,12 +81,15 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         poseStack.popPose();
     }
 
-    @Override
     public void render(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
+        if (getLevelAbility() < 1)
+            setLevelAbility(1);
+        else if (getLevelAbility() > getAbilityData().getMaxLevel())
+            setLevelAbility(getAbilityData().getMaxLevel());
+
         super.render(poseStack, pMouseX, pMouseY, pPartialTick);
     }
 
-    @Override
     public void onPress() {
         if (!guiLevelingData.isPlayerScreen()) {
             if (isUnlock()) {
@@ -150,7 +152,6 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         }
     }
 
-    @Override
     public void onHovered(PoseStack poseStack, int i, int i1) {
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
@@ -291,7 +292,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
     private int getTime() {
         if (getAbilityData().getAbilityName().equals("egyptian_strength")) {
-            int time = TimeManager.get("ability_egyptian_strength");
+            int time = TimeManager.getTimeMap().containsKey("ability_egyptian_strength") ? TimeManager.get("ability_egyptian_strength") : 0;
 
             if (time < 20 && time > 0)
                 return 1;
@@ -391,6 +392,6 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
     }
 
     public void addLevelAbility(int amount) {
-        data.addLevelAbility(getAbilityData().getAbilityName(), amount, getAbilityData().getMaxLevel());
+        data.addLevelAbility(getAbilityData().getAbilityName(), amount);
     }
 }

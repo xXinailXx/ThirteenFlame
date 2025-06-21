@@ -5,7 +5,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = '0.0.1'
+version = '0.0.7'
 group = 'net.xXinailXx.thirteen_flames'
 archivesBaseName = 'thirteen_flames'
 
@@ -128,7 +128,6 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     implementation fg.deobf("curse.maven:relics-445274:4715552")
-    implementation fg.deobf("curse.maven:mobhealthbar-559894:4813012")
     implementation fg.deobf("curse.maven:passive_skill_tree-850298:4662664")
     implementation fg.deobf("curse.maven:alex_mobs-426558:4159154")
     implementation fg.deobf("curse.maven:citadel-331936:4556677")

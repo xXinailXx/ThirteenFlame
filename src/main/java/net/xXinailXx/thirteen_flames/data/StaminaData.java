@@ -153,7 +153,7 @@ public class StaminaData implements IAutoNBTSerializable {
         }
 
         public void addStamina(Player player, int stamina) {
-            if (stamina < 0) {
+            if (stamina <= 0) {
                 if (abilitiesData.isActiveAbility("second_wind") && player.getHealth() < (player.getMaxHealth() / 2)) {
                     return;
                 }
@@ -269,7 +269,7 @@ public class StaminaData implements IAutoNBTSerializable {
                 if (!player.isCreative() && !player.isSpectator() && player.isOnGround()) {
                     Vec3 pos = player.position();
 
-                    if (pos.distanceTo(lastPos) >= (double)5.0F) {
+                    if (pos.distanceTo(lastPos) >= 5) {
                         lastPos = pos;
 
                         if (posDiffs >= 1) {

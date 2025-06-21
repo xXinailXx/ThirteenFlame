@@ -24,7 +24,7 @@ public interface IData extends INBTSerializable<CompoundTag> {
 
         void setLevelAbility(String abilityName, int amount);
 
-        void addLevelAbility(String abilityName, int amount, int maxLevel);
+        void addLevelAbility(String abilityName, int amount);
     }
 
     public static interface IEffectData {

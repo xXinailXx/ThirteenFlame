@@ -270,7 +270,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
             if (!effectData.isCurseKnef())
                 extraYOff = 27;
 
-            blit(poseStack, x + 752, y + 618 + extraYOff, 197, 347, 22, 24, texWidth, texHeight);
+            blit(poseStack, x + 746, y + 618 + extraYOff, 197, 347, 22, 24, texWidth, texHeight);
 
             poseStack.scale(0.48F, 0.48F, 0.48F);
 

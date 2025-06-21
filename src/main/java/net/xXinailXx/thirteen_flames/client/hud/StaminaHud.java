@@ -53,7 +53,7 @@ public class StaminaHud {
 
             Gui.blit(poseStack, x, y, 0.0F, 0.0F, 77, 7, 77, 7);
 
-            float percentage = (float) stamina / ((float) maxStamina / 100.0F) / 100.0F;
+            float percentage = (float) stamina / new Data.AbilitiesData.Utils().getLevelAbility("stamina_mantra") / ((float) maxStamina / 100.0F) / 100.0F;
 
             RenderSystem.setShaderTexture(0, new ResourceLocation(ThirteenFlames.MODID, "textures/hud/stamina_filler.png"));
 

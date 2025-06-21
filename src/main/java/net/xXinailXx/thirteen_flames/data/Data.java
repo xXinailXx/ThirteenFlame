@@ -229,30 +229,25 @@ public class Data implements IData {
             }
 
             private int getLevel() {
-                int level = 0;
+                int level = 1;
 
-                if (!abilitiesTags.contains(abilityName + "_level")) {
-                    level = 0;
-                    abilitiesTags.putInt(abilityName + "_level", 0);
-                } else if (abilitiesTags.getInt(abilityName + "_level") != level) {
-                    if (abilitiesTags.getInt(abilityName + "_level") != level)
-                        level = abilitiesTags.getInt(abilityName + "_level");
-                    else
-                        abilitiesTags.putInt(abilityName + "_level", level);
-                }
+                if (!abilitiesTags.contains(abilityName + "_level"))
+                    abilitiesTags.putInt(abilityName + "_level", 1);
+                else if (abilitiesTags.getInt(abilityName + "_level") != level)
+                    level = abilitiesTags.getInt(abilityName + "_level");
 
                 return level;
             }
 
             private void setLevel(int amount) {
-                abilitiesTags.putInt(abilityName + "_level", Math.max(amount, 1));
+                abilitiesTags.putInt(abilityName + "_level", amount);
             }
 
-            private void addLevel(int amount, int maxLevel) {
+            private void addLevel(int amount) {
                 if (amount < 0)
-                    setLevel(Math.max(getLevel() - amount, 1));
+                    setLevel(getLevel() - amount);
                 else
-                    setLevel(Math.min(getLevel() + amount, maxLevel));
+                    setLevel(getLevel() + amount);
             }
         }
 
@@ -293,8 +288,8 @@ public class Data implements IData {
                 getAbilityHandler(abilityName).setLevel(amount);
             }
 
-            public void addLevelAbility(String abilityName, int amount, int maxLevel) {
-                getAbilityHandler(abilityName).addLevel(amount, maxLevel);
+            public void addLevelAbility(String abilityName, int amount) {
+                getAbilityHandler(abilityName).addLevel(amount);
             }
         }
     }
@@ -620,7 +615,7 @@ public class Data implements IData {
         }
 
         public void setScarabSilver(Player player, int amount) {
-            Network.sendToServer(new SetSkillPointPacket(Math.max(amount, 0)));
+            Network.sendToServer(new SetSkillPointPacket(Math.max(0, amount)));
         }
 
         public int getScarabGold() {
@@ -864,9 +859,7 @@ public class Data implements IData {
 
             if (xpScarabsData.getXpScarabSilver() <= 0) {
                 xpScarabsData.setXpScarabSilver(500 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
-
-                if (!player.getLevel().isClientSide)
-                    scarabsData.addScarabSilver(player, 2);
+                scarabsData.addScarabSilver(player, 1);
             }
             if (xpScarabsData.getXpScarabGold() <= 0) {
                 xpScarabsData.setXpScarabGold(750 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));

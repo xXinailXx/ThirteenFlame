@@ -68,7 +68,7 @@ public class MarkupItemUtils extends ItemSetting {
         BlockState state = level.getBlockState(pos);
         CompoundTag data = stack.getTag();
 
-        if (data == null) {
+        if (data == null || data.isEmpty()) {
             spawnShceme(player, level, pos, stack);
             return InteractionResult.SUCCESS;
         }

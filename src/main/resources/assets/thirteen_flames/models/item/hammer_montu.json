@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "molot_monty",
+	"parent": "hammer_montu",
 	"texture_size": [64, 64],
 	"textures": {
 		"0": "thirteen_flames:item/hammer_montu",

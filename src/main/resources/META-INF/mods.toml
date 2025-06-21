@@ -26,7 +26,7 @@ side="BOTH"
 [[dependencies.thirteen_flames]]
 modId="enderdragonlib"
 mandatory=true
-versionRange="[0.0.7,)"
+versionRange="[0.0.10,)"
 ordering="NONE"
 side="BOTH"
 [[dependencies.thirteen_flames]]

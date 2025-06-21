@@ -4,10 +4,16 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import daripher.skilltree.capability.skill.IPlayerSkills;
+import daripher.skilltree.capability.skill.PlayerSkillsProvider;
+import daripher.skilltree.network.NetworkDispatcher;
+import daripher.skilltree.network.message.SyncPlayerSkillsMessage;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.command.EnumArgument;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityStorage;
@@ -33,128 +39,102 @@ public class ThirteenFlamesCommands {
                                 .then(Commands.literal("lock")
                                         .then(Commands.argument("value", BoolArgumentType.bool())
                                                 .executes(context -> {
-                                                    String ability = AbilityArgumentsType.getAbility(context, "ability_id");
-                                                    boolean value = BoolArgumentType.getBool(context, "value");
+                                                       String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                                       boolean value = BoolArgumentType.getBool(context, "value");
 
-                                                    abilityData.setLockAbility(ability, value);
+                                                       abilityData.setLockAbility(ability, value);
+                                                       context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_set_lock_message", value));
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                       return Command.SINGLE_SUCCESS;
                                                 })
                                         ))
                                 .then(Commands.literal("buy")
                                         .then(Commands.argument("value", BoolArgumentType.bool())
                                                 .executes(context -> {
-                                                    String ability = AbilityArgumentsType.getAbility(context, "ability_id");
-                                                    boolean value = BoolArgumentType.getBool(context, "value");
+                                                        String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                                        boolean value = BoolArgumentType.getBool(context, "value");
 
-                                                    abilityData.setBuyAbility(ability, value);
+                                                        abilityData.setBuyAbility(ability, value);
+                                                        context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_set_buy_message", value));
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                        return Command.SINGLE_SUCCESS;
                                                 })
                                         ))
                                 .then(Commands.literal("active")
                                         .then(Commands.argument("value", BoolArgumentType.bool())
                                                 .executes(context -> {
-                                                    String ability = AbilityArgumentsType.getAbility(context, "ability_id");
-                                                    boolean value = BoolArgumentType.getBool(context, "value");
+                                                        String ability = AbilityArgumentsType.getAbility(context, "ability_id");
+                                                        boolean value = BoolArgumentType.getBool(context, "value");
 
-                                                    abilityData.setActiveAbility(ability, value);
+                                                        abilityData.setActiveAbility(ability, value);
+                                                        context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_set_active_message", value));
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                        return Command.SINGLE_SUCCESS;
                                                 })
                                         ))
                                 .then(Commands.literal("level")
                                         .then(Commands.argument("action", EnumArgument.enumArgument(CommandIntegerActionType.class))
                                                 .then(Commands.argument("count", IntegerArgumentType.integer())
-                                                        .executes(context -> {
-                                                            String ability = AbilityArgumentsType.getAbility(context, "ability_id");
-                                                            IAbilityData iAbilityData = getAbilityData(ability);
+                                                         .executes(context -> {
+                                                                String ability = AbilityArgumentsType.getAbility(context, "ability_id");
 
-                                                            if (!abilityData.isBuyAbility(ability)) {
-                                                                context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_lock_message"));
+                                                                if (!abilityData.isBuyAbility(ability)) {
+                                                                    context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_lock_message"));
+                                                                    return Command.SINGLE_SUCCESS;
+                                                                }
+
+                                                                CommandIntegerActionType type = context.getArgument("action", CommandIntegerActionType.class);
+                                                                int count = IntegerArgumentType.getInteger(context, "count");
+
+                                                                switch (type) {
+                                                                    case add -> abilityData.addLevelAbility(ability, count);
+                                                                    case set -> abilityData.setLevelAbility(ability, count);
+                                                                    case take -> abilityData.addLevelAbility(ability, -count);
+                                                                }
+
+                                                                context.getSource().getPlayerOrException().sendSystemMessage(Component.translatable("command." + ThirteenFlames.MODID + ".ability_" + type.name() + "_message", count));
 
                                                                 return Command.SINGLE_SUCCESS;
-                                                            }
-
-                                                            CommandIntegerActionType type = context.getArgument("action", CommandIntegerActionType.class);
-                                                            int count = IntegerArgumentType.getInteger(context, "count");
-
-                                                            AbilityStorage.abilitiesList.forEach(abil -> {
-                                                                if (abil.getAbilityData().getAbilityName().equals(ability)) {
-                                                                    switch (type) {
-                                                                        case add -> abilityData.addLevelAbility(ability, count, iAbilityData.getAbilityData().getMaxLevel());
-                                                                        case set -> abilityData.setLevelAbility(ability, Math.min(count, iAbilityData.getAbilityData().getMaxLevel()));
-                                                                        case take -> abilityData.addLevelAbility(ability, - count, iAbilityData.getAbilityData().getMaxLevel());
-                                                                    }
-                                                                }
-                                                            });
-
-                                                            return Command.SINGLE_SUCCESS;
-                                                        })
+                                                         })
                                                 )
                                         )
-                                )
-                        ))
+                                )))
                 .then(Commands.literal("curse_knef")
                         .then(Commands.argument("active", BoolArgumentType.bool())
                                 .executes(context -> {
-                                    boolean active = BoolArgumentType.getBool(context, "active");
+                                        boolean active = BoolArgumentType.getBool(context, "active");
 
-                                    effectData.setCurseKnef(active);
-                                    guiLevelingData.setProcentCurse(70);
-                                    xpScarabsData.setXpScarabSilver(500 + guiLevelingData.getProcentCurse() * 10);
-                                    xpScarabsData.setXpScarabGold(1000 + guiLevelingData.getProcentCurse() * 20);
-                                    xpScarabsData.setXpScarabAuriteh(1500 + guiLevelingData.getProcentCurse() * 30);
-                                    xpScarabsData.setXpScarabLazotep(2000 + guiLevelingData.getProcentCurse() * 40);
+                                        effectData.setCurseKnef(active);
+                                        guiLevelingData.setProcentCurse(70);
+                                        xpScarabsData.setXpScarabSilver(500 + guiLevelingData.getProcentCurse() * 10);
+                                        xpScarabsData.setXpScarabGold(1000 + guiLevelingData.getProcentCurse() * 20);
+                                        xpScarabsData.setXpScarabAuriteh(1500 + guiLevelingData.getProcentCurse() * 30);
+                                        xpScarabsData.setXpScarabLazotep(2000 + guiLevelingData.getProcentCurse() * 40);
 
-                                    return Command.SINGLE_SUCCESS;
+                                        return Command.SINGLE_SUCCESS;
                                 })
                         ))
                 .then(Commands.literal("stamina")
                         .then(Commands.literal("add")
                                 .then(Commands.argument("count", IntegerArgumentType.integer())
                                         .executes(context -> {
-                                            ServerPlayer player = context.getSource().getPlayerOrException();
-                                            int count = IntegerArgumentType.getInteger(context, "count");
+                                                ServerPlayer player = context.getSource().getPlayerOrException();
+                                                int count = IntegerArgumentType.getInteger(context, "count");
 
-                                            staminaData.addStamina(player, count);
+                                                staminaData.addStamina(player, count);
 
-                                            return Command.SINGLE_SUCCESS;
-                                        }))
-                                .then(Commands.literal("level")
-                                        .then(Commands.argument("count", IntegerArgumentType.integer())
-                                                .executes(context -> {
-                                                    ServerPlayer player = context.getSource().getPlayerOrException();
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
-
-                                                    staminaData.addMaxStamina(player, count);
-
-                                                    return Command.SINGLE_SUCCESS;
-                                                })
-                                        )
-                                )
-                        )
+                                                return Command.SINGLE_SUCCESS;
+                                        })))
                         .then(Commands.literal("set")
                                 .then(Commands.argument("count", IntegerArgumentType.integer())
                                         .executes(context -> {
-                                            ServerPlayer player = context.getSource().getPlayerOrException();
-                                            int count = IntegerArgumentType.getInteger(context, "count");
+                                                ServerPlayer player = context.getSource().getPlayerOrException();
+                                                int count = IntegerArgumentType.getInteger(context, "count");
 
-                                            staminaData.setStamina(player, count);
+                                                staminaData.setStamina(player, count);
 
-                                            return Command.SINGLE_SUCCESS;
-                                        }))
-                                .then(Commands.literal("level")
-                                        .then(Commands.argument("count", IntegerArgumentType.integer())
-                                                .executes(context -> {
-                                                    ServerPlayer player = context.getSource().getPlayerOrException();
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
-
-                                                    staminaData.setMaxStamina(player, count);
-
-                                                    return Command.SINGLE_SUCCESS;
-                                                })
-                                        )
+                                                return Command.SINGLE_SUCCESS;
+                                        })
                                 )
                         ))
                 .then(Commands.literal("gui_leveling")
@@ -162,142 +142,165 @@ public class ThirteenFlamesCommands {
                                 .then(Commands.literal("add")
                                         .then(Commands.argument("count", IntegerArgumentType.integer())
                                                 .executes(context -> {
-                                                    ScreenType type = context.getArgument("screen_type", ScreenType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                                        ScreenType type = context.getArgument("screen_type", ScreenType.class);
+                                                         int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case mining -> guiLevelingData.addGuiMiningLevelAmount(count);
-                                                        case craft -> guiLevelingData.addGuiCraftLevelAmount(count);
-                                                        case fight -> guiLevelingData.addGuiFightLevelAmount(count);
-                                                        case health -> guiLevelingData.addGuiHealthLevelAmount(count);
-                                                    }
+                                                        switch (type) {
+                                                            case mining -> guiLevelingData.addGuiMiningLevelAmount(count);
+                                                            case craft -> guiLevelingData.addGuiCraftLevelAmount(count);
+                                                            case fight -> guiLevelingData.addGuiFightLevelAmount(count);
+                                                            case health -> guiLevelingData.addGuiHealthLevelAmount(count);
+                                                        }
 
-                                                    return Command.SINGLE_SUCCESS;
-                                                }))
-                                )
+                                                        return Command.SINGLE_SUCCESS;
+                                                })
+                                        ))
                                 .then(Commands.literal("set")
                                         .then(Commands.argument("count", IntegerArgumentType.integer())
                                                 .executes(context -> {
-                                                    ScreenType type = context.getArgument("screen_type", ScreenType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                                        ScreenType type = context.getArgument("screen_type", ScreenType.class);
+                                                        int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case mining -> guiLevelingData.setGuiMiningLevelAmount(count);
-                                                        case craft -> guiLevelingData.setGuiCraftLevelAmount(count);
-                                                        case fight -> guiLevelingData.setGuiFightLevelAmount(count);
-                                                        case health -> guiLevelingData.setGuiHealthLevelAmount(count);
-                                                    }
+                                                        switch (type) {
+                                                            case mining -> guiLevelingData.setGuiMiningLevelAmount(count);
+                                                            case craft -> guiLevelingData.setGuiCraftLevelAmount(count);
+                                                            case fight -> guiLevelingData.setGuiFightLevelAmount(count);
+                                                            case health -> guiLevelingData.setGuiHealthLevelAmount(count);
+                                                        }
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                        return Command.SINGLE_SUCCESS;
                                                 }))
-                                )
-                        ))
+                                        )
+                                ))
                 .then(Commands.literal("xp_scarabs")
                         .then(Commands.argument("scarabs_type", EnumArgument.enumArgument(ScarabsType.class))
                                 .then(Commands.literal("take")
-                                        .then(Commands.argument("count", IntegerArgumentType.integer())
-                                                .executes(context -> {
-                                                    ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                         .then(Commands.argument("count", IntegerArgumentType.integer())
+                                                 .executes(context -> {
+                                                        ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
+                                                        int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case SILVER -> xpScarabsData.subXpScarabsSilver(count);
-                                                        case GOLD -> xpScarabsData.subXpScarabsGold(count);
-                                                        case AURITEH -> xpScarabsData.subXpScarabsAuriteh(count);
-                                                        case LAZOTEP -> xpScarabsData.subXpScarabsLazotep(count);
-                                                    }
+                                                        switch (type) {
+                                                            case SILVER -> xpScarabsData.subXpScarabsSilver(count);
+                                                            case GOLD -> xpScarabsData.subXpScarabsGold(count);
+                                                            case AURITEH -> xpScarabsData.subXpScarabsAuriteh(count);
+                                                            case LAZOTEP -> xpScarabsData.subXpScarabsLazotep(count);
+                                                        }
 
-                                                    return Command.SINGLE_SUCCESS;
-                                                })
-                                        )
+                                                        return Command.SINGLE_SUCCESS;
+                                                 })
+                                         )
                                 )
                                 .then(Commands.literal("set")
-                                        .then(Commands.argument("count", IntegerArgumentType.integer())
-                                                .executes(context -> {
-                                                    ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                         .then(Commands.argument("count", IntegerArgumentType.integer())
+                                                 .executes(context -> {
+                                                        ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
+                                                        int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case SILVER -> xpScarabsData.setXpScarabSilver(count);
-                                                        case GOLD -> xpScarabsData.setXpScarabGold(count);
-                                                        case AURITEH -> xpScarabsData.setXpScarabAuriteh(count);
-                                                        case LAZOTEP -> xpScarabsData.setXpScarabLazotep(count);
-                                                    }
+                                                        switch (type) {
+                                                            case SILVER -> xpScarabsData.setXpScarabSilver(count);
+                                                            case GOLD -> xpScarabsData.setXpScarabGold(count);
+                                                            case AURITEH -> xpScarabsData.setXpScarabAuriteh(count);
+                                                            case LAZOTEP -> xpScarabsData.setXpScarabLazotep(count);
+                                                        }
 
-                                                    return Command.SINGLE_SUCCESS;
-                                                })
-                                        )
+                                                        return Command.SINGLE_SUCCESS;
+                                                 })
+                                         )
                                 )))
-                        .then(Commands.literal("reset")
-                                .executes(context -> {
-                                    xpScarabsData.setXpScarabSilver(500 + guiLevelingData.getProcentCurse() * 10);
-                                    xpScarabsData.setXpScarabGold(1000 + guiLevelingData.getProcentCurse() * 20);
-                                    xpScarabsData.setXpScarabAuriteh(1500 + guiLevelingData.getProcentCurse() * 30);
-                                    xpScarabsData.setXpScarabLazotep(2000 + guiLevelingData.getProcentCurse() * 40);
-
-                                    return Command.SINGLE_SUCCESS;
-                                }))
                 .then(Commands.literal("scarabs")
                         .then(Commands.argument("scarabs_type", EnumArgument.enumArgument(ScarabsType.class))
                                 .then(Commands.literal("add")
                                         .then(Commands.argument("count", IntegerArgumentType.integer())
                                                 .executes(context -> {
-                                                    ServerPlayer player = context.getSource().getPlayerOrException();
-                                                    ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                                        ServerPlayer player = context.getSource().getPlayerOrException();
+                                                        ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
+                                                        int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case SILVER -> scarabsData.addScarabSilver(player, count);
-                                                        case GOLD -> scarabsData.addScarabGold(count);
-                                                        case AURITEH -> scarabsData.addScarabAuriteh(count);
-                                                        case LAZOTEP -> scarabsData.addScarabLazotep(count);
-                                                    }
+                                                        switch (type) {
+                                                            case SILVER:
+                                                                IPlayerSkills skillsData = PlayerSkillsProvider.get(player);
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                                skillsData.grantSkillPoints(count);
+                                                                NetworkDispatcher.network_channel.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerSkillsMessage(player));
+                                                                break;
+                                                            case GOLD:
+                                                                scarabsData.addScarabGold(count);
+                                                                break;
+                                                            case AURITEH:
+                                                                scarabsData.addScarabAuriteh(count);
+                                                                break;
+                                                            case LAZOTEP:
+                                                                scarabsData.addScarabLazotep(count);
+                                                                break;
+                                                        }
+
+                                                        return Command.SINGLE_SUCCESS;
                                                 })
                                         ))
                                 .then(Commands.literal("take")
                                         .then(Commands.argument("count", IntegerArgumentType.integer())
                                                 .executes(context -> {
-                                                    ServerPlayer player = context.getSource().getPlayerOrException();
-                                                    ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                                        ServerPlayer player = context.getSource().getPlayerOrException();
+                                                        ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
+                                                        int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case SILVER -> scarabsData.addScarabSilver(player, -count);
-                                                        case GOLD -> scarabsData.addScarabGold(-count);
-                                                        case AURITEH -> scarabsData.addScarabAuriteh(-count);
-                                                        case LAZOTEP -> scarabsData.addScarabLazotep(-count);
-                                                    }
+                                                        switch (type) {
+                                                            case SILVER:
+                                                                IPlayerSkills skillsData = PlayerSkillsProvider.get(player);
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                                skillsData.grantSkillPoints(-count);
+                                                                NetworkDispatcher.network_channel.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerSkillsMessage(player));
+                                                                break;
+                                                            case GOLD:
+                                                                scarabsData.addScarabGold(-count);
+                                                                break;
+                                                            case AURITEH:
+                                                                scarabsData.addScarabAuriteh(-count);
+                                                                break;
+                                                            case LAZOTEP:
+                                                                scarabsData.addScarabLazotep(-count);
+                                                                break;
+                                                        }
+
+                                                        return Command.SINGLE_SUCCESS;
                                                 })
                                         ))
                                 .then(Commands.literal("set")
                                         .then(Commands.argument("count", IntegerArgumentType.integer())
                                                 .executes(context -> {
-                                                    ServerPlayer player = context.getSource().getPlayerOrException();
-                                                    ScarabsType type = context.getArgument("screen_type", ScarabsType.class);
-                                                    int count = IntegerArgumentType.getInteger(context, "count");
+                                                        ServerPlayer player = context.getSource().getPlayerOrException();
+                                                        ScarabsType type = context.getArgument("scarabs_type", ScarabsType.class);
+                                                        int count = IntegerArgumentType.getInteger(context, "count");
 
-                                                    switch (type) {
-                                                        case SILVER -> scarabsData.setScarabSilver(player, count);
-                                                        case GOLD -> scarabsData.setScarabGold(count);
-                                                        case AURITEH -> scarabsData.setScarabAuriteh(count);
-                                                        case LAZOTEP -> scarabsData.setScarabLazotep(count);
-                                                    }
+                                                        switch (type) {
+                                                            case SILVER:
+                                                                IPlayerSkills skillsData = PlayerSkillsProvider.get(player);
 
-                                                    return Command.SINGLE_SUCCESS;
+                                                                skillsData.setSkillPoints(Math.max(0, count));
+                                                                NetworkDispatcher.network_channel.send(PacketDistributor.PLAYER.with(() -> player), new SyncPlayerSkillsMessage(player));
+                                                                break;
+                                                            case GOLD:
+                                                                scarabsData.setScarabGold(count);
+                                                                break;
+                                                            case AURITEH:
+                                                                scarabsData.setScarabAuriteh(count);
+                                                                break;
+                                                            case LAZOTEP:
+                                                                scarabsData.setScarabLazotep(count);
+                                                                break;
+                                                        }
+
+                                                        return Command.SINGLE_SUCCESS;
                                                 })
-                                        ))
-                                )
+                                        )))
                         .then(Commands.literal("reset")
                                 .executes(context -> {
-                                    ServerPlayer player = context.getSource().getPlayerOrException();
+                                        ServerPlayer player = context.getSource().getPlayerOrException();
 
-                                    scarabsData.resetScarabs(player);
+                                        scarabsData.resetScarabs(player);
 
-                                    return Command.SINGLE_SUCCESS;
+                                        return Command.SINGLE_SUCCESS;
                                 })
                         )
                 )

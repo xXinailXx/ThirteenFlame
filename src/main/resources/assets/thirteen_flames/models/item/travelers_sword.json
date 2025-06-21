@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "Travelerssword",
+	"parent": "travelers_sword",
 	"texture_size": [32, 32],
 	"textures": {
 		"1": "thirteen_flames:item/travelers_sword"

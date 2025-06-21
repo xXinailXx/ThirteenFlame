@@ -1,6 +1,6 @@
 {
 	"credit": "Made with Blockbench",
-	"parent": "gorn",
+	"parent": "horn_seliaset",
 	"texture_size": [32, 32],
 	"textures": {
 		"0": "thirteen_flames:item/horn_seliaset",
