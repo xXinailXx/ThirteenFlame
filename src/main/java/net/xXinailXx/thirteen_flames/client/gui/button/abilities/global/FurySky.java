@@ -9,7 +9,6 @@ public class FurySky extends AbstarctAbilityWidgets {
         super(x, y, 4);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("fury_sky").screenID(ScreenID.GLOBAL).build();
     }

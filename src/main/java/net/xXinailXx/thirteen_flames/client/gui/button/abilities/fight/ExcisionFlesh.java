@@ -19,25 +19,21 @@ public class ExcisionFlesh extends AbstarctAbilityWidgets {
         super(x, y, 11);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("excision_flesh").screenID(ScreenID.FIGHT).maxLevel(20).requiredLevel(5).build();
     }
 
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
-        if (data.isActiveAbility("excision_flesh")) {
-            if (event.getTarget() instanceof LivingEntity entity) {
-                Player player = event.getEntity();
+        Player player = event.getEntity();
 
-                if (player == null)
-                    return;
+        if (player == null)
+            return;
 
-                if (player.getMainHandItem().getItem() instanceof SwordItem) {
-                    if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility("excision_flesh")))
+        if (data.isActiveAbility(player, "excision_flesh"))
+            if (event.getTarget() instanceof LivingEntity entity)
+                if (player.getMainHandItem().getItem() instanceof SwordItem)
+                    if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility(player, "excision_flesh")))
                         entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 200));
-                }
-            }
-        }
     }
 }

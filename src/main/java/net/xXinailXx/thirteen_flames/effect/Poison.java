@@ -16,16 +16,18 @@ public class Poison extends MobEffect {
         super.applyEffectTick(entity, amplifire);
 
         int invulTime = entity.invulnerableTime;
-        entity.hurt(DamageSource.MAGIC, 1.0F + (float)amplifire * 0.2F);
+
+        entity.hurt(DamageSource.MAGIC, 1F + amplifire * 0.2F);
+
         entity.invulnerableTime = invulTime;
     }
 
     public boolean isDurationEffectTick(int duration, int amplifier) {
         int j = 20 - amplifier * 3;
-        if (j > 0) {
+
+        if (j > 0)
             return duration % j == 0;
-        } else {
+        else
             return true;
-        }
     }
 }

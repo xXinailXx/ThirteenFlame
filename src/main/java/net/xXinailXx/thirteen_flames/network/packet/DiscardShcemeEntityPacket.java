@@ -8,14 +8,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
 import net.xXinailXx.thirteen_flames.entity.StatueShcemeEntity;
-import net.xXinailXx.thirteen_flames.utils.MarkupItemUtils;
+import net.xXinailXx.thirteen_flames.item.MarkupItem;
 import org.zeith.hammerlib.net.IPacket;
 import org.zeith.hammerlib.net.PacketContext;
 
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class DiscardShcemeEntityPacket implements IPacket {
     private ItemStack stack;
@@ -39,7 +37,7 @@ public class DiscardShcemeEntityPacket implements IPacket {
         if (data == null)
             return;
 
-        String uuid = NBTUtils.getString(this.stack, MarkupItemUtils.TAG_SHCEME_UUID, "");
+        String uuid = NBTUtils.getString(this.stack, MarkupItem.TAG_SHCEME_UUID, "");
 
         if (uuid.equals("")) {
             this.stack.setTag(null);
@@ -53,9 +51,7 @@ public class DiscardShcemeEntityPacket implements IPacket {
             this.stack.setTag(null);
             ((Player) ctx.getSender()).setItemSlot(EquipmentSlot.MAINHAND, this.stack);
             return;
-        }
-
-        if (shceme.isBuilded()) {
+        } else if (shceme.isBuilded()) {
             this.stack.setTag(null);
             ((Player) ctx.getSender()).setItemSlot(EquipmentSlot.MAINHAND, this.stack);
             return;

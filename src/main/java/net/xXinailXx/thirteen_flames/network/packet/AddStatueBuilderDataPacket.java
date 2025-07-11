@@ -40,14 +40,14 @@ public class AddStatueBuilderDataPacket implements IPacket {
         if (entity == null)
             return;
 
-        if (!(entity instanceof StatueBE<?>))
+        if (!(entity instanceof StatueBE))
             return;
 
-        Data.StatueBuilderData.addStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(), this.mainPos), (StatueBE) entity);
+        Data.StatueBuilderData.addStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(), this.mainPos));
     }
 
     public List<BlockPos> getBlockPoses() {
-        Iterable<BlockPos> iterable = null;
+        Iterable<BlockPos> iterable;
 
         if (!this.god.equals(Gods.GOD_PHARAOH))
             iterable = BlockPos.betweenClosed(this.mainPos.offset(-1, 0, -1), this.mainPos.offset(1, 4, 1));

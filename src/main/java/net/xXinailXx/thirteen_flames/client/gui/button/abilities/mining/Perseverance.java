@@ -18,7 +18,6 @@ public class Perseverance extends AbstarctAbilityWidgets {
         super( x, y, 6);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("perseverance").screenID(ScreenID.MINING).maxLevel(5).requiredLevel(50).build();
     }
@@ -28,9 +27,9 @@ public class Perseverance extends AbstarctAbilityWidgets {
         Player player = event.getPlayer();
         Level level = event.getPlayer().getLevel();
 
-        if (data.isActiveAbility("perseverance")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility("perseverance")))
-                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1000, data.getLevelAbility("perseverance")));
+        if (data.isActiveAbility(player, "perseverance")) {
+            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "perseverance")))
+                player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1000, data.getLevelAbility(player, "perseverance")));
         }
     }
 }

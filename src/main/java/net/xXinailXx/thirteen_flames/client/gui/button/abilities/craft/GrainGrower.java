@@ -9,7 +9,6 @@ public class GrainGrower extends AbstarctAbilityWidgets {
         super(x, y, 7);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("grain_grower").screenID(ScreenID.CRAFT).maxLevel(15).requiredLevel(25).build();
     }

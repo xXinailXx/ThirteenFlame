@@ -37,7 +37,7 @@ public class ParticleUtils {
             double d7 = level.random.nextGaussian() * 0.003;
             double d8 = level.random.nextGaussian() * 0.003;
 
-            Network.sendToAll(new SpawnParticlePacket(options, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8));
+            level.addParticle(options, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8);
         }
     }
 

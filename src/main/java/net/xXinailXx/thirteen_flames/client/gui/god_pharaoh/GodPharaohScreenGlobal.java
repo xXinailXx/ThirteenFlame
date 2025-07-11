@@ -9,7 +9,7 @@ import net.xXinailXx.thirteen_flames.data.IData;
 
 @OnlyIn(Dist.CLIENT)
 public class GodPharaohScreenGlobal extends AbstractGuiPharaoh {
-    private final IData.IEffectData effectData = new Data.EffectData();
+    private final IData.IEffectData effectData = new Data.EffectData.Utils();
 
     public GodPharaohScreenGlobal() {
         super(ScreenID.GLOBAL);
@@ -34,22 +34,22 @@ public class GodPharaohScreenGlobal extends AbstractGuiPharaoh {
 
         this.addRenderableWidget(new LordElements(X, Y + yOff));
 
-        if (effectData.isCurseKnef())
+        if (effectData.isCurseKnef(MC.player))
             this.addRenderableWidget(new Recovery(X + xOff, Y + yOff));
 
-        this.addRenderableWidget(new SacredBonds(X + (effectData.isCurseKnef() ? (xOff * 2) : xOff), Y + yOff));
-        this.addRenderableWidget(new Trader(X + (effectData.isCurseKnef() ? (xOff * 3) : (xOff * 2)), Y + yOff));
-        this.addRenderableWidget(new Scissorhands(X + (effectData.isCurseKnef() ? (xOff * 4) : (xOff * 3)), Y + yOff));
-        this.addRenderableWidget(new CoverNight(X + (effectData.isCurseKnef() ? 0 : (xOff * 4)), Y + (effectData.isCurseKnef() ? (yOff * 2) : yOff)));
+        this.addRenderableWidget(new SacredBonds(X + (effectData.isCurseKnef(MC.player) ? (xOff * 2) : xOff), Y + yOff));
+        this.addRenderableWidget(new Trader(X + (effectData.isCurseKnef(MC.player) ? (xOff * 3) : (xOff * 2)), Y + yOff));
+        this.addRenderableWidget(new Scissorhands(X + (effectData.isCurseKnef(MC.player) ? (xOff * 4) : (xOff * 3)), Y + yOff));
+        this.addRenderableWidget(new CoverNight(X + (effectData.isCurseKnef(MC.player) ? 0 : (xOff * 4)), Y + (effectData.isCurseKnef(MC.player) ? (yOff * 2) : yOff)));
 
-        this.addRenderableWidget(new PharaohsWings(X + (effectData.isCurseKnef() ? xOff : 0), Y + (yOff * 2)));
-        this.addRenderableWidget(new WondereVoid(X + (effectData.isCurseKnef() ? (xOff * 2) : xOff), Y + (yOff * 2)));
-        this.addRenderableWidget(new Austerity(X + (effectData.isCurseKnef() ? (xOff * 3) : (xOff * 2)), Y + (yOff * 2)));
-        this.addRenderableWidget(new GiftGodPharaoh(X + (effectData.isCurseKnef() ? (xOff * 4) : (xOff * 3)), Y + (yOff * 2)));
-        this.addRenderableWidget(new GehennaFire(X + (effectData.isCurseKnef() ? 0 : (xOff * 4)), Y + (effectData.isCurseKnef() ? (yOff * 3) : (yOff * 2))));
+        this.addRenderableWidget(new PharaohsWings(X + (effectData.isCurseKnef(MC.player) ? xOff : 0), Y + (yOff * 2)));
+        this.addRenderableWidget(new WondereVoid(X + (effectData.isCurseKnef(MC.player) ? (xOff * 2) : xOff), Y + (yOff * 2)));
+        this.addRenderableWidget(new Austerity(X + (effectData.isCurseKnef(MC.player) ? (xOff * 3) : (xOff * 2)), Y + (yOff * 2)));
+        this.addRenderableWidget(new GiftGodPharaoh(X + (effectData.isCurseKnef(MC.player) ? (xOff * 4) : (xOff * 3)), Y + (yOff * 2)));
+        this.addRenderableWidget(new GehennaFire(X + (effectData.isCurseKnef(MC.player) ? 0 : (xOff * 4)), Y + (effectData.isCurseKnef(MC.player) ? (yOff * 3) : (yOff * 2))));
 
-        this.addRenderableWidget(new AdamantGaze(X + (effectData.isCurseKnef() ? xOff : 0), Y + (yOff * 3)));
-        this.addRenderableWidget(new NileFlame(X + (effectData.isCurseKnef() ? (xOff * 2) : xOff), Y + (yOff * 3)));
+        this.addRenderableWidget(new AdamantGaze(X + (effectData.isCurseKnef(MC.player) ? xOff : 0), Y + (yOff * 3)));
+        this.addRenderableWidget(new NileFlame(X + (effectData.isCurseKnef(MC.player) ? (xOff * 2) : xOff), Y + (yOff * 3)));
     }
 }
 

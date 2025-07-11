@@ -56,7 +56,7 @@ public abstract class PlayerMixin extends Player {
             }
         }
 
-        if (data.isActiveAbility("flowing_sand") && getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem)
+        if (data.isActiveAbility(player, "flowing_sand") && getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem)
             ci.setReturnValue(0F);
     }
 
@@ -73,11 +73,13 @@ public abstract class PlayerMixin extends Player {
         if (entity == null)
             return;
 
-        if (data.isActiveAbility("retribution"))
-            entity.hurt(DamageSource.MAGIC, (float)(amount * (data.getLevelAbility("retribution") * 0.02)));
+        Player player = (Player) (Object) this;
 
-        if (data.isActiveAbility("divine_veil")) {
-            if (net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils.isRandomSuccess(entity.getLevel(), data.getLevelAbility("divine_veil"))) {
+        if (data.isActiveAbility(player, "retribution"))
+            entity.hurt(DamageSource.MAGIC, (float)(amount * (data.getLevelAbility(player, "retribution") * 0.02)));
+
+        if (data.isActiveAbility(player, "divine_veil")) {
+            if (net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils.isRandomSuccess(entity.getLevel(), data.getLevelAbility(player, "divine_veil"))) {
                 cir.setReturnValue(false);
                 cir.cancel();
             }
@@ -86,10 +88,9 @@ public abstract class PlayerMixin extends Player {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;updateIsUnderwater()Z"))
     public void tick(CallbackInfo ci) {
-        if (data.isActiveAbility("lord_elements")) {
-            Player player = (Player) (Object) this;
+        Player player = (Player) (Object) this;
 
+        if (data.isActiveAbility(player, "lord_elements"))
             player.setAirSupply(player.getMaxAirSupply());
-        }
     }
 }

@@ -8,10 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
-import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
-import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityStorage;
-import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
+import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.*;
 
 @Mod.EventBusSubscriber
 public class PathPlanner extends AbstarctAbilityWidgets {
@@ -19,7 +16,6 @@ public class PathPlanner extends AbstarctAbilityWidgets {
         super( x, y, 8);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("path_planner").screenID(ScreenID.MINING).requiredLevel(20).requiredScarabsForOpen(3).build();
     }
@@ -33,15 +29,11 @@ public class PathPlanner extends AbstarctAbilityWidgets {
 
         if (!player.isCreative()) {
             if (itemInHand.getItem() instanceof PickaxeItem) {
-                if (data.isActiveAbility("path_planner")) {
+                if (data.isActiveAbility(player, "path_planner")) {
                     boolean error = false;
 
-                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilitiesList) {
-                        if (ability instanceof MagomedWalks) {
-                            if (ability.isActiveAbility())
-                                error = true;
-                        }
-                    }
+                    if (data.isActiveAbility(player, "magomed_walks"))
+                        error = true;
 
                     if (!error) {
                         if (!player.isShiftKeyDown()) {

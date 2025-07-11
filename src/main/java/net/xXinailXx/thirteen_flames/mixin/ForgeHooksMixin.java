@@ -16,13 +16,13 @@ public class ForgeHooksMixin {
     @Inject(method = "onLivingAttack", at = @At("HEAD"), remap = false)
     private static void onLivingAttack(LivingEntity entity, DamageSource src, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (entity instanceof Player player) {
-            IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
+            IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData.Utils();
             IData.IAbilitiesData abilitiesData = new Data.AbilitiesData.Utils();
 
-            if (abilitiesData.isActiveAbility("resistance"))
+            if (abilitiesData.isActiveAbility(player, "resistance"))
                 amount = amount / 2;
 
-            amount = (float) (amount - (amount * (Math.round((float) guiLevelingData.getGuiFightLevelAmount() / 10) * 0.01)));
+            amount = (float) (amount - (amount * (Math.round((float) guiLevelingData.getFightLevel(player) / 10) * 0.01)));
         }
     }
 }

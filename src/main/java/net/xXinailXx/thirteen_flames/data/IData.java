@@ -1,156 +1,150 @@
 package net.xXinailXx.thirteen_flames.data;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.util.INBTSerializable;
 
-public interface IData extends INBTSerializable<CompoundTag> {
+public interface IData {
     public static interface IAbilitiesData {
-        Data.AbilitiesData.Handler getAbilityHandler(String abilityName);
+        boolean isLockAbility(Player player, String ability);
 
-        boolean isLockAbility(String abilityName);
+        void setLockAbility(Player player, String ability, boolean value);
 
-        void setLockAbility(String abilityName, boolean value);
+        boolean isBuyAbility(Player player, String ability);
 
-        boolean isBuyAbility(String abilityName);
+        void setBuyAbility(Player player, String ability, boolean value);
 
-        void setBuyAbility(String abilityName, boolean value);
+        boolean isActiveAbility(Player player, String ability);
 
-        boolean isActiveAbility(String abilityName);
+        void setActiveAbility(Player player, String ability, boolean value);
 
-        void setActiveAbility(String abilityName, boolean value);
+        int getLevelAbility(Player player, String ability);
 
-        int getLevelAbility(String abilityName);
+        void setLevelAbility(Player player, String ability, int amount);
 
-        void setLevelAbility(String abilityName, int amount);
-
-        void addLevelAbility(String abilityName, int amount);
+        void addLevelAbility(Player player, String ability, int amount);
     }
 
     public static interface IEffectData {
-        int getEffectMontuAmount();
+        int getKnef(Player player);
 
-        int getEffectRonosAmount();
+        int getSelya(Player player);
 
-        int getEffectKnefAmount();
+        int getMontu(Player player);
 
-        int getEffectSelyaAmount();
+        int getRonos(Player player);
 
-        int getEffectHetAmount();
+        int getHet(Player player);
 
-        boolean isCurseKnef();
+        boolean isCurseKnef(Player player);
 
-        void setEffectMontuAmount(int amount);
+        void setKnef(Player player, int amount);
 
-        void setEffectRonosAmount(int amount);
+        void setSelya(Player player, int amount);
 
-        void setEffectKnefAmount(int amount);
+        void setMontu(Player player, int amount);
 
-        void setEffectSelyaAmount(int amount);
+        void setRonos(Player player, int amount);
 
-        void setEffectHetAmount(int amount);
+        void setHet(Player player, int amount);
 
-        void setCurseKnef(boolean value);
+        void setCurseKnef(Player player, boolean value);
 
-        void subEffectMontuAmount(int amount);
+        void subKnef(Player player, int amount);
 
-        void subEffectRonosAmount(int amount);
+        void subSelya(Player player, int amount);
 
-        void subEffectKnefAmount(int amount);
+        void subMontu(Player player, int amount);
 
-        void subEffectSelyaAmount(int amount);
+        void subRonos(Player player, int amount);
 
-        void subEffectHetAmount(int amount);
+        void subHet(Player player, int amount);
     }
 
     public static interface IGuiLevelingData {
-        boolean isPlayerScreen();
+        boolean isPlayerScreen(Player player);
 
-        int getProcentCurse();
+        int getProcentCurse(Player player);
 
-        int getGuiMiningLevelAmount();
+        int getMiningLevel(Player player);
 
-        int getGuiCraftLevelAmount();
+        int getCraftLevel(Player player);
 
-        int getGuiFightLevelAmount();
+        int getFightLevel(Player player);
 
-        int getGuiHealthLevelAmount();
+        int getHealthLevel(Player player);
 
-        void setPlayerScreen(boolean value);
+        void setPlayerScreen(Player player, boolean value);
 
-        void setGuiMiningLevelAmount(int amount);
+        void setMiningLevel(Player player, int amount);
 
-        void setGuiCraftLevelAmount(int amount);
+        void setCraftLevel(Player player, int amount);
 
-        void setGuiFightLevelAmount(int amount);
+        void setFightLevel(Player player, int amount);
 
-        void setGuiHealthLevelAmount(int amount);
+        void setHealthLevel(Player player, int amount);
 
-        void setProcentCurse(int amount);
+        void setProcentCurse(Player player, int amount);
 
-        void addGuiMiningLevelAmount(int amount);
+        void addMiningLevel(Player player, int amount);
 
-        void addGuiCraftLevelAmount(int amount);
+        void addCraftLevel(Player player, int amount);
 
-        void addGuiFightLevelAmount(int amount);
+        void addFightLevel(Player player, int amount);
 
-        void addGuiHealthLevelAmount(int amount);
-
-        void subProcentCurse(int amount);
+        void addHealthLevel(Player player, int amount);
     }
 
     public static interface IXpScarabsData {
-        int getXpScarabSilver();
+        int getXpScarabSilver(Player player);
 
-        int getXpScarabGold();
+        int getXpScarabGold(Player player);
 
-        int getXpScarabAuriteh();
+        int getXpScarabAuriteh(Player player);
 
-        int getXpScarabLazotep();
+        int getXpScarabLazotep(Player player);
 
-        void setXpScarabSilver(int amount);
+        void setXpScarabSilver(Player player, int amount);
 
-        void setXpScarabGold(int amount);
+        void setXpScarabGold(Player player, int amount);
 
-        void setXpScarabAuriteh(int amount);
+        void setXpScarabAuriteh(Player player, int amount);
 
-        void setXpScarabLazotep(int amount);
+        void setXpScarabLazotep(Player player, int amount);
 
-        void subXpScarab(int amount);
+        void subXpScarab(Player player, int amount);
 
-        void subXpScarabsSilver(int amount);
+        void subXpScarabsSilver(Player player, int amount);
 
-        void subXpScarabsGold(int amount);
+        void subXpScarabsGold(Player player, int amount);
 
-        void subXpScarabsAuriteh(int amount);
+        void subXpScarabsAuriteh(Player player, int amount);
 
-        void subXpScarabsLazotep(int amount);
+        void subXpScarabsLazotep(Player player, int amount);
     }
 
     public static interface IScarabsData {
         int getScarabSilver(Player player);
 
-        int getScarabGold();
+        int getScarabGold(Player player);
 
-        int getScarabAuriteh();
+        int getScarabAuriteh(Player player);
 
-        int getScarabLazotep();
+        int getScarabLazotep(Player player);
 
         void setScarabSilver(Player player, int amount);
 
-        void setScarabGold(int amount);
+        void setScarabGold(Player player, int amount);
 
-        void setScarabAuriteh(int amount);
+        void setScarabAuriteh(Player player, int amount);
 
-        void setScarabLazotep(int amount);
+        void setScarabLazotep(Player player, int amount);
 
         void addScarabSilver(Player player, int amount);
 
-        void addScarabGold(int amount);
+        void addScarabGold(Player player, int amount);
 
-        void addScarabAuriteh(int amount);
+        void addScarabAuriteh(Player player, int amount);
 
-        void addScarabLazotep(int amount);
+        void addScarabLazotep(Player player, int amount);
 
         void resetScarabs(Player player);
     }

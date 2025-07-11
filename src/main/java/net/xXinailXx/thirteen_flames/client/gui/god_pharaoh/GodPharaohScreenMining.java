@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.god_pharaoh;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
@@ -13,9 +14,8 @@ public class GodPharaohScreenMining extends AbstractGuiPharaoh {
         super(ScreenID.MINING);
     }
 
-    @Override
     public void tick() {
-        levelGui = guiLeveling.getGuiMiningLevelAmount();
+        levelGui = guiLeveling.getMiningLevel(Minecraft.getInstance().player);
     }
 
     protected void init() {

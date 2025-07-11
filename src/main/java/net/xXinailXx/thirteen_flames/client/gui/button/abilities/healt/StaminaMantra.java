@@ -6,10 +6,9 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 
 public class StaminaMantra extends AbstarctAbilityWidgets {
     public StaminaMantra(int x, int y) {
-        super(x, y, 6);
+        super(x, y, 6, true);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("stamina_mantra").screenID(ScreenID.HEALTH).maxLevel(993).requiredLevel(0).build();
     }

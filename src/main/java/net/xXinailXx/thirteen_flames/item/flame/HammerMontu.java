@@ -50,7 +50,6 @@ public class HammerMontu extends PickaxeItemTF {
         }).build()).build()).build()).levelingData(new RelicLevelingData(200, 15, 100)).build();
     }
 
-    @Override
     public InteractionResult useOn(UseOnContext use) {
         Player player = use.getPlayer();
         ItemStack stack = use.getItemInHand();

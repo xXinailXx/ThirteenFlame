@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
+import com.google.common.base.Suppliers;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
@@ -8,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -16,15 +18,26 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
+import net.xXinailXx.thirteen_flames.block.StatueHandler;
+import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
+import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
+import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.SunSeliasetEntity;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
+import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class SunSeliaset extends FlameItemSetting {
@@ -39,7 +52,25 @@ public class SunSeliaset extends FlameItemSetting {
     public InteractionResult useOn(UseOnContext use) {
         BlockPos pos = use.getClickedPos().above();
         Level level = use.getLevel();
+        BlockState state = level.getBlockState(pos);
         ItemStack stack = use.getItemInHand();
+
+        if (state.getBlock() instanceof StatueHandler handler || state.getBlock() instanceof StatueStructureBlock structureBlock) {
+            StatueBE be = state.getBlock() instanceof StatueHandler handler ? handler.getBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos);
+
+            if (be != null && be.getTimeToUpgrade() == 0) {
+                RelicLevelingData data = ((FlameItemSetting) stack.getItem()).getRelicData().getLevelingData();
+
+                if (LevelingUtils.getLevel(stack) < data.getMaxLevel()) {
+                    Network.sendToServer(new FlameUpgradePacket(stack));
+                    be.resetFlameUpgradeData();
+
+                    return InteractionResult.SUCCESS;
+                }
+            } else {
+                return InteractionResult.FAIL;
+            }
+        }
 
         SunSeliasetEntity sun = new SunSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "light", "radius"), (int) AbilityUtils.getAbilityValue(stack, "light", "cooldown"), stack);
         sun.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
@@ -51,6 +82,15 @@ public class SunSeliaset extends FlameItemSetting {
         return InteractionResult.SUCCESS;
     }
 
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
+
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+            }
+        });
+    }
 
     protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
         return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0, 0));

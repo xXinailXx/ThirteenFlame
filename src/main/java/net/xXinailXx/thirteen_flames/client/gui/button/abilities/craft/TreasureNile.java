@@ -28,21 +28,21 @@ public class TreasureNile extends AbstarctAbilityWidgets {
         super(x, y, 4);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("treasure_nile").screenID(ScreenID.CRAFT).maxLevel(10).requiredLevel(50).build();
     }
 
     @SubscribeEvent
     public static void extraDrop(ItemFishedEvent event) {
-        if (data.isActiveAbility("treasure_nile")) {
-            FishingHook hook = event.getHookEntity();
-            Player player = hook.getPlayerOwner();
-            Level level = hook.getLevel();
+        FishingHook hook = event.getHookEntity();
+        Level level = hook.getLevel();
+        Player player = hook.getPlayerOwner();
+
+        if (data.isActiveAbility(player, "treasure_nile")) {
             ItemStack stack = null;
 
             if (!level.isClientSide) {
-                if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility("treasure_nile"))) {
+                if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "treasure_nile"))) {
                     if (player.getMainHandItem().canPerformAction(net.minecraftforge.common.ToolActions.FISHING_ROD_CAST))
                         stack = player.getMainHandItem();
                     else

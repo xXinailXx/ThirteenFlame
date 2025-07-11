@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.button.abilities.global;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -13,10 +14,9 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 @Mod.EventBusSubscriber
 public class Trader extends AbstarctAbilityWidgets {
     public Trader(int x, int y) {
-        super(x, y, 7 + (effectData.isCurseKnef() ? 1 : 0));
+        super(x, y, 7 + (effectData.isCurseKnef(Minecraft.getInstance().player) ? 1 : 0));
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("trader").screenID(ScreenID.GLOBAL).build();
     }
@@ -28,7 +28,7 @@ public class Trader extends AbstarctAbilityWidgets {
         if (player == null)
             return;
 
-        if (data.isActiveAbility("trader")) {
+        if (data.isActiveAbility(player, "trader")) {
             if (!player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE))
                 player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 2, 255, true, true));
         }

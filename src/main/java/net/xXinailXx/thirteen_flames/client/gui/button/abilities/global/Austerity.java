@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.button.abilities.global;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -11,23 +12,21 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 @Mod.EventBusSubscriber
 public class Austerity extends AbstarctAbilityWidgets {
     public Austerity(int x, int y) {
-        super(x, y, 12 + (effectData.isCurseKnef() ? 1 : 0));
+        super(x, y, 12 + (effectData.isCurseKnef(Minecraft.getInstance().player) ? 1 : 0));
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("austerity").screenID(ScreenID.GLOBAL).build();
     }
 
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("austerity")) {
-            Player player = event.player;
+        Player player = event.player;
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "austerity"))
             player.getFoodData().setFoodLevel(20);
-        }
     }
 }

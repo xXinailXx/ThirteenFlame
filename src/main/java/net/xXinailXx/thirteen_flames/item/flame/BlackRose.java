@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
+import com.google.common.base.Suppliers;
 import it.hurts.sskirillss.relics.api.events.common.ContainerSlotClickEvent;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
@@ -11,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -22,15 +24,20 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.LivingFleshEntity;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class BlackRose extends FlameItemSetting {
@@ -62,6 +69,16 @@ public class BlackRose extends FlameItemSetting {
         }
 
         super.inventoryTick(stack, level, entity, slot, isSelected);
+    }
+
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
+
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+            }
+        });
     }
 
     protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {

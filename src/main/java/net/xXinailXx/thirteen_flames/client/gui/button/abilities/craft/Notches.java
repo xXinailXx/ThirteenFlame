@@ -16,17 +16,16 @@ public class Notches extends AbstarctAbilityWidgets {
         super(x, y, 0);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("notches").screenID(ScreenID.CRAFT).maxLevel(5).requiredLevel(100).requiredScarabsForOpen(5).build();
     }
 
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
-        if (data.isActiveAbility("notches")) {
-            Player player = event.getEntity();
+        Player player = event.getEntity();
 
-            if (player != null) {
+        if (player != null) {
+            if (data.isActiveAbility(player, "notches")) {
                 if (player.getMainHandItem().getItem() != null) {
                     ItemStack item = player.getMainHandItem();
 
@@ -34,7 +33,7 @@ public class Notches extends AbstarctAbilityWidgets {
                     int durability = item.getDamageValue();
 
                     if (item.isDamaged()) {
-                        float extraDamage = (float) ((maxDurability - durability) * (data.getLevelAbility("notches") * 0.001));
+                        float extraDamage = (float) ((maxDurability - durability) * (data.getLevelAbility(player, "notches") * 0.001));
 
                         event.getTarget().hurt(DamageSource.playerAttack(player), extraDamage);
                     }

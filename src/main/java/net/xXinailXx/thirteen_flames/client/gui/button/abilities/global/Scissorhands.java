@@ -1,6 +1,7 @@
 package net.xXinailXx.thirteen_flames.client.gui.button.abilities.global;
 
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -27,10 +28,9 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 @Mod.EventBusSubscriber
 public class Scissorhands extends AbstarctAbilityWidgets {
     public Scissorhands(int x, int y) {
-        super(x, y, 8 + (effectData.isCurseKnef() ? 1 : 0));
+        super(x, y, 8 + (effectData.isCurseKnef(Minecraft.getInstance().player) ? 1 : 0));
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("scissorhands").screenID(ScreenID.GLOBAL).build();
     }
@@ -41,16 +41,16 @@ public class Scissorhands extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void interactEntity(PlayerInteractEvent.EntityInteract event) {
-        if (data.isActiveAbility("scissorhands") && event.getItemStack().isEmpty()) {
-            Entity entity = event.getTarget();
+        Entity entity = event.getTarget();
 
-            if (entity instanceof net.minecraftforge.common.IForgeShearable target) {
-                if (entity.level.isClientSide)
-                    return;
+        if (entity instanceof net.minecraftforge.common.IForgeShearable target) {
+            if (entity.level.isClientSide)
+                return;
 
-                BlockPos pos = new BlockPos(entity.getX(), entity.getY(), entity.getZ());
-                Player player = event.getEntity();
+            BlockPos pos = new BlockPos(entity.getX(), entity.getY(), entity.getZ());
+            Player player = event.getEntity();
 
+            if (data.isActiveAbility(player, "scissorhands") && event.getItemStack().isEmpty()) {
                 if (target.isShearable(event.getItemStack(), entity.level, pos)) {
                     java.util.List<ItemStack> drops = target.onSheared(player, event.getItemStack(), entity.level, pos, 0);
                     java.util.Random rand = new java.util.Random();
@@ -67,12 +67,12 @@ public class Scissorhands extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void breakeSpeed(PlayerEvent.BreakSpeed event) {
-        if (data.isActiveAbility("scissorhands")) {
-            Player player = event.getEntity();
+        Player player = event.getEntity();
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "scissorhands")) {
             if (player.getMainHandItem().is(Items.SHEARS))
                 return;
 
@@ -92,9 +92,14 @@ public class Scissorhands extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void breakeBlock(BlockEvent.BreakEvent event) {
-        if (data.isActiveAbility("scissorhands")) {
-            if (event.getPlayer().getMainHandItem().isEmpty()) {
-                Level level = event.getPlayer().getLevel();
+        Player player = event.getPlayer();
+
+        if (player == null)
+            return;
+
+        if (data.isActiveAbility(player, "scissorhands")) {
+            if (player.getMainHandItem().isEmpty()) {
+                Level level = player.getLevel();
                 BlockState state = level.getBlockState(event.getPos());
                 ItemStack stack = null;
 
@@ -111,12 +116,12 @@ public class Scissorhands extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void clickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (data.isActiveAbility("scissorhands")) {
-            Player player = event.getEntity();
+        Player player = event.getEntity();
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "scissorhands")) {
             if (player.getMainHandItem().is(Items.SHEARS))
                 return;
 

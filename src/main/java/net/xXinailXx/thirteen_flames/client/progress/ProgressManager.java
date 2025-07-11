@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class ProgressManager {
-    private static final IData.IGuiLevelingData data = new Data.GuiLevelingData();
+    private static final IData.IGuiLevelingData data = new Data.GuiLevelingData.Utils();
 
     public static List<Component> getProgressTooltip(ItemStack stack) {
         List<Component> list = new ArrayList<>();
@@ -37,7 +37,7 @@ public class ProgressManager {
     private static Component getMiningTooltip(ItemStack stack) {
         int reqLevel = getToolReqLevel(ProgressType.MINING, stack);
 
-        if (data.getGuiMiningLevelAmount() >= reqLevel)
+        if (data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel)
             return Component.empty();
 
         if (reqLevel == -1)
@@ -49,7 +49,7 @@ public class ProgressManager {
     private static Component getCraftTooltip(ItemStack stack) {
         int reqLevel = getToolReqLevel(ProgressType.CRAFT, stack);
 
-        if (data.getGuiCraftLevelAmount() >= reqLevel)
+        if (data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel)
             return Component.empty();
 
         if (reqLevel == -1)
@@ -61,7 +61,7 @@ public class ProgressManager {
     private static Component getFightTooltip(ItemStack stack) {
         int reqLevel = getToolReqLevel(ProgressType.FIGHT, stack);
 
-        if (data.getGuiFightLevelAmount() >= reqLevel)
+        if (data.getFightLevel(Minecraft.getInstance().player) >= reqLevel)
             return Component.empty();
 
         if (reqLevel == -1)
@@ -73,7 +73,7 @@ public class ProgressManager {
     private static Component getHealthTooltip(ItemStack stack) {
         int reqLevel = getToolReqLevel(ProgressType.HEALTH, stack);
 
-        if (data.getGuiHealthLevelAmount() >= reqLevel)
+        if (data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel)
             return Component.empty();
 
         if (reqLevel == -1)
@@ -99,13 +99,13 @@ public class ProgressManager {
             maxCondition++;
 
             if (type.equals(ProgressType.MINING))
-                allowCondition += data.getGuiMiningLevelAmount() >= reqLevel ? 1 : 0;
+                allowCondition += data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
             else if (type.equals(ProgressType.CRAFT))
-                allowCondition += data.getGuiCraftLevelAmount() >= reqLevel ? 1 : 0;
+                allowCondition += data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
             else if (type.equals(ProgressType.FIGHT))
-                allowCondition += data.getGuiFightLevelAmount() >= reqLevel ? 1 : 0;
+                allowCondition += data.getFightLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
             else
-                allowCondition += data.getGuiHealthLevelAmount() >= reqLevel ? 1 : 0;
+                allowCondition += data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
         }
 
         if (maxCondition == allowCondition)
@@ -122,13 +122,13 @@ public class ProgressManager {
         int reqLevel = getToolReqLevel(type, stack);
 
         if (type.equals(ProgressType.MINING))
-            return data.getGuiMiningLevelAmount() >= reqLevel;
+            return data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel;
         else if (type.equals(ProgressType.CRAFT))
-            return data.getGuiCraftLevelAmount() >= reqLevel;
+            return data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel;
         else if (type.equals(ProgressType.FIGHT))
-            return data.getGuiFightLevelAmount() >= reqLevel;
+            return data.getFightLevel(Minecraft.getInstance().player) >= reqLevel;
         else
-            return data.getGuiHealthLevelAmount() >= reqLevel;
+            return data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel;
     }
 
     private static int getToolReqLevel(ProgressType type, ItemStack stack) {

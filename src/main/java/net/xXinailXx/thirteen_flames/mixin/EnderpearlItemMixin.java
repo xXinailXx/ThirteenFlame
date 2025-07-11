@@ -20,7 +20,7 @@ public class EnderpearlItemMixin {
 
     @Inject(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;shrink(I)V"), remap = false, cancellable = true)
     public void use(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        if (data.isActiveAbility("wondere_void")) {
+        if (data.isActiveAbility(player, "wondere_void")) {
             cir.setReturnValue(InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide()));
             cir.cancel();
         }

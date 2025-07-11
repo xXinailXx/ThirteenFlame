@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.mixin;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -28,7 +29,7 @@ public abstract class ItemEntityMixin {
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
     public void tick(CallbackInfo ci) {
-        if (data.isActiveAbility( "wonderful_garden" )) {
+        if (data.isActiveAbility(Minecraft.getInstance().player, "wonderful_garden")) {
             if (this.getItem().getItem() instanceof BlockItem blockItem) {
                 Block block = blockItem.getBlock();
 

@@ -28,14 +28,13 @@ public class NileTide extends AbstarctAbilityWidgets {
         super(x, y, 1);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("nile_tide").screenID(ScreenID.CRAFT).maxLevel(20).requiredLevel(5).build();
     }
 
     @SubscribeEvent
     public static void extraDrop(ItemFishedEvent event) {
-        if (data.isActiveAbility("nile_tide")) {
+        if (data.isActiveAbility(event.getEntity(), "nile_tide")) {
             FishingHook hook = event.getHookEntity();
             Player player = hook.getPlayerOwner();
             Level level = hook.getLevel();
@@ -57,7 +56,7 @@ public class NileTide extends AbstarctAbilityWidgets {
 
                 List<ItemStack> extraItems = new ArrayList<>();
 
-                for (int i = 0; i < data.getLevelAbility("nile_tide"); i++)
+                for (int i = 0; i < data.getLevelAbility(event.getEntity(), "nile_tide"); i++)
                     extraItems.add(list.get(random.nextInt(0, list.size())));
 
                 for (ItemStack itemStack : extraItems) {

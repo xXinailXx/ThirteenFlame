@@ -15,19 +15,18 @@ public class Metabolism extends AbstarctAbilityWidgets {
         super(x, y, 4);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("metabolism").screenID(ScreenID.HEALTH).requiredLevel(40).requiredScarabsForOpen(1).build();
     }
 
     @SubscribeEvent
     public static void addEffect(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("metabolism")) {
-            Player player = event.player;
+        Player player = event.player;
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "metabolism")) {
             if (player.tickCount % 20 == 0) {
                 FoodData foodData = player.getFoodData();
 

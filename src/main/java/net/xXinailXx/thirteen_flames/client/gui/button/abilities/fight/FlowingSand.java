@@ -9,7 +9,6 @@ public class FlowingSand extends AbstarctAbilityWidgets {
         super(x, y, 4);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("flowing_sand").screenID(ScreenID.FIGHT).requiredLevel(100).build();
     }

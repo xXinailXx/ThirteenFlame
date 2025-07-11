@@ -37,7 +37,7 @@ import net.xXinailXx.enderdragonlib.client.curios.ICurioRenderable;
 import net.xXinailXx.enderdragonlib.client.curios.model.CurioArmsModel;
 import net.xXinailXx.enderdragonlib.client.curios.model.CurioModel;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
@@ -64,8 +64,8 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
 
     public RenderData getRenderHandData(ItemStack stack, HumanoidArm arm) {
         return switch (arm) {
-            case RIGHT -> new RenderData(Vector3f.ZN.rotationDegrees(-5.0F), null, new Tuple3<>(0D, -0.05, 0D));
-            case LEFT -> new RenderData(Vector3f.ZN.rotationDegrees(-5.0F), null, new Tuple3<>(0D, -0.05, 0D));
+            case RIGHT -> new RenderData(Vector3f.ZN.rotationDegrees(-5.0F), null, new Tuple3<>(-0.4D, 0.05, 0D));
+            case LEFT -> new RenderData(Vector3f.ZN.rotationDegrees(-5.0F), null, new Tuple3<>(0.4D, 0.05, 0D));
         };
     }
 

@@ -14,14 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SkillButton.class)
 public class SkillButtomMixin {
-    @Unique private static final IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
+    @Unique private static final IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData.Utils();
 
     @Inject(method = "renderButton", at = @At(value = "INVOKE", target = "Ldaripher/skilltree/client/widget/SkillButton;blit(Lcom/mojang/blaze3d/vertex/PoseStack;IIIIFFIIII)V", ordinal = 3), cancellable = true)
     public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (Minecraft.getInstance().player == null)
-            return;
-
-        if (guiLevelingData.isPlayerScreen()) {
+        if (guiLevelingData.isPlayerScreen(Minecraft.getInstance().player)) {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             ci.cancel();
         }

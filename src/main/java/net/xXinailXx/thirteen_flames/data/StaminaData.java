@@ -1,5 +1,7 @@
 package net.xXinailXx.thirteen_flames.data;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -14,59 +16,34 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.network.packet.capability.StaminaSyncPacket;
 import org.zeith.hammerlib.api.io.IAutoNBTSerializable;
 import org.zeith.hammerlib.api.io.NBTSerializable;
 import org.zeith.hammerlib.net.Network;
 
+@Getter
 public class StaminaData implements IAutoNBTSerializable {
     @NBTSerializable
     private int maxStamina;
     @NBTSerializable
     private int stamina;
+    @Setter
     @NBTSerializable
     private int regenCooldown;
+    @Setter
     @NBTSerializable
     private int shakeTime;
 
-    public int getMaxStamina() {
-        return maxStamina;
-    }
-
     public void setMaxStamina(int amount) {
-        if (amount > 993) {
-            this.maxStamina = 993;
-        } else {
-            this.maxStamina = Math.max(amount, 1);
-        }
-    }
-
-    public int getStamina() {
-        return stamina;
+        this.maxStamina = Math.max(amount, 10);
     }
 
     public void setStamina(int amount) {
-        if (amount > this.maxStamina) {
-            this.stamina = 0;
-        } else {
+        if (amount > this.maxStamina)
+            this.stamina = this.maxStamina;
+        else
             this.stamina = amount;
-        }
-    }
-
-    public int getRegenCooldown() {
-        return regenCooldown;
-    }
-
-    public void setRegenCooldown(int amount) {
-        this.regenCooldown = amount;
-    }
-
-    public int getShakeTime() {
-        return shakeTime;
-    }
-
-    public void setShakeTime(int amount) {
-        this.shakeTime = amount;
     }
 
     public boolean isStaminaEmpty() {
@@ -84,20 +61,18 @@ public class StaminaData implements IAutoNBTSerializable {
             StaminaData fake = new StaminaData();
             CompoundTag data = player.getPersistentData();
 
-            if (data.contains("stamina_data")) {
-                fake.deserializeNBT(data.getCompound("stamina_data"));
-            }
+            if (data.contains("tf_stamina_data"))
+                fake.deserializeNBT(data.getCompound("tf_stamina_data"));
 
             return fake;
         }
 
         public static void setStaminaData(Player player, StaminaData data) {
             CompoundTag nbt = data.serializeNBT();
-            player.getPersistentData().put("stamina_data", nbt);
+            player.getPersistentData().put("tf_stamina_data", nbt);
 
-            if (!player.level.isClientSide()) {
+            if (!player.level.isClientSide())
                 Network.sendTo(new StaminaSyncPacket(nbt), player);
-            }
         }
 
         public int getStamina(Player player) {
@@ -111,7 +86,7 @@ public class StaminaData implements IAutoNBTSerializable {
         }
 
         public int getMaxStamina(Player player) {
-            return Math.max(10 * (abilitiesData.isActiveAbility("stamina_mantra") ? abilitiesData.getLevelAbility("stamina_mantra") : 1), getStaminaData(player).getMaxStamina());
+            return Math.max(10 * (abilitiesData.isActiveAbility(player, "stamina_mantra") ? abilitiesData.getLevelAbility(player, "stamina_mantra") : 1), getStaminaData(player).getMaxStamina());
         }
 
         public void setMaxStamina(Player player, int stamina) {
@@ -153,22 +128,25 @@ public class StaminaData implements IAutoNBTSerializable {
         }
 
         public void addStamina(Player player, int stamina) {
-            if (stamina <= 0) {
-                if (abilitiesData.isActiveAbility("second_wind") && player.getHealth() < (player.getMaxHealth() / 2)) {
-                    return;
-                }
-
+            if (stamina < 0)
                 setRegenCooldown(player, 5);
-            }
 
             setStamina(player, getStamina(player) + stamina);
         }
 
         public void addStaminaReqAbil(Player player, int stamina) {
-            if (abilitiesData.isActiveAbility("stamina_mantra")) {
-                addStamina(player, stamina * abilitiesData.getLevelAbility("stamina_mantra"));
-            } else {
+            if (stamina < 0) {
+                if (abilitiesData.isActiveAbility(player, "second_wind") && player.getHealth() < (player.getMaxHealth() / 2)) {
+                    return;
+                }
+
                 addStamina(player, stamina);
+            } else {
+                if (abilitiesData.isActiveAbility(player, "stamina_mantra")) {
+                    addStamina(player, stamina * abilitiesData.getLevelAbility(player, "stamina_mantra"));
+                } else {
+                    addStamina(player, stamina);
+                }
             }
         }
 
@@ -190,6 +168,9 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void attackEntity(LivingAttackEvent event) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
             if (event.getSource().getEntity() instanceof Player player) {
                 if (!player.isCreative()) {
                     if (staminaData.getStamina(player) <= 0) {
@@ -205,6 +186,9 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void breakBlock(BlockEvent.BreakEvent event) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
             Player player = event.getPlayer();
 
             if (!player.isCreative()) {
@@ -220,6 +204,9 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void setBreakSpeed(PlayerEvent.BreakSpeed event) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
             Player player = event.getEntity();
 
             if (!player.isCreative()) {
@@ -233,15 +220,21 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerJump(LivingEvent.LivingJumpEvent event) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
             if (event.getEntity() instanceof Player player)
                 staminaData.setRegenCooldown(player, 3);
         }
 
         @SubscribeEvent
         public static void playerTick1(TickEvent.PlayerTickEvent event) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
             if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.SERVER) {
                 Player player = event.player;
-                int staminaLevel = abilitiesData.isActiveAbility("stamina_mantra") ? abilitiesData.getLevelAbility("stamina_mantra") : 1;
+                int staminaLevel = abilitiesData.isActiveAbility(player, "stamina_mantra") ? abilitiesData.getLevelAbility(player, "stamina_mantra") : 1;
 
                 staminaData.setMaxStamina(player, 10 * staminaLevel);
 
@@ -286,13 +279,16 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick2(TickEvent.PlayerTickEvent event) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
             if (event.phase == TickEvent.Phase.END) {
                 Player player = event.player;
 
                 int stamina = staminaData.getStamina(player);
 
                 if (stamina <= 0 && player.isSprinting()) {
-                    if (abilitiesData.isActiveAbility("overcoming") && player.getFoodData().getFoodLevel() > 0) {
+                    if (abilitiesData.isActiveAbility(player, "overcoming") && player.getFoodData().getFoodLevel() > 0) {
                         if (player.tickCount % 20 == 0)
                             player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() - 1);
 
@@ -309,8 +305,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
                     player.setSprinting(false);
 
-                    if (player instanceof LocalPlayer) {
-                        LocalPlayer localPlayer = (LocalPlayer) player;
+                    if (player instanceof LocalPlayer localPlayer) {
                         localPlayer.input.forwardImpulse = 0.0F;
                     }
                 }

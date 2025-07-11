@@ -13,31 +13,39 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.managers.TimeManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.global.GiftGodPharaoh;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
+import net.xXinailXx.thirteen_flames.network.packet.AbilityWidgetActionPacket;
+import org.zeith.hammerlib.net.Network;
 
 import java.util.List;
 
 @EqualsAndHashCode
 @Mod.EventBusSubscriber
 public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils implements IHoverableWidget, IAbilityData {
-    private static final ResourceLocation FRAME_BUTTON = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen.png");
+    private static final ResourceLocation GUI_BACKGROUND = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen.png");
     private final ResourceLocation ABILITY_ICON = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/ability/" + getScreenId() + "/" + getAbilityData().getAbilityName() + ".png");
-    protected MutableComponent abilityName = Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".name");
     protected static final IData.IAbilitiesData data = new Data.AbilitiesData.Utils();
-    protected static final IData.IEffectData effectData = new Data.EffectData();
-    protected static final IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
-    protected static final IData.IScarabsData scarabsData = new Data.ScarabsData();
+    protected static final IData.IEffectData effectData = new Data.EffectData.Utils();
+    protected static final IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData.Utils();
+    protected static final IData.IScarabsData scarabsData = new Data.ScarabsData.Utils();
     private final int locationNumber;
+    private final boolean isConfigBlock;
 
     public AbstarctAbilityWidgets(int x, int y, int locationNumber) {
+        this(x, y, locationNumber, false);
+    }
+
+    public AbstarctAbilityWidgets(int x, int y, int locationNumber, boolean isConfigBlock) {
         super(x, y, 32, 32);
         this.locationNumber = locationNumber;
+        this.isConfigBlock = isConfigBlock;
     }
 
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
@@ -55,8 +63,8 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         blit(poseStack, this.x + 5, this.y + 5, 0, 0, 24, 24, 24, 24);
 
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, FRAME_BUTTON);
-        manager.bindForSetup(FRAME_BUTTON);
+        RenderSystem.setShaderTexture(0, GUI_BACKGROUND);
+        manager.bindForSetup(GUI_BACKGROUND);
 
         if (this.isHovered) {
             if (getScreenLevel() >= getAbilityData().getRequiredLevel() || !isBuyAbility())
@@ -91,7 +99,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
     }
 
     public void onPress() {
-        if (!guiLevelingData.isPlayerScreen()) {
+        if (!guiLevelingData.isPlayerScreen(MC.player)) {
             if (isUnlock()) {
                 if (isBuyAbility()) {
                     if (!isActiveAbility()) {
@@ -100,13 +108,13 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
                         } else {
                             if (getLevelAbility() < getAbilityData().getMaxLevel()) {
                                 if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
-                                    if (scarabsData.getScarabAuriteh() >= getAbilityData().getRequiredScarabsForUpgrade()) {
-                                        scarabsData.addScarabAuriteh(-getAbilityData().getRequiredScarabsForUpgrade());
+                                    if (scarabsData.getScarabAuriteh(MC.player) >= getAbilityData().getRequiredScarabsForUpgrade()) {
+                                        scarabsData.addScarabAuriteh(MC.player, -getAbilityData().getRequiredScarabsForUpgrade());
                                         addLevelAbility(1);
                                     }
                                 } else {
-                                    if (scarabsData.getScarabLazotep() >= getAbilityData().getRequiredScarabsForUpgrade()) {
-                                        scarabsData.addScarabLazotep(-getAbilityData().getRequiredScarabsForUpgrade());
+                                    if (scarabsData.getScarabLazotep(MC.player) >= getAbilityData().getRequiredScarabsForUpgrade()) {
+                                        scarabsData.addScarabLazotep(MC.player, -getAbilityData().getRequiredScarabsForUpgrade());
                                         addLevelAbility(1);
                                     }
                                 }
@@ -118,13 +126,13 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
                         } else {
                             if (getLevelAbility() < getAbilityData().getMaxLevel()) {
                                 if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
-                                    if (scarabsData.getScarabAuriteh() >= getAbilityData().getRequiredScarabsForUpgrade()) {
-                                        scarabsData.addScarabAuriteh(-getAbilityData().getRequiredScarabsForUpgrade());
+                                    if (scarabsData.getScarabAuriteh(MC.player) >= getAbilityData().getRequiredScarabsForUpgrade()) {
+                                        scarabsData.addScarabAuriteh(MC.player, -getAbilityData().getRequiredScarabsForUpgrade());
                                         addLevelAbility(1);
                                     }
                                 } else {
-                                    if (scarabsData.getScarabLazotep() >= getAbilityData().getRequiredScarabsForUpgrade()) {
-                                        scarabsData.addScarabLazotep(-getAbilityData().getRequiredScarabsForUpgrade());
+                                    if (scarabsData.getScarabLazotep(MC.player) >= getAbilityData().getRequiredScarabsForUpgrade()) {
+                                        scarabsData.addScarabLazotep(MC.player, -getAbilityData().getRequiredScarabsForUpgrade());
                                         addLevelAbility(1);
                                     }
                                 }
@@ -133,15 +141,15 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
                     }
                 } else {
                     if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL)) {
-                        if (scarabsData.getScarabAuriteh() >= getAbilityData().getRequiredScarabsForOpen()) {
-                            scarabsData.addScarabAuriteh(-getAbilityData().getRequiredScarabsForOpen());
+                        if (scarabsData.getScarabAuriteh(MC.player) >= getAbilityData().getRequiredScarabsForOpen()) {
+                            scarabsData.addScarabAuriteh(MC.player, -getAbilityData().getRequiredScarabsForOpen());
                             setBuyAbility(true);
                             setActiveAbility(false);
                             setLevelAbility(1);
                         }
                     } else {
-                        if (scarabsData.getScarabLazotep() >= getAbilityData().getRequiredScarabsForOpen()) {
-                            scarabsData.addScarabLazotep(-getAbilityData().getRequiredScarabsForOpen());
+                        if (scarabsData.getScarabLazotep(MC.player) >= getAbilityData().getRequiredScarabsForOpen()) {
+                            scarabsData.addScarabLazotep(MC.player, -getAbilityData().getRequiredScarabsForOpen());
                             setBuyAbility(true);
                             setActiveAbility(false);
                             setLevelAbility(1);
@@ -170,10 +178,18 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         }
 
         List<MutableComponent> entries = Lists.newArrayList(new MutableComponent[]{});
-        entries.add(abilityName);
+        entries.add(Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".name"));
         entries.add(Component.literal("§l_________________________________________"));
         entries.add(Component.literal(" "));
-        entries.add(Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".description", getTime()));
+
+        MutableComponent component = Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".description");
+
+        if (getAbilityData().getAbilityName().equals("egyptian_strength")) {
+            component.append(String.valueOf(getTime()));
+            component.append(Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".description_2"));
+        }
+
+        entries.add(component);
         entries.add(Component.literal("§l_________________________________________"));
         entries.add(Component.literal(" "));
         entries.add(Component.literal(" "));
@@ -181,33 +197,39 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
         if (isUnlock()) {
             if (isBuyAbility()) {
                 entries.add(Component.translatable("button.thirteen_flames.button.total_level", new Object[]{getLevelAbility(), getAbilityData().getMaxLevel()}));
-                entries.add(Component.literal(" " ));
+                entries.add(Component.literal(" "));
+
                 renderIconYOff += 2;
 
                 if (getLevelAbility() == getAbilityData().getMaxLevel()) {
                     entries.add(Component.translatable("button.thirteen_flames.button.max_level"));
                     entries.add(Component.literal(" "));
+
                     renderIconYOff += 2;
                 } else {
                     entries.add(Component.translatable("button.thirteen_flames.button.cost_upgrade", getAbilityData().getRequiredScarabsForUpgrade()));
                     entries.add(Component.literal(" "));
                     entries.add(Component.translatable("button.thirteen_flames.button.upgrade"));
-                    renderIconYOff += 3;
+
+                    renderIconYOff += 1;
                 }
 
                 if (isActiveAbility())
                     entries.add(Component.translatable("button.thirteen_flames.button.off"));
                 else
                     entries.add(Component.translatable("button.thirteen_flames.button.on"));
-
-                renderIconYOff++;
             } else {
                 entries.add(Component.translatable("button.thirteen_flames.button.cost_open", getAbilityData().getRequiredScarabsForOpen()));
                 entries.add(Component.literal(" "));
                 entries.add(Component.translatable("button.thirteen_flames.button.open"));
+
+                renderIconYOff += 1;
             }
         } else {
-            entries.add(Component.translatable("button.thirteen_flames.button.lock", new Object[]{screenName, getAbilityData().getRequiredLevel()}));
+            if (isLockAbility())
+                entries.add(Component.translatable("button.thirteen_flames.button.command_lock"));
+            else
+                entries.add(Component.translatable("button.thirteen_flames.button.lock", new Object[]{screenName, getAbilityData().getRequiredLevel()}));
         }
 
         for (MutableComponent entry : entries) {
@@ -221,12 +243,6 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
         int height = Math.round(tooltip.size() * 4.5F);
 
-        poseStack.scale(1F, 1F, 1F);
-
-        int extraXOff = getExtraXOff();
-
-        int extraYOff = getExtraYOff();
-
         GuiUtils.drawTexturedTooltipBorder(poseStack, new ResourceLocation(ThirteenFlames.MODID, "textures/gui/border/sand.png"), renderX, renderY, maxWidth, height);
 
         int yOff = 0;
@@ -236,7 +252,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
             poseStack.scale(0.58F, 0.58F, 0.58F);
 
-            MC.font.draw(poseStack, entry, (renderX * 2 - 57 - (extraXOff * 10)), (renderY + 63 + (extraYOff * 26 + (extraYOff > 1 ? extraYOff : 0)) + yOff), 4269832);
+            MC.font.draw(poseStack, entry, (renderX * 1.724F + 15), (renderY * 1.724F + 15 + yOff), 4269832);
 
             yOff += 8;
 
@@ -249,105 +265,60 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
 
         List<FormattedCharSequence> description = Lists.newArrayList();
 
-        description.addAll(MC.font.split(Component.translatable("button.thirteen_flames." + getScreenId() + "." + getAbilityData().getAbilityName() + ".description"), (maxWidth - 20) * 2));
+        description.addAll(MC.font.split(component, (maxWidth - 20) * 2));
 
-        int descriptionLines = (description.size() > 1 ? description.size() : 0);
-
-        if (descriptionLines % 2 == 0)
-            descriptionLines = descriptionLines * 5;
-        else
-            descriptionLines = descriptionLines * 6;
-
-        int extraY = 0;
-
-        switch (extraYOff) {
-            case 2 -> extraY = 3;
-            case 3 -> extraY = 13;
-        }
+        int descriptionLines = (description.size() > 1 ? description.size() - 1 : 0);
 
         int renderIconX = (renderX * 2 + 246);
-        int renderIconY = (renderY + 142 + (renderIconYOff * 3 + (renderIconYOff / 3)) + descriptionLines + (extraYOff * 36) + extraY);
-
-        description.clear();
+        int renderIconY = (renderY * 2 + 70 + renderIconYOff * 8 + descriptionLines * 8 + (getAbilityData().getAbilityName().equals("grain_grower") ? 8 : 0));
 
         if (isUnlock()) {
             if (!isBuyAbility()) {
                 if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL))
-                    GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX, renderIconY, 100, 373, 28, 24, 512, 512);
+                    GuiUtils.drawTexture(poseStack, GUI_BACKGROUND, renderIconX, renderIconY - 2, 100, 373, 28, 24, 512, 512);
                 else
-                    GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX, renderIconY - 4, 131, 373, 28, 28, 512, 512);
+                    GuiUtils.drawTexture(poseStack, GUI_BACKGROUND, renderIconX, renderIconY, 131, 373, 28, 28, 512, 512);
             } else {
                 if (getLevelAbility() != getAbilityData().getMaxLevel()) {
                     if (!getAbilityData().getScreenID().equals(ScreenID.GLOBAL))
-                        GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX - 25, renderIconY - 2, 100, 373, 28, 24, 512, 512);
+                        GuiUtils.drawTexture(poseStack, GUI_BACKGROUND, renderIconX - 25, renderIconY - 3, 100, 373, 28, 24, 512, 512);
                     else
-                        GuiUtils.drawTexture(poseStack, FRAME_BUTTON, renderIconX - 26, renderIconY - 5, 131, 373, 28, 28, 512, 512);
+                        GuiUtils.drawTexture(poseStack, GUI_BACKGROUND, renderIconX - 26, renderIconY - 2, 131, 373, 28, 28, 512, 512);
                 }
             }
         }
 
-        poseStack.scale(1F, 1F, 1F);
         poseStack.popPose();
     }
 
     private int getTime() {
         if (getAbilityData().getAbilityName().equals("egyptian_strength")) {
-            int time = TimeManager.getTimeMap().containsKey("ability_egyptian_strength") ? TimeManager.get("ability_egyptian_strength") : 0;
+            int time = PlayerCapManager.getPlayerTimers(MC.player).contains("tf_ability_egyptian_strength") ? PlayerCapManager.getPlayerTimer(MC.player, "tf_ability_egyptian_strength") : 0;
 
-            if (time < 20 && time > 0)
-                return 1;
+            if (time % 20 != 0)
+                time -= time % 20;
 
-            return (time - (time % 20)) / 20;
+            return time / 20;
         }
 
         return 0;
     }
 
-    public Data.AbilitiesData.Handler getInfo() {
-        return data.getAbilityHandler(getAbilityData().getAbilityName());
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    private int getExtraXOff() {
-        int xOff = 0;
-
-        if (locationNumber < 5) {
-            xOff = locationNumber;
-        } else if (locationNumber >= 5 && locationNumber < 10) {
-            xOff = locationNumber - 5;
-        } else if (locationNumber >= 10 && locationNumber < 15) {
-            xOff = locationNumber - 10;
-        } else if (locationNumber >= 15 && locationNumber < 20) {
-            xOff = locationNumber - 15;
-        }
-        return xOff;
-    }
-
     private int getExtraYOff() {
-        int yOff = 0;
-
-        if (locationNumber < 5) {
+        if (this.locationNumber < 5)
             return 0;
-        } else if (locationNumber >= 5 && locationNumber < 10) {
+        else if (this.locationNumber >= 5 && this.locationNumber < 10)
             return 1;
-        } else if (locationNumber >= 10 && locationNumber < 15) {
+        else if (this.locationNumber >= 10 && this.locationNumber < 15)
             return 2;
-        } else if (locationNumber >= 15 && locationNumber < 20) {
+        else if (this.locationNumber >= 15 && this.locationNumber < 20)
             return 3;
-        }
 
         return 0;
     }
 
     private boolean isUnlock() {
-        if (isLockAbility())
+        if (isLockAbility() || (this.isConfigBlock && !ThirteenFlamesConfig.STAMINA_ACTIVE.get()))
             return false;
 
         if (this instanceof GiftGodPharaoh)
@@ -360,38 +331,46 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils impleme
     }
 
     public boolean isLockAbility() {
-        return data.isLockAbility(getAbilityData().getAbilityName());
+        return data.isLockAbility(MC.player, getAbilityData().getAbilityName()) || (this.isConfigBlock && !ThirteenFlamesConfig.STAMINA_ACTIVE.get());
     }
 
     public boolean isBuyAbility() {
-        return data.isBuyAbility(getAbilityData().getAbilityName());
+        return data.isBuyAbility(MC.player, getAbilityData().getAbilityName());
     }
 
     public boolean isActiveAbility() {
-        return data.isActiveAbility(getAbilityData().getAbilityName());
+        return data.isActiveAbility(MC.player, getAbilityData().getAbilityName());
     }
 
     public int getLevelAbility() {
-        return data.getLevelAbility(getAbilityData().getAbilityName());
-    }
-
-    public void setLockAbility(boolean value) {
-        data.setLockAbility(getAbilityData().getAbilityName(), value);
+        return data.getLevelAbility(MC.player, getAbilityData().getAbilityName());
     }
 
     public void setBuyAbility(boolean value) {
-        data.setBuyAbility(getAbilityData().getAbilityName(), value);
+        Network.sendToServer(new AbilityWidgetActionPacket(getAbilityData().getAbilityName(), 0, value, -1));
     }
 
     public void setActiveAbility(boolean value) {
-        data.setActiveAbility(getAbilityData().getAbilityName(), value);
+        Network.sendToServer(new AbilityWidgetActionPacket(getAbilityData().getAbilityName(), 1, value, -1));
+
+        if (getAbilityData().getAbilityName().equals("recovery"))
+            if (value)
+                guiLevelingData.setProcentCurse(MC.player, 70 - getLevelAbility() * 5);
+            else
+            guiLevelingData.setProcentCurse(MC.player, 70);
     }
 
     public void setLevelAbility(int amount) {
-        data.setLevelAbility(getAbilityData().getAbilityName(), amount);
+        Network.sendToServer(new AbilityWidgetActionPacket(getAbilityData().getAbilityName(), 2, false, amount));
+
+        if (getAbilityData().getAbilityName().equals("recovery") && isActiveAbility())
+            guiLevelingData.setProcentCurse(MC.player, 70 - amount * 5);
     }
 
     public void addLevelAbility(int amount) {
-        data.addLevelAbility(getAbilityData().getAbilityName(), amount);
+        Network.sendToServer(new AbilityWidgetActionPacket(getAbilityData().getAbilityName(), 3, false, amount));
+
+        if (getAbilityData().getAbilityName().equals("recovery") && isActiveAbility())
+            guiLevelingData.setProcentCurse(MC.player, guiLevelingData.getProcentCurse(MC.player) - 5);
     }
 }

@@ -21,6 +21,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.StatueHandler;
@@ -89,8 +90,8 @@ public class THModEvents {
                 return;
 
             if (KeyBindingRegistry.OPEN_GUI.isDown()) {
-                IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
-                guiLevelingData.setPlayerScreen(true);
+                IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData.Utils();
+                guiLevelingData.setPlayerScreen(Minecraft.getInstance().player, true);
                 Minecraft.getInstance().setScreen(new GodPharaohScreenMining());
             }
         }
@@ -115,20 +116,36 @@ public class THModEvents {
                 if (!level.getBlockState(interPos).is(Blocks.SANDSTONE))
                     return;
 
+                UUID uuid = null;
                 Data.StatueBuilderData.ShcemeBuilder builder = null;
 
-                for (Data.StatueBuilderData.ShcemeBuilder b : Data.StatueBuilderData.getShcemeBuilderList()) {
-                    if (b.posList().contains(interPos)) {
-                        builder = b;
+                for (String key : ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data").getAllKeys()) {
+                    Data.StatueBuilderData.ShcemeBuilder builder1 = Data.StatueBuilderData.getShceme(UUID.fromString(key));
+
+                    if (builder1 == null)
+                        continue;
+
+                    if (builder1.mainPos().equals(interPos) || builder1.posList().contains(interPos)) {
+                        uuid = UUID.fromString(key);
+                        builder = builder1;
+
                         break;
                     }
                 }
 
-                if (builder == null)
+                if (builder == null) {
+                    level.destroyBlock(interPos, false);
+                    level.setBlock(interPos, BlockRegistry.STATUE_CUP_UNFINISHED.get().defaultBlockState(), 11);
+
+                    if (!player.isCreative()) {
+                        DurabilityUtils.hurt(player.getMainHandItem(), 5);
+                        DurabilityUtils.hurt(player.getOffhandItem(), 5);
+                    }
+
                     return;
+                }
 
                 ServerLevel serverLevel = (ServerLevel) level;
-                UUID uuid = Data.StatueBuilderData.getShcemeBuilderUuidList().get(Data.StatueBuilderData.getShcemeBuilderList().indexOf(builder));
                 Entity entity = serverLevel.getEntity(uuid);
 
                 if (!(entity instanceof StatueShcemeEntity shceme)) {
@@ -141,7 +158,7 @@ public class THModEvents {
                 if (!data.contains("progress"))
                     data.putFloat("progress", 0);
 
-                if (data.getFloat("progress") + 0.5F >= 5) {
+                if (data.getFloat("progress") + 1 >= 5) {
                     for (BlockPos pos : builder.posList())
                         level.destroyBlock(pos, false);
 
@@ -156,24 +173,23 @@ public class THModEvents {
                         case GOD_PHARAOH -> statue = (StatueHandler) BlockRegistry.STATUE_GOD_PHARAOH_UNFINISHED.get();
                     }
 
-                    Direction direction = null;
-
-                    switch (entity.getDirection()) {
-                        case NORTH -> direction = Direction.NORTH;
-                        case SOUTH -> direction = Direction.SOUTH;
-                        case WEST -> direction = Direction.WEST;
-                        case EAST -> direction = Direction.EAST;
-                        default -> direction = Direction.NORTH;
-                    }
+                    Direction direction = switch (entity.getDirection()) {
+                        case SOUTH -> Direction.SOUTH;
+                        case WEST -> Direction.WEST;
+                        case EAST -> Direction.EAST;
+                        default -> Direction.NORTH;
+                    };
 
                     level.setBlock(builder.mainPos(), statue.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
 
+                    for (BlockPos pos : statue.getBlockPoses(builder.mainPos(), false))
+                        level.setBlock(pos, statue.getStructureBlock().defaultBlockState(), 11);
+
                     entity.remove(Entity.RemovalReason.KILLED);
 
-                    Data.StatueBuilderData.getShcemeBuilderList().remove(builder);
-                    Data.StatueBuilderData.getShcemeBuilderUuidList().remove(uuid);
+                    Data.StatueBuilderData.removeShceme(uuid);
                 } else {
-                    data.putFloat("progress", data.getFloat("progress") + 0.5F);
+                    data.putFloat("progress", data.getFloat("progress") + 1);
 
                     entity.load(data);
                 }

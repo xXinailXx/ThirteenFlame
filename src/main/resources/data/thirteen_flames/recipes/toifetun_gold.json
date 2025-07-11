@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "S": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "GG ",
+    "GSS",
+    "GG "
+  ],
+  "result": {
+    "item": "thirteen_flames:toifetun_gold"
+  }
+}

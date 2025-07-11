@@ -20,7 +20,6 @@ public class Excavations extends AbstarctAbilityWidgets {
         super( x, y, 4);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("excavations").screenID(ScreenID.MINING).requiredLevel(30).requiredScarabsForOpen(3).build();
     }
@@ -34,15 +33,11 @@ public class Excavations extends AbstarctAbilityWidgets {
 
         if (!player.isCreative()) {
             if (itemInHand.getItem() instanceof ShovelItem) {
-                if (data.isActiveAbility("excavations")) {
+                if (data.isActiveAbility(player, "excavations")) {
                     boolean error = false;
 
-                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilitiesList) {
-                        if (ability instanceof MinesSolomon) {
-                            if (ability.isActiveAbility())
-                                error = true;
-                        }
-                    }
+                    if (data.isActiveAbility(player, "mines_solomon"))
+                        error = true;
 
                     if (!error) {
                         if (!player.isShiftKeyDown())

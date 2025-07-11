@@ -19,25 +19,21 @@ public class HeavyHand extends AbstarctAbilityWidgets {
         super(x, y, 12);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("heavy_hand").screenID(ScreenID.FIGHT).maxLevel(10).requiredLevel(10).build();
     }
 
     @SubscribeEvent
     public static void addStun(AttackEntityEvent event) {
-        if (data.isActiveAbility("heavy_hand")) {
-            if (event.getTarget() instanceof LivingEntity entity) {
-                Player player = event.getEntity();
+        Player player = event.getEntity();
 
-                if (player == null)
-                    return;
+        if (player == null)
+            return;
 
-                if (player.getMainHandItem().getItem() instanceof AxeItem) {
-                    if (AbilityUtils.isRandomSuccess(player.getLevel(), data.getLevelAbility("heavy_hand")))
+        if (data.isActiveAbility(player, "heavy_hand"))
+            if (event.getTarget() instanceof LivingEntity entity)
+                if (player.getMainHandItem().getItem() instanceof AxeItem)
+                    if (AbilityUtils.isRandomSuccess(player.getLevel(), data.getLevelAbility(player, "heavy_hand")))
                         entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), 30));
-                }
-            }
-        }
     }
 }

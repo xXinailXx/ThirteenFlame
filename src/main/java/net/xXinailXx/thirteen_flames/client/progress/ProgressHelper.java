@@ -2,8 +2,7 @@ package net.xXinailXx.thirteen_flames.client.progress;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.json.JsonReader;
-import com.json.JsonWriter;
+import com.json.JsonExecutor;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.*;
@@ -30,7 +29,7 @@ public class ProgressHelper {
         if (!f.exists())
             write();
 
-        JsonElement element = JsonReader.read(file.toPath(), fileName);
+        JsonElement element = JsonExecutor.read(file.toPath(), fileName);
 
         for (Map.Entry<String, JsonElement> e : element.getAsJsonObject().entrySet()) {
             JsonObject obj = e.getValue().getAsJsonObject();
@@ -76,7 +75,7 @@ public class ProgressHelper {
             throw new RuntimeException(e);
         }
 
-        JsonWriter.write(file.toPath(), fileName, obj);
+        JsonExecutor.write(file.toPath(), fileName, obj);
     }
 
     private static List<ItemProgress> writeDefualtData() {

@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenFight;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
+import net.xXinailXx.thirteen_flames.data.Data;
 
 public class ButtonFightOpenGui extends AbstractWidgetUtils {
     public ButtonFightOpenGui(int x, int y, boolean active) {
@@ -19,8 +20,14 @@ public class ButtonFightOpenGui extends AbstractWidgetUtils {
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
-        manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
+
+        if (new Data.EffectData.Utils().isCurseKnef(MC.player)) {
+            RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG_CURSE);
+            manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG_CURSE);
+        } else {
+            RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
+            manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
+        }
 
         blit(poseStack, this.x, this.y, 376, 29, 59, 27, 512, 512);
 

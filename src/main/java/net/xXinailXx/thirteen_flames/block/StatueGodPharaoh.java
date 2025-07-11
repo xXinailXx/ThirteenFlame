@@ -15,6 +15,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
@@ -32,7 +33,7 @@ import org.zeith.hammerlib.net.Network;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatueGodPharaoh extends CustomStatueUtils<StatueGodPharaohBE> {
+public class StatueGodPharaoh extends CustomStatueUtils {
     public StatueGodPharaoh() {
         super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get(), Block.box(0.0D, 0.0D, 0.0D, 80.0D, 112.0D, 80.0D).move(-2, 0, -2));
     }
@@ -53,24 +54,23 @@ public class StatueGodPharaoh extends CustomStatueUtils<StatueGodPharaohBE> {
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
         super.destroy(accessor, pos, state);
 
-        Data.StatueBuilderData.removeStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(pos, false), pos));
+        Data.StatueBuilderData.removeStatue(pos);
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
         super.playerDestroy(level, player, pos, state, entity, stack);
 
-        Data.StatueBuilderData.removeStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(pos, false), pos));
+        Data.StatueBuilderData.removeStatue(pos);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void openFaraonScreen() {
-        IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
-        guiLevelingData.setPlayerScreen(false);
+    public static void openPharaohScreen() {
+        IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData.Utils();
+        guiLevelingData.setPlayerScreen(Minecraft.getInstance().player, false);
         Minecraft.getInstance().setScreen(new GodPharaohScreenMining());
     }
 
     @Nullable
-    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return BlockEntityRegistry.STATUE_GOD_PHARAOH.get().create(pos, state);
     }
@@ -87,25 +87,5 @@ public class StatueGodPharaoh extends CustomStatueUtils<StatueGodPharaohBE> {
         }
 
         return posList;
-    }
-
-    @Mod.EventBusSubscriber
-    public static class Event {
-        @SubscribeEvent
-        public static void openMenu(PlayerInteractEvent.RightClickBlock event) {
-            if (event.getEntity() == null)
-                return;
-
-            if (event.getHand() != InteractionHand.MAIN_HAND)
-                return;
-
-            Level level = event.getLevel();
-            BlockState state = level.getBlockState(event.getPos());
-
-            if (state.getBlock() instanceof StatueGodPharaoh || (state.getBlock() instanceof StatueStructureBlock block && block.getMainBlockBE(event.getPos()).isFinished() && block.getMainBlockBE(event.getPos()).getGod().equals(Gods.GOD_PHARAOH))) {
-                if (level.isClientSide)
-                    StatueGodPharaoh.openFaraonScreen();
-            }
-        }
     }
 }

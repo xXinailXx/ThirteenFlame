@@ -9,7 +9,6 @@ public class ArrowAnubis extends AbstarctAbilityWidgets {
         super(x, y, 2);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("arrow_anubis").screenID(ScreenID.FIGHT).maxLevel(5).requiredLevel(20).requiredScarabsForOpen(2).requiredScarabsForUpgrade(2).build();
     }

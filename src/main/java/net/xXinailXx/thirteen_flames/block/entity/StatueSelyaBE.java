@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 
-public class StatueSelyaBE extends StatueBE<StatueSelyaBE> {
+public class StatueSelyaBE extends StatueBE {
     public StatueSelyaBE(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.STATUE_SELYA.get(), pos, state, Gods.SELYA, true);
     }

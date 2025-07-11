@@ -38,7 +38,7 @@ import net.xXinailXx.thirteen_flames.entity.MoonProjectileSpecialEntity;
 import net.xXinailXx.thirteen_flames.entity.MoonStormcallerEntity;
 import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import net.xXinailXx.thirteen_flames.init.SoundRegistry;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.jetbrains.annotations.NotNull;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;

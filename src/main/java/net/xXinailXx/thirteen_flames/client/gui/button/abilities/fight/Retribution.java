@@ -9,7 +9,6 @@ public class Retribution extends AbstarctAbilityWidgets {
         super(x, y, 9);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("retribution").screenID(ScreenID.FIGHT).maxLevel(10).requiredLevel(40).build();
     }

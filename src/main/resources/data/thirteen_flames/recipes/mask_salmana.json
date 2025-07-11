@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    }
+  },
+  "pattern": [
+    "EGE",
+    "GEG",
+    "GGG"
+  ],
+  "result": {
+    "item": "thirteen_flames:mask_salmana"
+  }
+}

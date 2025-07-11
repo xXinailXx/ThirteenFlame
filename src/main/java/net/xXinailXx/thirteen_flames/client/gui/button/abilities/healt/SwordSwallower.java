@@ -9,7 +9,6 @@ public class SwordSwallower extends AbstarctAbilityWidgets {
         super(x, y, 12);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("sword_swallower").screenID(ScreenID.HEALTH).requiredLevel(35).build();
     }

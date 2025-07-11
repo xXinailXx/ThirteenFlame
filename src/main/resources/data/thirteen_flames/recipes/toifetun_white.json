@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:string"
+    },
+    "G": {
+      "item": "minecraft:light_gray_dye"
+    }
+  },
+  "pattern": [
+    "IIG",
+    "ISS",
+    "IIG"
+  ],
+  "result": {
+    "item": "thirteen_flames:toifetun_white"
+  }
+}

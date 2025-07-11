@@ -9,7 +9,6 @@ public class CobraPoison extends AbstarctAbilityWidgets {
         super(x, y, 0);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("cobra_poison").screenID(ScreenID.FIGHT).maxLevel(3).requiredLevel(20).requiredScarabsForOpen(2).requiredScarabsForUpgrade(2).build();
     }

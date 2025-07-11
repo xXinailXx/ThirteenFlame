@@ -19,7 +19,6 @@ public class SethStrength extends AbstarctAbilityWidgets {
         super(x, y, 3);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("seth_strength").screenID(ScreenID.FIGHT).requiredLevel(100).build();
     }
@@ -35,7 +34,7 @@ public class SethStrength extends AbstarctAbilityWidgets {
         AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_ability_seth_strength"), ThirteenFlames.MODID + ":seth_strength", (player.getMaxHealth() * 0.05F), AttributeModifier.Operation.ADDITION);
         AttributeInstance strength = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
-        if (data.isActiveAbility("seth_strength")) {
+        if (data.isActiveAbility(player, "seth_strength")) {
             if (!strength.hasModifier(bonus))
                 strength.addTransientModifier(bonus);
         } else {

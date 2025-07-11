@@ -18,7 +18,6 @@ public class SecretSurvival extends AbstarctAbilityWidgets {
         super(x, y, 1);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("secret_survival").screenID(ScreenID.HEALTH).requiredLevel(60).requiredScarabsForOpen(5).build();
     }
@@ -40,15 +39,14 @@ public class SecretSurvival extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void eat(PlayerInteractEvent.EntityInteractSpecific event) {
-        if (data.isActiveAbility("secret_survival")) {
-            LivingEntity entity = (LivingEntity) event.getTarget();
-            Player player = event.getEntity();
+        LivingEntity entity = (LivingEntity) event.getTarget();
+        Player player = event.getEntity();
 
-            if (entity == null || player == null)
-                return;
+        if (entity == null || player == null)
+            return;
 
+        if (data.isActiveAbility(player, "secret_survival"))
             if (player.isShiftKeyDown())
                 eatTargetEntity(entity, player);
-        }
     }
 }

@@ -11,7 +11,6 @@ public class ForgeLegends extends AbstarctAbilityWidgets {
         super(x, y, 5);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("forge_of_legends").screenID(ScreenID.CRAFT).requiredLevel(60).requiredScarabsForOpen(5).build();
     }

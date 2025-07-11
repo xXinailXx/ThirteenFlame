@@ -17,21 +17,19 @@ public class PharaohStrength extends AbstarctAbilityWidgets {
         super(x, y, 10);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("pharaoh_strength").screenID(ScreenID.FIGHT).maxLevel(5).requiredLevel(60).requiredScarabsForOpen(2).requiredScarabsForUpgrade(2).build();
     }
 
     @SubscribeEvent
     public static void addEffectPlayer(AttackEntityEvent event) {
-        if (data.isActiveAbility("pharaoh_strength")) {
-            Player player = event.getEntity();
+        Player player = event.getEntity();
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "pharaoh_strength"))
             if (player.getMainHandItem().getItem() instanceof AxeItem)
-                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1200, data.getLevelAbility("pharaoh_strength") - 1));
-        }
+                player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 1200, data.getLevelAbility(player, "pharaoh_strength") - 1));
     }
 }

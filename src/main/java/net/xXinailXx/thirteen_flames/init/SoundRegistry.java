@@ -11,7 +11,6 @@ import net.xXinailXx.thirteen_flames.ThirteenFlames;
 public class SoundRegistry {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, ThirteenFlames.MODID);
 
-    public static final RegistryObject<SoundEvent> RECORD = SOUNDS.register("record", () -> new SoundEvent(new ResourceLocation(ThirteenFlames.MODID, "record")));
     public static final RegistryObject<SoundEvent> MOON_BOW_SHOT = SOUNDS.register("moon_bow_shot", () -> new SoundEvent(new ResourceLocation(ThirteenFlames.MODID, "moon_bow_shot")));
     public static final RegistryObject<SoundEvent> MOON_BOW_RAIN = SOUNDS.register("moon_bow_rain", () -> new SoundEvent(new ResourceLocation(ThirteenFlames.MODID, "moon_bow_rain")));
     public static final RegistryObject<SoundEvent> MOON_BOW_SPLASH = SOUNDS.register("moon_bow_splash", () -> new SoundEvent(new ResourceLocation(ThirteenFlames.MODID, "moon_bow_splash")));

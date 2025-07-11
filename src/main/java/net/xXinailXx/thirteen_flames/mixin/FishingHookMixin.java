@@ -1,6 +1,7 @@
 package net.xXinailXx.thirteen_flames.mixin;
 
 import it.hurts.sskirillss.relics.init.EffectRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -26,7 +27,7 @@ public abstract class FishingHookMixin {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/projectile/FishingHook;setPos(DDD)V"))
     public void hookedEntity(CallbackInfo ci) {
-        if (data.isActiveAbility("fisherman_of_fisherman")) {
+        if (data.isActiveAbility(Minecraft.getInstance().player, "fisherman_of_fisherman")) {
             LivingEntity living = (LivingEntity) this.getHookedIn();
 
             if (!living.hasEffect(EffectRegistry.STUN.get())) {

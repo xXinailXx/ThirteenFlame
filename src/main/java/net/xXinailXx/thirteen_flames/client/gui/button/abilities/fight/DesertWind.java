@@ -11,7 +11,6 @@ public class DesertWind extends AbstarctAbilityWidgets {
         super(x, y, 13);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("desert_wind").screenID(ScreenID.FIGHT).maxLevel(5).requiredLevel(10).build();
     }

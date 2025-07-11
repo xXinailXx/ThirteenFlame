@@ -27,7 +27,7 @@ import java.util.List;
 @Setter
 public class StatueShcemeEntity extends Projectile {
     private boolean isBuilded = false;
-    private float progress = 0;
+    private int progress = 0;
     private Gods god;
 
     public StatueShcemeEntity(EntityType<? extends Projectile> type, Level level) {
@@ -49,7 +49,7 @@ public class StatueShcemeEntity extends Projectile {
             Color color = null;
 
             switch (getGod()) {
-                case KNEF -> color = new Color(0, 0, 0);
+                case KNEF -> color = new Color(1, 0, 0);
                 case SELYA -> color = new Color(242, 208, 53);
                 case MONTU -> color = new Color(121, 251, 88);
                 case RONOS -> color = new Color(212, 38, 19);
@@ -64,7 +64,7 @@ public class StatueShcemeEntity extends Projectile {
                 case MONTU -> 45;
                 case RONOS -> 45;
                 case HET -> 45;
-                case GOD_PHARAOH -> 150;
+                case GOD_PHARAOH -> 175;
             };
 
             Iterable<BlockPos> iterable = null;
@@ -90,19 +90,16 @@ public class StatueShcemeEntity extends Projectile {
                 else
                     options = ParticleUtils.createStatueParticle(color, 0.05F, 40, 0);
 
-                ParticleActions.createBlock(options, ParticleActions.spawnSimpleParticle(new Color(239, 52, 34), 0.05F, 40, 0), Vec3.atCenterOf(pos), this.getLevel(), true);
+                ParticleActions.createBlock(options, ParticleUtils.createKnefParticle(new Color(239, 52, 34), 0.05F, 40, 0), Vec3.atCenterOf(pos), this.level, true);
             }
 
-            Data.StatueBuilderData.ShcemeBuilder builder = new Data.StatueBuilderData.ShcemeBuilder(buildPosList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod());
+            if (count == maxCount) {
+                if (!Data.StatueBuilderData.containsShceme(this.getUUID()))
+                    Data.StatueBuilderData.addShceme(this.getUUID(), new Data.StatueBuilderData.ShcemeBuilder(buildPosList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod()));
 
-            if (count == maxCount && !Data.StatueBuilderData.getShcemeBuilderList().contains(builder)) {
-                Data.StatueBuilderData.addShceme(builder, this.getUUID());
                 setBuilded(true);
             } else if (count != maxCount) {
-                List<BlockPos> posList = new ArrayList<>();
-                iterable.forEach(posList::add);
-
-                Data.StatueBuilderData.removeShceme(new Data.StatueBuilderData.ShcemeBuilder(posList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod()), this.getUUID());
+                Data.StatueBuilderData.removeShceme(this.getUUID());
                 setBuilded(false);
             }
         }
@@ -114,21 +111,7 @@ public class StatueShcemeEntity extends Projectile {
         if (this.level.isClientSide)
             return;
 
-        Iterable<BlockPos> iterable = null;
-
-        if (getGod().equals(Gods.GOD_PHARAOH))
-            iterable = BlockPos.betweenClosed(new BlockPos(Vec3.atCenterOf(this.blockPosition())).offset(-2, 0, -2), new BlockPos(Vec3.atCenterOf(this.blockPosition())).offset(2, 6, 2));
-        else
-            iterable = BlockPos.betweenClosed(new BlockPos(Vec3.atCenterOf(this.blockPosition())).offset(-1, 0, -1), new BlockPos(Vec3.atCenterOf(this.blockPosition())).offset(1, 4, 1));
-
-        List<BlockPos> posList = new ArrayList<>();
-
-        iterable.forEach(posList::add);
-
-        Data.StatueBuilderData.removeShceme(new Data.StatueBuilderData.ShcemeBuilder(posList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod()), this.getUUID());
-    }
-
-    protected void defineSynchedData() {
+        Data.StatueBuilderData.removeShceme(this.getUUID());
     }
 
     protected void readAdditionalSaveData(CompoundTag compound) {
@@ -136,14 +119,17 @@ public class StatueShcemeEntity extends Projectile {
         Gods[] gods = Gods.values();
         setGod(gods[compound.getInt("god")]);
         setBuilded(compound.getBoolean("builded"));
-        setProgress(compound.getFloat("progress"));
+        setProgress(compound.getInt("progress"));
     }
 
     protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("god", getGod().ordinal());
         compound.putBoolean("builded", isBuilded());
-        compound.putFloat("progress", getProgress());
+        compound.putInt("progress", getProgress());
+    }
+
+    protected void defineSynchedData() {
     }
 
     public boolean isPushedByFluid(FluidType type) {

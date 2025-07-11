@@ -30,8 +30,6 @@ public class UseMaskDemiurgPacket implements IPacket {
         player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, time, 1, true, true));
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, time, 2, true, true));
 
-        System.out.println();
-
         player.getCooldowns().addCooldown(stack.getItem(), (int) (AbilityUtils.getAbilityValue(stack, "dematerialization", "cooldown") * 20));
         AbilityUtils.addAbilityCooldown(stack, "dematerialization", (int) (AbilityUtils.getAbilityValue(stack, "dematerialization", "cooldown") * 20));
     }

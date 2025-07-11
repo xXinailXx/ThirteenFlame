@@ -13,9 +13,8 @@ public class GodPharaohScreenCraft extends AbstractGuiPharaoh {
         super(ScreenID.CRAFT);
     }
 
-    @Override
     public void tick() {
-        levelGui = guiLeveling.getGuiCraftLevelAmount();
+        levelGui = guiLeveling.getCraftLevel(MC.player);
     }
 
     protected void init() {

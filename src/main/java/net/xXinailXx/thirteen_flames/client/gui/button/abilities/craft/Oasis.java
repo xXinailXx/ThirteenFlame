@@ -11,7 +11,6 @@ public class Oasis extends AbstarctAbilityWidgets {
         super(x, y, 6);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("oasis").screenID(ScreenID.CRAFT).requiredLevel(15).build();
     }

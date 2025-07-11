@@ -20,23 +20,22 @@ public class ConquerorDunes extends AbstarctAbilityWidgets {
         super(x, y, 10);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("conqueror_dunes").screenID(ScreenID.HEALTH).maxLevel(10).requiredLevel(10).build();
     }
 
     @SubscribeEvent
     public static void extraSpeed(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("conqueror_dunes")) {
-            Player player = event.player;
+        Player player = event.player;
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "conqueror_dunes")) {
             AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
-            AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_ability_conqueror_dunes"), ThirteenFlames.MODID + ":conqueror_dunes", data.getLevelAbility("conqueror_dunes") * 0.01, AttributeModifier.Operation.ADDITION);
+            AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_ability_conqueror_dunes"), ThirteenFlames.MODID + ":conqueror_dunes", data.getLevelAbility(player, "conqueror_dunes") * 0.01, AttributeModifier.Operation.ADDITION);
 
-            if (player.getMainHandItem().is(Items.AIR) && player.getOffhandItem().is(Items.AIR) || data.getLevelAbility("conqueror_dunes") == bonus.getAmount() * 100) {
+            if (player.getMainHandItem().is(Items.AIR) && player.getOffhandItem().is(Items.AIR) || data.getLevelAbility(player, "conqueror_dunes") == bonus.getAmount() * 100) {
                 if (!speed.hasModifier(bonus))
                     speed.addTransientModifier(bonus);
             } else {

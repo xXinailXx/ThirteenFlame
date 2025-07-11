@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.mixin;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
@@ -21,7 +22,7 @@ public class FlintAndSteelItemMixin {
 
     @Inject(method = "useOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/core/BlockPos;Lnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"))
     public void useOn(UseOnContext use, CallbackInfoReturnable<InteractionResult> cir) {
-        if (data.isActiveAbility("fury_sky")) {
+        if (data.isActiveAbility(Minecraft.getInstance().player, "fury_sky")) {
             Level level = use.getLevel();
             LightningBolt lightningbolt = EntityType.LIGHTNING_BOLT.create(level);
             lightningbolt.moveTo(use.getClickLocation());

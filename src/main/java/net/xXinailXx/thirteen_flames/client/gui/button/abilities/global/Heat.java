@@ -23,19 +23,18 @@ public class Heat extends AbstarctAbilityWidgets {
         super(x, y, 1);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("heat").screenID(ScreenID.GLOBAL).build();
     }
 
     @SubscribeEvent
     public static void meltingItem(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("heat")) {
-            Player player = event.player;
+        Player player = event.player;
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "heat")) {
             ItemStack stack = player.getOffhandItem();
             if (!stack.is(Items.AIR)) {
                 Item item = stack.getItem();

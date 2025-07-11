@@ -20,19 +20,19 @@ public class EntityMixin {
 
     @Inject(method = "setSecondsOnFire", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/ProtectionEnchantment;getFireAfterDampener(Lnet/minecraft/world/entity/LivingEntity;I)I"), remap = false, cancellable = true)
     public void setSecondsOnFire(int i, CallbackInfo ci) {
-        if (((LivingEntity) (Object) this) instanceof Player && data.isActiveAbility("lord_elements"))
+        if (((LivingEntity) (Object) this) instanceof Player player && data.isActiveAbility(player, "lord_elements"))
             ci.cancel();
     }
 
     @Inject(method = "setRemainingFireTicks", at = @At(value = "HEAD"), cancellable = true)
     public void setRemainingFireTicks(int p_20269_, CallbackInfo ci) {
-        if (((Entity) (Object) this) instanceof LivingEntity && ((LivingEntity) (Object) this) instanceof Player && data.isActiveAbility("lord_elements"))
+        if (((Entity) (Object) this) instanceof Player player && data.isActiveAbility(player, "lord_elements"))
             ci.cancel();
     }
 
     @Inject(method = "getRemainingFireTicks", at = @At(value = "HEAD"), cancellable = true)
     public void getRemainingFireTicks(CallbackInfoReturnable<Integer> ci) {
-        if ((((Entity) (Object) this) instanceof LivingEntity && ((LivingEntity) (Object) this) instanceof Player && data.isActiveAbility("lord_elements"))) {
+        if ((((Entity) (Object) this) instanceof Player player && data.isActiveAbility(player, "lord_elements"))) {
             ci.setReturnValue(0);
             ci.cancel();
         }

@@ -29,7 +29,7 @@ public class ThirteenFlames {
     };
     public static final CreativeModeTab STATUES_TAB = new CreativeModeTab("thirteen_flames_statues_tab") {
         public ItemStack makeIcon() {
-            return ItemRegistry.MARKUP_KNEF.get().getDefaultInstance();
+            return BlockRegistry.STATUE_CUP.get().asItem().getDefaultInstance();
         }
     };
 

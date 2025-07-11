@@ -1,11 +1,10 @@
 package net.xXinailXx.thirteen_flames.client.gui.button.abilities.data;
 
+import net.minecraft.client.Minecraft;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 
 public interface IAbilityData {
-    Data.AbilitiesData.Handler getInfo();
-
     AbilityData constructAbilityData();
 
     default AbilityData getAbilityData() {
@@ -24,13 +23,13 @@ public interface IAbilityData {
     }
 
     default int getScreenLevel() {
-        IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData();
+        IData.IGuiLevelingData guiLevelingData = new Data.GuiLevelingData.Utils();
 
         return switch (getAbilityData().getScreenID()) {
-            case MINING -> guiLevelingData.getGuiMiningLevelAmount();
-            case CRAFT -> guiLevelingData.getGuiCraftLevelAmount();
-            case FIGHT -> guiLevelingData.getGuiFightLevelAmount();
-            case HEALTH -> guiLevelingData.getGuiHealthLevelAmount();
+            case MINING -> guiLevelingData.getMiningLevel(Minecraft.getInstance().player);
+            case CRAFT -> guiLevelingData.getCraftLevel(Minecraft.getInstance().player);
+            case FIGHT -> guiLevelingData.getFightLevel(Minecraft.getInstance().player);
+            case HEALTH -> guiLevelingData.getHealthLevel(Minecraft.getInstance().player);
             case GLOBAL -> 1;
         };
     }

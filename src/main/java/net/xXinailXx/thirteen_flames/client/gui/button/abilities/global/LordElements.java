@@ -14,16 +14,14 @@ public class LordElements extends AbstarctAbilityWidgets {
         super(x, y, 5);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("lord_elements").screenID(ScreenID.GLOBAL).build();
     }
 
     @SubscribeEvent
     public static void onLivingDamage(LivingHurtEvent event) {
-        if (data.isActiveAbility("lord_elements")) {
-            if (event.getEntity() instanceof Player && event.getSource().isFire())
+        if (event.getEntity() instanceof Player player && event.getSource().isFire())
+            if (data.isActiveAbility(player, "lord_elements"))
                 event.setCanceled(true);
-        }
     }
 }

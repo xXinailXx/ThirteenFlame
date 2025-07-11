@@ -9,7 +9,6 @@ public class WonderfulGarden extends AbstarctAbilityWidgets {
         super(x, y, 9);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("wonderful_garden").screenID(ScreenID.MINING).requiredLevel(10).build();
     }

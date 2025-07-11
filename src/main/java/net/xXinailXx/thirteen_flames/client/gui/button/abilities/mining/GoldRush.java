@@ -3,6 +3,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.mining;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,19 +22,19 @@ public class GoldRush extends AbstarctAbilityWidgets {
         super( x, y, 3);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("gold_rush").screenID(ScreenID.MINING).maxLevel(20).requiredLevel(15).build();
     }
 
     @SubscribeEvent
     public static void breakeBlock(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
         BlockPos pos = event.getPos();
-        Level level = event.getPlayer().getLevel();
+        Level level = player.getLevel();
         RandomSource random = level.getRandom();
 
-        if (data.isActiveAbility("gold_rush")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility("gold_rush"))) {
+        if (data.isActiveAbility(player, "gold_rush")) {
+            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "gold_rush"))) {
                 Block block = level.getBlockState(pos).getBlock();
 
                 if (block.equals(Blocks.SAND)) {

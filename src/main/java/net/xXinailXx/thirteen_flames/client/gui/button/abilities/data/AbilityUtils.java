@@ -3,7 +3,6 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.data;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -11,12 +10,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CommandBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,13 +79,13 @@ public class AbilityUtils {
             return PlayerPosYState.NONE;
         }
 
-        if (data.isActiveAbility("deep_kinship") && !data.isActiveAbility("celestial_kinship") && !data.isActiveAbility("terrestrial_kinship")) {
+        if (data.isActiveAbility(player, "deep_kinship") && !data.isActiveAbility(player, "celestial_kinship") && !data.isActiveAbility(player, "terrestrial_kinship")) {
             if (player.getY() < -60)
                 return PlayerPosYState.BELOW_SEA;
-        } else if (data.isActiveAbility("celestial_kinship") && !data.isActiveAbility("deep_kinship") && !data.isActiveAbility("terrestrial_kinship")) {
+        } else if (data.isActiveAbility(player, "celestial_kinship") && !data.isActiveAbility(player, "deep_kinship") && !data.isActiveAbility(player, "terrestrial_kinship")) {
             if (player.getY() >= -60 && player.getY() <= 60)
                 return PlayerPosYState.LEVEL_SEA;
-        } else if (data.isActiveAbility("terrestrial_kinship") && !data.isActiveAbility("deep_kinship") && !data.isActiveAbility("celestial_kinship")) {
+        } else if (data.isActiveAbility(player, "terrestrial_kinship") && !data.isActiveAbility(player, "deep_kinship") && !data.isActiveAbility(player, "celestial_kinship")) {
             if (player.getY() > 60)
                 return PlayerPosYState.ABOVE_SEA;
         }

@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
+import com.google.common.base.Suppliers;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
@@ -9,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -24,18 +26,28 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
+import net.xXinailXx.thirteen_flames.block.StatueHandler;
+import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
+import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
+import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.HornSeliasetEntity;
 import net.xXinailXx.thirteen_flames.entity.HornWindSeliasetEntity;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
+
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class HornSeliaset extends FlameItemSetting {
@@ -56,7 +68,25 @@ public class HornSeliaset extends FlameItemSetting {
     public InteractionResult useOn(UseOnContext use) {
         BlockPos pos = use.getClickedPos().above();
         Level level = use.getLevel();
+        BlockState state = level.getBlockState(pos);
         ItemStack stack = use.getItemInHand();
+
+        if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
+            StatueBE be = state.getBlock() instanceof StatueHandler handler ? handler.getBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos);
+
+            if (be != null && be.getTimeToUpgrade() == 0) {
+                RelicLevelingData data = ((FlameItemSetting) stack.getItem()).getRelicData().getLevelingData();
+
+                if (LevelingUtils.getLevel(stack) < data.getMaxLevel()) {
+                    Network.sendToServer(new FlameUpgradePacket(stack));
+                    be.resetFlameUpgradeData();
+
+                    return InteractionResult.SUCCESS;
+                }
+            } else {
+                return InteractionResult.FAIL;
+            }
+        }
 
         HornSeliasetEntity horn = new HornSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "rhythm", "waves"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "cooldown"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "stun"));
         horn.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
@@ -133,6 +163,16 @@ public class HornSeliaset extends FlameItemSetting {
 
         if (cooldown > 0)
             NBTUtils.setInt(stack, "horn_entity_cooldown", cooldown--);
+    }
+
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
+
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+            }
+        });
     }
 
     protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {

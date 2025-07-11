@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.god_pharaoh;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
@@ -13,9 +14,8 @@ public class GodPharaohScreenHealth extends AbstractGuiPharaoh {
         super(ScreenID.HEALTH);
     }
 
-    @Override
     public void tick() {
-        levelGui = guiLeveling.getGuiHealthLevelAmount();
+        levelGui = guiLeveling.getHealthLevel(Minecraft.getInstance().player);
     }
 
     protected void init() {

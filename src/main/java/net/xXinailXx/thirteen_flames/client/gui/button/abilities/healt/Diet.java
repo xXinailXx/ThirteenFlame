@@ -9,7 +9,6 @@ public class Diet extends AbstarctAbilityWidgets {
         super(x, y, 9);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("diet").screenID(ScreenID.HEALTH).maxLevel(5).requiredLevel(0).build();
     }

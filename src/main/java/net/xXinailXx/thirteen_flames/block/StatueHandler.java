@@ -19,10 +19,13 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.Data;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.AddStatueBuilderDataPacket;
+import net.xXinailXx.thirteen_flames.network.packet.CreativeUpdateStatuePacket;
 import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +45,7 @@ import java.util.List;
 @Getter
 @Setter
 public abstract class StatueHandler extends CustomStatueUtils implements IAnimatable {
+    @Getter
     private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private final GeoItemRenderer renderer;
     protected final Gods god;
@@ -53,20 +57,35 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
     }
 
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (level.isClientSide)
-            return InteractionResult.FAIL;
+        if (level.getBlockState(pos).getBlock() instanceof StatueGodPharaoh) {
+            StatueBE be = getBE(pos);
+
+            if (be == null || !be.isFinished() || !be.getGod().equals(Gods.GOD_PHARAOH))
+                return InteractionResult.FAIL;
+
+            if (level.isClientSide)
+                StatueGodPharaoh.openPharaohScreen();
+
+            return InteractionResult.SUCCESS;
+        }
 
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!(stack.getItem() instanceof FlameItemSetting setting))
-            return InteractionResult.FAIL;
+        if (stack.getItem() instanceof FlameItemSetting setting) {
+            RelicLevelingData data = setting.getRelicData().getLevelingData();
 
-        RelicLevelingData data = setting.getRelicData().getLevelingData();
+            if (LevelingUtils.getLevel(stack) >= data.getMaxLevel())
+                return InteractionResult.FAIL;
 
-        if (data.getMaxLevel() == LevelingUtils.getLevel(stack))
-            return InteractionResult.FAIL;
+            StatueBE be = getBE(pos);
 
-        Network.sendToServer(new FlameUpgradePacket(pos, stack));
+            if (be == null || be.getTimeToUpgrade() > 0)
+                return InteractionResult.FAIL;
+
+            Network.sendToServer(new FlameUpgradePacket(stack));
+
+            be.resetFlameUpgradeData();
+        }
 
         return InteractionResult.SUCCESS;
     }
@@ -90,7 +109,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         for (BlockPos pos1 : getBlockPoses(pos, false))
             accessor.destroyBlock(pos1, false);
 
-        Data.StatueBuilderData.removeStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(pos, false), pos));
+        Data.StatueBuilderData.removeStatue(pos);
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
@@ -99,7 +118,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         for (BlockPos pos1 : getBlockPoses(pos, false))
             level.destroyBlock(pos1, false);
 
-        Data.StatueBuilderData.removeStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(pos, false), pos));
+        Data.StatueBuilderData.removeStatue(pos);
     }
 
     public List<BlockPos> getBlockPoses(BlockPos pos, boolean isMain) {
@@ -116,18 +135,15 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         return posList;
     }
 
-    private Data.StatueBuilderData.StatueBuilder getBuilder(BlockPos pos) {
-        for (Data.StatueBuilderData.StatueBuilder b : Data.StatueBuilderData.getStatueList()) {
-            if (b.posList().contains(pos)) {
-                return b;
-            }
+    @Nullable
+    public StatueBE getBE(BlockPos pos) {
+        if (Data.StatueBuilderData.containsStatue(pos)) {
+            Data.StatueBuilderData.StatueBuilder builder = Data.StatueBuilderData.getStatue(pos);
+
+            return Data.StatueBuilderData.getStatueBE(builder);
         }
 
         return null;
-    }
-
-    public StatueBE getBE(BlockPos pos) {
-        return Data.StatueBuilderData.getStatueBEList().get(Data.StatueBuilderData.getStatueList().indexOf(getBuilder(pos)));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
@@ -136,9 +152,5 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
 
     public void registerControllers(AnimationData data) {
         data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
-    }
-
-    public AnimationFactory getFactory() {
-        return this.factory;
     }
 }

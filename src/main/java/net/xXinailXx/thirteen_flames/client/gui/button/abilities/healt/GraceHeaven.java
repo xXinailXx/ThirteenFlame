@@ -21,20 +21,19 @@ public class GraceHeaven extends AbstarctAbilityWidgets {
         super(x, y, 8);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("grace_heaven").screenID(ScreenID.HEALTH).requiredLevel(10).build();
     }
 
     @SubscribeEvent
     public static void addFood(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("grace_heaven")) {
-            Player player = event.player;
-            Level level = player.getLevel();
+        Player player = event.player;
+        Level level = player.getLevel();
 
-            if (player == null && level == null)
-                return;
+        if (player == null && level == null)
+            return;
 
+        if (data.isActiveAbility(player, "grace_heaven")) {
             if (player.tickCount % 300 == 0)
                 return;
 

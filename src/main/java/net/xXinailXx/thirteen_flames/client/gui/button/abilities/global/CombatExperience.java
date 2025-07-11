@@ -14,19 +14,18 @@ public class CombatExperience extends AbstarctAbilityWidgets {
         super(x, y, 2);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("combat_experience").screenID(ScreenID.GLOBAL).build();
     }
 
     @SubscribeEvent
     public static void exchangeXp(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("combat_experience")) {
-            Player player = event.player;
+        Player player = event.player;
 
-            if (player == null)
-                return;
+        if (player == null)
+            return;
 
+        if (data.isActiveAbility(player, "combat_experience")) {
             if (player.getHealth() < player.getMaxHealth()) {
                 if (player.totalExperience >= 5) {
                     player.giveExperiencePoints(- 5);

@@ -4,6 +4,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,16 +20,20 @@ public class Confidence extends AbstarctAbilityWidgets {
         super(x, y, 14);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("confidence").screenID(ScreenID.FIGHT).maxLevel(5).requiredLevel(40).requiredScarabsForUpgrade(2).requiredScarabsForOpen(2).build();
     }
 
     @SubscribeEvent
     public static void attackEntity(AttackEntityEvent event) {
-        if (data.isActiveAbility("confidence")) {
+        Player player = event.getEntity();
+
+        if (player == null)
+            return;
+
+        if (data.isActiveAbility(player, "confidence")) {
             if (event.getEntity().getMainHandItem().getItem() instanceof AxeItem) {
-                if (AbilityUtils.isRandomSuccess(event.getEntity().getLevel(), data.getLevelAbility("confidence"))) {
+                if (AbilityUtils.isRandomSuccess(event.getEntity().getLevel(), data.getLevelAbility(player, "confidence"))) {
                     LivingEntity entity = (LivingEntity) event.getTarget();
                     entity.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 200, 2));
                     entity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 2));

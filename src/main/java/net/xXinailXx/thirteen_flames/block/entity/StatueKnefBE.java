@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 
-public class StatueKnefBE extends StatueBE<StatueKnefBE> {
+public class StatueKnefBE extends StatueBE {
     public StatueKnefBE(BlockPos pos, BlockState state) {
         super(BlockEntityRegistry.STATUE_KNEF.get(), pos, state, Gods.KNEF, true);
     }

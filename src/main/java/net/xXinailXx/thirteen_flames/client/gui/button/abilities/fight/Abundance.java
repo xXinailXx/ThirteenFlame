@@ -26,7 +26,6 @@ public class Abundance extends AbstarctAbilityWidgets {
         super(x, y, 7);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("abundance").screenID(ScreenID.FIGHT).maxLevel(5).requiredLevel(35).requiredScarabsForOpen(2).requiredScarabsForUpgrade(2).build();
     }
@@ -53,8 +52,13 @@ public class Abundance extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void dropNugget(AttackEntityEvent event) {
-        if (data.isActiveAbility("abundance")) {
-            if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility("abundance") * 5)) {
+        Player player = event.getEntity();
+
+        if (player == null)
+            return;
+
+        if (data.isActiveAbility(player, "abundance")) {
+            if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility(player, "abundance") * 5)) {
                 Level level = event.getEntity().level;
 
                 ItemEntity itemEntity = new ItemEntity(level, event.getTarget().getX(), event.getTarget().getY(), event.getTarget().getZ(), Items.GOLD_NUGGET.getDefaultInstance());
@@ -66,9 +70,9 @@ public class Abundance extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void addExtraDrop(LivingDeathEvent event) {
-        if (data.isActiveAbility("abundance")) {
-            if (event.getSource().getEntity() instanceof Player) {
-                if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility("abundance") * 5)) {
+        if (event.getSource().getEntity() instanceof Player player) {
+            if (data.isActiveAbility(player, "abundance")) {
+                if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility(player, "abundance") * 5)) {
                     Level level = event.getEntity().level;
                     RandomSource random = level.getRandom();
 

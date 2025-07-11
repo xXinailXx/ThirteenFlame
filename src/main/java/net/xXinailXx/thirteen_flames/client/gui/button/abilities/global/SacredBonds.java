@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.button.abilities.global;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.animal.Animal;
@@ -17,22 +18,23 @@ import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
 @Mod.EventBusSubscriber
 public class SacredBonds extends AbstarctAbilityWidgets {
     public SacredBonds(int x, int y) {
-        super(x, y, 6 + (effectData.isCurseKnef() ? 1 : 0));
+        super(x, y, 6 + (effectData.isCurseKnef(Minecraft.getInstance().player) ? 1 : 0));
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("sacred_bonds").screenID(ScreenID.GLOBAL).build();
     }
 
     @SubscribeEvent
     public static void tameAnimal(PlayerInteractEvent.EntityInteract event) {
-        if (data.isActiveAbility("sacred_bonds")) {
+        Player player = event.getEntity();
+
+        if (data.isActiveAbility(player, "sacred_bonds")) {
             if (event.getTarget() instanceof TamableAnimal animal) {
                 if (!animal.isTame()) {
                     Level level = event.getLevel();
 
-                    animal.tame(event.getEntity());
+                    animal.tame(player);
 
                     for (int i = 0; i < 7; ++ i) {
                         double d0 = level.random.nextGaussian() * 0.02D;

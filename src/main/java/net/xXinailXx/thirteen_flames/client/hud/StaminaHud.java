@@ -13,8 +13,7 @@ import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.data.IData;
-import net.xXinailXx.thirteen_flames.data.Data;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.IStaminaData;
 import net.xXinailXx.thirteen_flames.data.StaminaData;
 
@@ -27,6 +26,10 @@ public class StaminaHud {
         LocalPlayer player = MC.player;
 
         if (player != null && !player.isCreative() && !player.isSpectator()) {
+            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+                return;
+
+
             RandomSource random = player.getRandom();
             IStaminaData staminaData = new StaminaData.Utils();
 
@@ -40,24 +43,25 @@ public class StaminaHud {
 
             if (shakeTime > 0) {
                 float speed = 0.05F;
+
                 poseStack.translate((random.nextGaussian() - random.nextGaussian()) * (double) shakeTime * (double) speed, (random.nextGaussian() - random.nextGaussian()) * (double) shakeTime * (double) 0.25F * (double) speed, (random.nextGaussian() - random.nextGaussian()) * (double) shakeTime * (double) speed);
             }
 
             RenderSystem.enableBlend();
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShaderColor(1, 1, 1, 1);
             RenderSystem.setShaderTexture(0, new ResourceLocation(ThirteenFlames.MODID, "textures/hud/stamina_icon.png"));
 
-            Gui.blit(poseStack, x - 4, y - 1, 0.0F, 0.0F, 6, 9, 6, 9);
+            Gui.blit(poseStack, x - 4, y - 1, 0, 0, 6, 9, 6, 9);
 
             RenderSystem.setShaderTexture(0, new ResourceLocation(ThirteenFlames.MODID, "textures/hud/stamina_bar.png"));
 
-            Gui.blit(poseStack, x, y, 0.0F, 0.0F, 77, 7, 77, 7);
+            Gui.blit(poseStack, x, y, 0, 0, 77, 7, 77, 7);
 
-            float percentage = (float) stamina / new Data.AbilitiesData.Utils().getLevelAbility("stamina_mantra") / ((float) maxStamina / 100.0F) / 100.0F;
+            float percentage = stamina / (maxStamina / 100F) / 100F;
 
             RenderSystem.setShaderTexture(0, new ResourceLocation(ThirteenFlames.MODID, "textures/hud/stamina_filler.png"));
 
-            Gui.blit(poseStack, x, y, 0.0F, 0.0F, Math.round(77.0F * percentage), 7, 77, 7);
+            Gui.blit(poseStack, x, y, 0, 0, Math.round(77F * percentage), 7, 77, 7);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
@@ -66,7 +70,6 @@ public class StaminaHud {
 
     @SubscribeEvent
     public static void onOverlayRegistry(RegisterGuiOverlaysEvent event) {
-        event.registerBelowAll(ThirteenFlames.MODID,
-                (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> render(poseStack, partialTick));
+        event.registerBelowAll(ThirteenFlames.MODID, (ForgeGui, poseStack, partialTick, screenWidth, screenHeight) -> render(poseStack, partialTick));
     }
 }

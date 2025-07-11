@@ -9,7 +9,6 @@ public class FishermanOfFisherman extends AbstarctAbilityWidgets {
         super(x, y, 3);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("fisherman_of_fisherman").screenID(ScreenID.CRAFT).requiredLevel(10).requiredScarabsForOpen(5).build();
     }

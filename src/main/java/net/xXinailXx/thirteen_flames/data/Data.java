@@ -2,9 +2,15 @@ package net.xXinailXx.thirteen_flames.data;
 
 import daripher.skilltree.capability.skill.IPlayerSkills;
 import daripher.skilltree.capability.skill.PlayerSkillsProvider;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,98 +26,187 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.player.BonemealEvent;
-import net.minecraftforge.event.entity.player.ItemFishedEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerXpEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
+import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
 import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.utils.MessageUtil;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
-import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.*;
 import net.xXinailXx.thirteen_flames.init.EffectRegistry;
+import net.xXinailXx.thirteen_flames.network.packet.GetStatueBEPacket;
 import net.xXinailXx.thirteen_flames.network.packet.SetSkillPointPacket;
+import net.xXinailXx.thirteen_flames.network.packet.capability.*;
 import net.xXinailXx.thirteen_flames.utils.Gods;
+import net.xXinailXx.thirteen_flames.utils.ScarabsType;
+import org.zeith.hammerlib.api.io.IAutoNBTSerializable;
+import org.zeith.hammerlib.api.io.NBTSerializable;
 import org.zeith.hammerlib.net.Network;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
-@Mod.EventBusSubscriber
 public class Data implements IData {
-    public CompoundTag serializeNBT() {
-        CompoundTag nbt = new CompoundTag();
-
-        AbilitiesData.serializeNBT(nbt);
-        EffectData.serializeNBT(nbt);
-        GuiLevelingData.serializeNBT(nbt);
-        XpScarabsData.serializeNBT(nbt);
-        ScarabsData.serializeNBT(nbt);
-
-        return nbt;
-    }
-
-    public void deserializeNBT(CompoundTag nbt) {
-        AbilitiesData.deserializeNBT(nbt);
-        EffectData.deserializeNBT(nbt);
-        GuiLevelingData.deserializeNBT(nbt);
-        XpScarabsData.deserializeNBT(nbt);
-        ScarabsData.deserializeNBT(nbt);
-    }
-
     public static class StatueBuilderData {
-        private static final List<StatueBuilder> STATUE_LIST = new ArrayList<>();
-        private static final List<StatueBE> STATUE_BE_LIST = new ArrayList<>();
-        private static final List<ShcemeBuilder> SHCEME_BUILDER_LIST = new ArrayList();
-        private static final List<UUID> SHCEME_BUILDER_UUID_LIST = new ArrayList<>();
+        public static StatueBE STATUE_BE;
 
-        public static void addShceme(ShcemeBuilder builder, UUID uuid) {
-            SHCEME_BUILDER_LIST.add(builder);
-            SHCEME_BUILDER_UUID_LIST.add(uuid);
+        @Nullable
+        public static ShcemeBuilder getShceme(UUID uuid) {
+            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
+
+            if (!tag.contains(uuid.toString()))
+                return null;
+
+            CompoundTag data = tag.getCompound(uuid.toString());
+            Gods[] gods = Gods.values();
+            Gods gods1 = gods[data.getInt("god")];
+            BlockPos mainPos = BlockPos.of(data.getLong("main_pos"));
+            ListTag listTag = data.getList("complete_poses", StringTag.valueOf("").getId());
+            List<BlockPos> posList = new ArrayList<>();
+
+            for (int i = 0; i < listTag.size(); i++)
+                posList.add(BlockPos.of(Long.parseLong(listTag.getString(i))));
+
+            return new ShcemeBuilder(posList, mainPos, gods1);
         }
 
-        public static void removeShceme(ShcemeBuilder builder, UUID uuid) {
-            SHCEME_BUILDER_LIST.remove(builder);
-            SHCEME_BUILDER_UUID_LIST.remove(uuid);
+        public static void addShceme(UUID uuid, ShcemeBuilder builder) {
+            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
+            CompoundTag data = new CompoundTag();
+
+            data.putInt("god", builder.god().ordinal());
+            data.putLong("main_pos", builder.mainPos().asLong());
+
+            ListTag listTag = new ListTag();
+
+            for (BlockPos pos : builder.posList())
+                listTag.add(StringTag.valueOf(String.valueOf(pos.asLong())));
+
+            data.put("complete_poses", listTag);
+            tag.put(uuid.toString(), data);
+
+            ServerCapManager.addServerData("tf_statue_shceme_builder_data", tag);
         }
 
-        public static void addStatue(StatueBuilder statues, StatueBE entity) {
-            STATUE_LIST.add(statues);
-            STATUE_BE_LIST.add(entity);
-        }
+        public static void removeShceme(UUID uuid) {
+            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
 
-        public static void removeStatue(StatueBuilder statues) {
-            if (!STATUE_LIST.contains(statues))
+            if (!tag.contains(uuid.toString()))
                 return;
 
-            STATUE_BE_LIST.remove(STATUE_LIST.indexOf(statues));
-            STATUE_LIST.remove(statues);
+            tag.remove(uuid.toString());
+            ServerCapManager.addServerData("tf_statue_shceme_builder_data", tag);
         }
 
-        public static void removeStatue(StatueBE entity) {
-            if (!STATUE_BE_LIST.contains(entity))
+        public static boolean containsShceme(UUID uuid) {
+            return ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data").contains(uuid.toString());
+        }
+
+        @Nullable
+        public static StatueBuilder getStatue(BlockPos pos) {
+            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_builder_data");
+
+            if (!tag.contains(String.valueOf(pos.asLong()))) {
+                for (String key : tag.getAllKeys()) {
+                    StatueBuilder builder = getStatue(BlockPos.of(Long.parseLong(key)));
+
+                    if (builder.posList().contains(pos))
+                        return builder;
+                }
+
+                return null;
+            }
+
+            ListTag listTag = tag.getList(String.valueOf(pos.asLong()), StringTag.valueOf("").getId());
+            List<BlockPos> posList = new ArrayList<>();
+
+            for (int i = 0; i < listTag.size(); i++)
+                posList.add(BlockPos.of(Long.parseLong(listTag.getString(i))));
+
+            return new StatueBuilder(posList, pos);
+        }
+
+        public static void addStatue(StatueBuilder statues) {
+            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_builder_data");
+            ListTag listTag = new ListTag();
+
+            for (BlockPos pos : statues.posList())
+                listTag.add(StringTag.valueOf(String.valueOf(pos.asLong())));
+
+            tag.put(String.valueOf(statues.mainPos().asLong()), listTag);
+
+            ServerCapManager.addServerData("tf_statue_builder_data", tag);
+        }
+
+        public static void removeStatue(BlockPos pos) {
+            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_builder_data");
+
+            if (!tag.contains(String.valueOf(pos.asLong())))
                 return;
 
-            STATUE_LIST.remove(STATUE_BE_LIST.indexOf(entity));
-            STATUE_BE_LIST.remove(entity);
+            tag.remove(String.valueOf(getStatue(pos).mainPos().asLong()));
+            ServerCapManager.addServerData("tf_statue_builder_data", tag);
         }
 
-        public static List<StatueBuilder> getStatueList() {
-            return STATUE_LIST;
+        public static boolean containsStatue(StatueBE entity) {
+            return containsStatue(entity.getBlockPos());
         }
 
-        public static List<StatueBE> getStatueBEList() {
-            return STATUE_BE_LIST;
+        public static boolean containsStatue(BlockPos pos) {
+            StatueBuilder builder = getStatue(pos);
+
+            if (builder == null)
+                return false;
+
+            for (String key : ServerCapManager.getOrCreateData("tf_statue_builder_data").getAllKeys())
+                if (BlockPos.of(Long.parseLong(key)).equals(builder.mainPos()))
+                    return true;
+
+            return false;
         }
 
-        public static List<ShcemeBuilder> getShcemeBuilderList() {
-            return SHCEME_BUILDER_LIST;
+        @Nullable
+        public static StatueBE getStatueBE(StatueBuilder builder) {
+            ListTag tag = new ListTag();
+
+            if (ServerCapManager.getServerData("tf_statue_block_entities_data") == null)
+                ServerCapManager.addServerData("tf_statue_block_entities_data", new ListTag());
+            else
+                tag = (ListTag) ServerCapManager.getServerData("tf_statue_block_entities_data");
+
+            if (!tag.contains(StringTag.valueOf(String.valueOf(builder.mainPos().asLong()))))
+                return null;
+
+            Network.sendToServer(new GetStatueBEPacket(builder.mainPos()));
+
+            return STATUE_BE;
         }
 
-        public static List<UUID> getShcemeBuilderUuidList() {
-            return SHCEME_BUILDER_UUID_LIST;
+        public static void addStatueBE(StatueBuilder builder) {
+            ListTag tag = new ListTag();
+
+            if (ServerCapManager.getServerData("tf_statue_block_entities_data") == null)
+                ServerCapManager.addServerData("tf_statue_block_entities_data", new ListTag());
+            else
+                tag = (ListTag) ServerCapManager.getServerData("tf_statue_block_entities_data");
+
+            tag.add(StringTag.valueOf(String.valueOf(builder.mainPos().asLong())));
+
+            ServerCapManager.addServerData("tf_statue_block_entities_data", tag);
+        }
+
+        public static boolean containsStatueBE(StatueBuilder builder) {
+            ListTag tag = new ListTag();
+
+            if (ServerCapManager.getServerData("tf_statue_block_entities_data") == null)
+                ServerCapManager.addServerData("tf_statue_block_entities_data", new ListTag());
+            else
+                tag = (ListTag) ServerCapManager.getServerData("tf_statue_block_entities_data");
+
+            return tag.contains(StringTag.valueOf(String.valueOf(builder.mainPos().asLong())));
         }
 
         public record ShcemeBuilder(List<BlockPos> posList, BlockPos mainPos, Gods god) {}
@@ -120,642 +215,652 @@ public class Data implements IData {
     }
 
     public static class AbilitiesData {
-        private static CompoundTag abilitiesTags = new CompoundTag();
+        public static CompoundTag getAbilitiesData(Player player) {
+            CompoundTag abilitiesData = new CompoundTag();
+            CompoundTag data = PlayerCapManager.getPlayerData(player);
 
-        private static void serializeNBT(CompoundTag nbt) {
-            nbt.put("abilities_data", abilitiesTags);
+            if (data.contains("tf_abilities_data"))
+                abilitiesData = data.getCompound("tf_abilities_data");
 
-            AbilityStorage.abilitiesList.forEach(ability -> ability.getInfo().serializeNBT(nbt));
+            return abilitiesData;
         }
 
-        private static void deserializeNBT(CompoundTag nbt) {
-            if (nbt.contains("abilities_data"))
-                abilitiesTags = nbt.getCompound("abilities_data");
-            else
-                abilitiesTags = new CompoundTag();
+        public static void setAbilitiesData(Player player, CompoundTag tag) {
+            PlayerCapManager.getPlayerData(player).put("tf_abilities_data", tag);
 
-            AbilityStorage.abilitiesList.forEach(ability -> ability.getInfo().deserializeNBT(nbt));
+            if (!player.level.isClientSide())
+                Network.sendTo(new AbilitiesSyncPacket(tag), player);
         }
 
-        public static class Handler {
-            private final String abilityName;
-
-            public Handler(String abilityName) {
-                this.abilityName = abilityName;
-            }
-
-            private void serializeNBT(CompoundTag nbt) {
-                nbt.putBoolean(this.abilityName + "_lock", isLock());
-                nbt.putBoolean(this.abilityName + "_buy", isBuy());
-                nbt.putBoolean(this.abilityName + "_active", isActive());
-                nbt.putInt(this.abilityName + "_level", getLevel());
-            }
-
-            private void deserializeNBT(CompoundTag nbt) {
-                setLock(nbt.getBoolean(this.abilityName + "_lock"));
-                setBuy(nbt.getBoolean(this.abilityName + "_buy"));
-                setActive(nbt.getBoolean(this.abilityName + "_active"));
-                setLevel(nbt.getInt(this.abilityName + "_level"));
-            }
-
-            private boolean isLock() {
-                boolean lock = false;
-
-                if (!abilitiesTags.contains(abilityName + "_lock")) {
-                    lock = false;
-                    abilitiesTags.putBoolean(abilityName + "_lock", false);
-                } else if (abilitiesTags.getBoolean(abilityName + "_lock") != lock) {
-                    if (abilitiesTags.getBoolean(abilityName + "_lock") && !lock)
-                        lock = true;
-                    else
-                        abilitiesTags.putBoolean(abilityName + "_lock", true);
-                }
-
-                return lock;
-            }
-
-            private void setLock(boolean value) {
-                abilitiesTags.putBoolean(abilityName + "_lock", value);
-            }
-
-            private boolean isBuy() {
-                boolean buy = false;
-
-                if (!abilitiesTags.contains(abilityName + "_buy")) {
-                    buy = false;
-                    abilitiesTags.putBoolean(abilityName + "_buy", false);
-                } else if (abilitiesTags.getBoolean(abilityName + "_buy") != buy) {
-                    if (abilitiesTags.getBoolean(abilityName + "_buy") && !buy)
-                        buy = true;
-                    else
-                        abilitiesTags.putBoolean(abilityName + "_buy", true);
-                }
-
-                if (!buy) {
-                    setActive(false);
-                    setLevel(0);
-                }
-
-                return buy;
-            }
-
-            private void setBuy(boolean value) {
-                if (!value) {
-                    setActive(false);
-                    setLevel(0);
-                }
-
-                abilitiesTags.putBoolean(abilityName + "_buy", value);
-            }
-
-            private boolean isActive() {
-                boolean active = false;
-
-                if (!abilitiesTags.contains(abilityName + "_active")) {
-                    active = false;
-                    abilitiesTags.putBoolean(abilityName + "_active", false);
-                } else  if (abilitiesTags.getBoolean(abilityName + "_active") != active) {
-                    if (abilitiesTags.getBoolean(abilityName + "_active") && !active)
-                        active = true;
-                    else
-                        abilitiesTags.putBoolean(abilityName + "_active", true);
-                }
-
-                return active;
-            }
-
-            private void setActive(boolean value) {
-                abilitiesTags.putBoolean(abilityName + "_active", value);
-            }
-
-            private int getLevel() {
-                int level = 1;
-
-                if (!abilitiesTags.contains(abilityName + "_level"))
-                    abilitiesTags.putInt(abilityName + "_level", 1);
-                else if (abilitiesTags.getInt(abilityName + "_level") != level)
-                    level = abilitiesTags.getInt(abilityName + "_level");
-
-                return level;
-            }
-
-            private void setLevel(int amount) {
-                abilitiesTags.putInt(abilityName + "_level", amount);
-            }
-
-            private void addLevel(int amount) {
-                if (amount < 0)
-                    setLevel(getLevel() - amount);
-                else
-                    setLevel(getLevel() + amount);
-            }
+        @Getter
+        @Setter
+        public static class Handler implements IAutoNBTSerializable {
+            @NBTSerializable
+            private boolean lock = false;
+            @NBTSerializable
+            private boolean buy = false;
+            @NBTSerializable
+            private boolean active = false;
+            @NBTSerializable
+            private int level = 1;
         }
 
         public static class Utils implements IAbilitiesData {
-            public Handler getAbilityHandler(String abilityName) {
-                return new Handler(abilityName);
+            public static Handler getAbilityData(Player player, String ability) {
+                Handler handler = new Handler();
+                CompoundTag data = getAbilitiesData(player);
+
+                if (!data.contains(ability)) {
+                    data.put(ability, handler.serializeNBT());
+                    setAbilitiesData(player, data);
+                } else {
+                    handler.deserializeNBT(data.getCompound(ability));
+                }
+
+                return handler;
             }
 
-            public boolean isLockAbility(String abilityName) {
-                return getAbilityHandler(abilityName).isLock();
+            public static void setAbilityData(Player player, String ability, Handler handler) {
+                CompoundTag data = getAbilitiesData(player);
+
+                data.put(ability, handler.serializeNBT());
+
+                setAbilitiesData(player, data);
             }
 
-            public void setLockAbility(String abilityName, boolean value) {
-                getAbilityHandler(abilityName).setLock(value);
+            public boolean isLockAbility(Player player, String ability) {
+                return getAbilityData(player, ability).isLock();
             }
 
-            public boolean isBuyAbility(String abilityName) {
-                return getAbilityHandler(abilityName).isBuy();
+            public void setLockAbility(Player player, String ability, boolean value) {
+                Handler handler = getAbilityData(player, ability);
+                handler.setLock(value);
+                setAbilityData(player, ability, handler);
             }
 
-            public void setBuyAbility(String abilityName, boolean value) {
-                getAbilityHandler(abilityName).setBuy(value);
+            public boolean isBuyAbility(Player player, String ability) {
+                return getAbilityData(player, ability).isBuy();
             }
 
-            public boolean isActiveAbility(String abilityName) {
-                return getAbilityHandler(abilityName).isActive();
+            public void setBuyAbility(Player player, String ability, boolean value) {
+                Handler handler = getAbilityData(player, ability);
+                handler.setBuy(value);
+                setAbilityData(player, ability, handler);
             }
 
-            public void setActiveAbility(String abilityName, boolean value) {
-                getAbilityHandler(abilityName).setActive(value);
+            public boolean isActiveAbility(Player player, String ability) {
+                return getAbilityData(player, ability).isActive();
             }
 
-            public int getLevelAbility(String abilityName) {
-                return getAbilityHandler(abilityName).getLevel();
+            public void setActiveAbility(Player player, String ability, boolean value) {
+                Handler handler = getAbilityData(player, ability);
+                handler.setActive(value);
+                setAbilityData(player, ability, handler);
             }
 
-            public void setLevelAbility(String abilityName, int amount) {
-                getAbilityHandler(abilityName).setLevel(amount);
+            public int getLevelAbility(Player player, String ability) {
+                return getAbilityData(player, ability).getLevel();
             }
 
-            public void addLevelAbility(String abilityName, int amount) {
-                getAbilityHandler(abilityName).addLevel(amount);
+            public void setLevelAbility(Player player, String ability, int amount) {
+                Handler handler = getAbilityData(player, ability);
+                handler.setLevel(amount);
+                setAbilityData(player, ability, handler);
+            }
+
+            public void addLevelAbility(Player player, String ability, int amount) {
+                setLevelAbility(player, ability, Math.max(1, getLevelAbility(player, ability) + amount));
             }
         }
     }
 
-    public static class EffectData implements IEffectData {
-        private static int effectMontuAmount = 750;
-        private static int effectRonosAmount = 750;
-        private static int effectKnefAmount = 350;
-        private static int effectSelyaAmount = 500;
-        private static int effectHetAmount = 750;
-        private static boolean curseKnef = false;
+    @Getter
+    @Setter
+    public static class EffectData implements IAutoNBTSerializable {
+        @NBTSerializable
+        private int knef = 350;
+        @NBTSerializable
+        private int selya = 500;
+        @NBTSerializable
+        private int montu = 750;
+        @NBTSerializable
+        private int ronos = 1000;
+        @NBTSerializable
+        private int het = 750;
+        @NBTSerializable
+        private boolean curseKnef = false;
 
-        private static void serializeNBT(CompoundTag nbt) {
-            nbt.putInt("effect_montu_amount", effectMontuAmount);
-            nbt.putInt("effect_ronos_amount", effectRonosAmount);
-            nbt.putInt("effect_knef_amount", effectKnefAmount);
-            nbt.putInt("effect_selya_amount", effectSelyaAmount);
-            nbt.putInt("effect_het_amount", effectHetAmount);
-            nbt.putBoolean("curse_knef", curseKnef);
-        }
+        public static class Utils implements IEffectData {
+            public static EffectData getEffectData(Player player) {
+                EffectData fake = new EffectData();
+                CompoundTag data = PlayerCapManager.getPlayerData(player);
 
-        private static void deserializeNBT(CompoundTag nbt) {
-            effectMontuAmount = nbt.getInt("effect_montu_amount");
-            effectRonosAmount = nbt.getInt("effect_ronos_amount");
-            effectKnefAmount = nbt.getInt("effect_knef_amount");
-            effectSelyaAmount = nbt.getInt("effect_selya_amount");
-            effectHetAmount = nbt.getInt("effect_het_amount");
-            curseKnef = nbt.getBoolean("curse_knef");
-        }
+                if (data.contains("tf_effect_data"))
+                    fake.deserializeNBT(data.getCompound("tf_effect_data"));
 
-        public int getEffectMontuAmount() {
-            return effectMontuAmount;
-        }
+                return fake;
+            }
 
-        public void setEffectMontuAmount(int amount) {
-            effectMontuAmount = amount;
-        }
+            public static void setEffectData(Player player, EffectData data) {
+                CompoundTag nbt = data.serializeNBT();
+                PlayerCapManager.getPlayerData(player).put("tf_effect_data", nbt);
 
-        public int getEffectRonosAmount() {
-            return effectRonosAmount;
-        }
+                if (!player.level.isClientSide())
+                    Network.sendTo(new EffectSyncPacket(nbt), player);
+            }
 
-        public void setEffectRonosAmount(int amount) {
-            effectRonosAmount = amount;
-        }
+            public int getKnef(Player player) {
+                return getEffectData(player).getKnef();
+            }
 
-        public int getEffectKnefAmount() {
-            return effectKnefAmount;
-        }
+            public int getSelya(Player player) {
+                return getEffectData(player).getSelya();
+            }
 
-        public void setEffectKnefAmount(int amount) {
-            effectKnefAmount = amount;
-        }
+            public int getMontu(Player player) {
+                return getEffectData(player).getMontu();
+            }
 
-        public int getEffectSelyaAmount() {
-            return effectSelyaAmount;
-        }
+            public int getRonos(Player player) {
+                return getEffectData(player).getRonos();
+            }
 
-        public void setEffectSelyaAmount(int amount) {
-            effectSelyaAmount = amount;
-        }
+            public int getHet(Player player) {
+                return getEffectData(player).getHet();
+            }
 
-        public int getEffectHetAmount() {
-            return effectHetAmount;
-        }
+            public boolean isCurseKnef(Player player) {
+                return getEffectData(player).isCurseKnef();
+            }
 
-        public void setEffectHetAmount(int amount) {
-            effectHetAmount = amount;
-        }
+            public void setKnef(Player player, int amount) {
+                EffectData data = getEffectData(player);
+                data.setKnef(amount);
+                setEffectData(player, data);
+            }
 
-        public boolean isCurseKnef() {
-            return curseKnef;
-        }
+            public void setSelya(Player player, int amount) {
+                EffectData data = getEffectData(player);
+                data.setSelya(amount);
+                setEffectData(player, data);
+            }
 
-        public void setCurseKnef(boolean value) {
-            curseKnef = value;
-        }
+            public void setMontu(Player player, int amount) {
+                EffectData data = getEffectData(player);
+                data.setMontu(amount);
+                setEffectData(player, data);
+            }
 
-        public void subEffectMontuAmount(int amount) {
-            effectMontuAmount = Math.max(effectMontuAmount - amount, 0);
-        }
+            public void setRonos(Player player, int amount) {
+                EffectData data = getEffectData(player);
+                data.setRonos(amount);
+                setEffectData(player, data);
+            }
 
-        public void subEffectRonosAmount(int amount) {
-            effectRonosAmount = Math.max(effectRonosAmount - amount, 0);
-        }
+            public void setHet(Player player, int amount) {
+                EffectData data = getEffectData(player);
+                data.setHet(amount);
+                setEffectData(player, data);
+            }
 
-        public void subEffectKnefAmount(int amount) {
-            effectKnefAmount = Math.max(effectKnefAmount - amount, 0);
-        }
+            public void setCurseKnef(Player player, boolean value) {
+                if ((isCurseKnef(player) && value) || (!isCurseKnef(player) && !value))
+                    return;
 
-        public void subEffectSelyaAmount(int amount) {
-            effectSelyaAmount = Math.max(effectSelyaAmount - amount, 0);
-        }
+                IGuiLevelingData guiLevelingData = new GuiLevelingData.Utils();
+                IAbilitiesData abilitiesData = new AbilitiesData.Utils();
 
-        public void subEffectHetAmount(int amount) {
-            effectHetAmount = Math.max(effectHetAmount - amount, 0);
+                abilitiesData.setLockAbility(player, "recovery", false);
+                abilitiesData.setBuyAbility(player, "recovery", false);
+                abilitiesData.setActiveAbility(player, "recovery", false);
+                abilitiesData.setLevelAbility(player, "recovery", 1);
+
+                if (value)
+                    guiLevelingData.setProcentCurse(player, 70);
+                else
+                    guiLevelingData.setProcentCurse(player, 0);
+
+                EffectData data = getEffectData(player);
+                data.setCurseKnef(value);
+                setEffectData(player, data);
+            }
+
+            public void subKnef(Player player, int amount) {
+                setKnef(player, Math.max(getKnef(player) - amount, 0));
+            }
+
+            public void subSelya(Player player, int amount) {
+                setSelya(player, Math.max(getSelya(player) - amount, 0));
+            }
+
+            public void subMontu(Player player, int amount) {
+                setMontu(player, Math.max(getMontu(player) - amount, 0));
+            }
+
+            public void subRonos(Player player, int amount) {
+                setRonos(player, Math.max(getRonos(player) - amount, 0));
+            }
+
+            public void subHet(Player player, int amount) {
+                setHet(player, Math.max(getHet(player) - amount, 0));
+            }
         }
     }
 
-    public static class GuiLevelingData implements IGuiLevelingData {
-        private static int guiMiningLevelAmount;
-        private static int guiCraftLevelAmount;
-        private static int guiFightLevelAmount;
-        private static int guiHealthLevelAmount;
-        private static int procentCurse;
-        private static boolean isPlayerScreen;
+    @Getter
+    @Setter
+    public static class GuiLevelingData implements IAutoNBTSerializable {
+        @NBTSerializable
+        private int miningLevel;
+        @NBTSerializable
+        private int craftLevel;
+        @NBTSerializable
+        private int fightLevel;
+        @NBTSerializable
+        private int healthLevel;
+        @NBTSerializable
+        private int procentCurse;
+        private boolean isPlayerScreen;
 
-        private static void serializeNBT(CompoundTag nbt) {
-            nbt.putInt("gui_mining_level_amount", guiMiningLevelAmount);
-            nbt.putInt("gui_craft_level_amount", guiCraftLevelAmount);
-            nbt.putInt("gui_fight_level_amount", guiFightLevelAmount);
-            nbt.putInt("gui_health_level_amount", guiHealthLevelAmount);
-            nbt.putInt("procent_curse", procentCurse);
-        }
+        public static class Utils implements IGuiLevelingData {
+            public static GuiLevelingData getGuiData(Player player) {
+                if (player == null && Minecraft.getInstance().player == null)
+                    return new GuiLevelingData();
+                else if (Minecraft.getInstance().player != null)
+                    player = Minecraft.getInstance().player;
 
-        private static void deserializeNBT(CompoundTag nbt) {
-            guiMiningLevelAmount = nbt.getInt("gui_mining_level_amount");
-            guiCraftLevelAmount = nbt.getInt("gui_craft_level_amount");
-            guiFightLevelAmount = nbt.getInt("gui_fight_level_amount");
-            guiHealthLevelAmount = nbt.getInt("gui_health_level_amount");
-            procentCurse = nbt.getInt("procent_curse");
-        }
+                GuiLevelingData fake = new GuiLevelingData();
+                CompoundTag data = PlayerCapManager.getPlayerData(player);
 
-        public int getGuiMiningLevelAmount() {
-            return guiMiningLevelAmount;
-        }
+                if (data.contains("tf_gui_data"))
+                    fake.deserializeNBT(data.getCompound("tf_gui_data"));
 
-        public void setGuiMiningLevelAmount(int amount) {
-            guiMiningLevelAmount = Math.min(amount, 100);
-        }
+                return fake;
+            }
 
-        public int getGuiCraftLevelAmount() {
-            return guiCraftLevelAmount;
-        }
+            public static void setGuiData(Player player, GuiLevelingData data) {
+                CompoundTag nbt = data.serializeNBT();
+                PlayerCapManager.getPlayerData(player).put("tf_gui_data", nbt);
 
-        public void setGuiCraftLevelAmount(int amount) {
-            guiCraftLevelAmount = Math.min(amount, 100);
-        }
+                if (!player.level.isClientSide())
+                    Network.sendTo(new GuiSyncPacket(nbt), player);
+            }
 
-        public int getGuiFightLevelAmount() {
-            return guiFightLevelAmount;
-        }
+            public boolean isPlayerScreen(Player player) {
+                return getGuiData(player).isPlayerScreen();
+            }
 
-        public void setGuiFightLevelAmount(int amount) {
-            guiFightLevelAmount = Math.min(amount, 100);
-        }
+            public int getProcentCurse(Player player) {
+                return getGuiData(player).getProcentCurse();
+            }
 
-        public int getGuiHealthLevelAmount() {
-            return guiHealthLevelAmount;
-        }
+            public int getMiningLevel(Player player) {
+                return getGuiData(player).getMiningLevel();
+            }
 
-        public void setGuiHealthLevelAmount(int amount) {
-            guiHealthLevelAmount = Math.min(amount, 100);
-        }
+            public int getCraftLevel(Player player) {
+                return getGuiData(player).getCraftLevel();
+            }
 
-        public int getProcentCurse() {
-            return procentCurse;
-        }
+            public int getFightLevel(Player player) {
+                return getGuiData(player).getFightLevel();
+            }
 
-        public void setProcentCurse(int value) {
-            procentCurse = value;
-        }
+            public int getHealthLevel(Player player) {
+                return getGuiData(player).getHealthLevel();
+            }
 
-        public boolean isPlayerScreen() {
-            return isPlayerScreen;
-        }
+            public void setPlayerScreen(Player player, boolean value) {
+                GuiLevelingData data = getGuiData(player);
+                data.setPlayerScreen(value);
+                setGuiData(player, data);
+            }
 
-        public void setPlayerScreen(boolean value) {
-            isPlayerScreen = value;
-        }
+            public void setMiningLevel(Player player, int amount) {
+                GuiLevelingData data = getGuiData(player);
+                data.setMiningLevel(Math.max(amount, 0));
+                setGuiData(player, data);
+            }
 
-        public void addGuiMiningLevelAmount(int amount) {
-            setGuiMiningLevelAmount(getGuiMiningLevelAmount() + amount);
-        }
+            public void setCraftLevel(Player player, int amount) {
+                GuiLevelingData data = getGuiData(player);
+                data.setCraftLevel(Math.max(amount, 0));
+                setGuiData(player, data);
+            }
 
-        public void addGuiCraftLevelAmount(int amount) {
-            setGuiCraftLevelAmount(getGuiCraftLevelAmount() + amount);
-        }
+            public void setFightLevel(Player player, int amount) {
+                GuiLevelingData data = getGuiData(player);
+                data.setFightLevel(Math.max(amount, 0));
+                setGuiData(player, data);
+            }
 
-        public void addGuiFightLevelAmount(int amount) {
-            setGuiFightLevelAmount(getGuiFightLevelAmount() + amount);
-        }
+            public void setHealthLevel(Player player, int amount) {
+                GuiLevelingData data = getGuiData(player);
+                data.setHealthLevel(Math.max(amount, 0));
+                setGuiData(player, data);
+            }
 
-        public void addGuiHealthLevelAmount(int amount) {
-            setGuiHealthLevelAmount(getGuiHealthLevelAmount() + amount);
-        }
+            public void setProcentCurse(Player player, int amount) {
+                amount = Mth.clamp(amount, 0, 70);
+                IData.IXpScarabsData xpScarabsData = new Data.XpScarabsData.Utils();
 
-        public void subProcentCurse(int amount) {
-            setProcentCurse(getProcentCurse() + amount);
+                if (amount == 0) {
+                    xpScarabsData.subXpScarabsSilver(player, getProcentCurse(player) * 10);
+                    xpScarabsData.subXpScarabsGold(player, getProcentCurse(player) * 20);
+                    xpScarabsData.subXpScarabsAuriteh(player, getProcentCurse(player) * 30);
+                    xpScarabsData.subXpScarabsLazotep(player, getProcentCurse(player) * 40);
+                } else {
+                    int procent = getProcentCurse(player) - amount;
+
+                    xpScarabsData.subXpScarabsSilver(player, procent * 10);
+                    xpScarabsData.subXpScarabsGold(player, procent * 20);
+                    xpScarabsData.subXpScarabsAuriteh(player, procent * 30);
+                    xpScarabsData.subXpScarabsLazotep(player, procent * 40);
+                }
+
+                GuiLevelingData data = getGuiData(player);
+                data.setProcentCurse(amount);
+                setGuiData(player, data);
+            }
+
+            public void addMiningLevel(Player player, int amount) {
+                setMiningLevel(player, getMiningLevel(player) + Mth.clamp(amount, 0, 100));
+            }
+
+            public void addCraftLevel(Player player, int amount) {
+                setCraftLevel(player, getCraftLevel(player) + Mth.clamp(amount, 0, 100));
+            }
+
+            public void addFightLevel(Player player, int amount) {
+                setFightLevel(player, getFightLevel(player) + Mth.clamp(amount, 0, 100));
+            }
+
+            public void addHealthLevel(Player player, int amount) {
+                setHealthLevel(player, getHealthLevel(player) + Mth.clamp(amount, 0, 100));
+            }
         }
     }
 
-    public static class XpScarabsData implements IXpScarabsData {
-        private static int xpScarabSilver;
-        private static int xpScarabGold;
-        private static int xpScarabAuriteh;
-        private static int xpScarabLazotep;
+    @Getter
+    @Setter
+    public static class XpScarabsData implements IAutoNBTSerializable {
+        @NBTSerializable
+        private int silver = 500;
+        @NBTSerializable
+        private int gold = 1000;
+        @NBTSerializable
+        private int auriteh = 1500;
+        @NBTSerializable
+        private int lazotep = 2000;
 
-        private static void serializeNBT(CompoundTag nbt) {
-            nbt.putInt("xp_scarab_silver", xpScarabSilver);
-            nbt.putInt("xp_scarab_gold", xpScarabGold);
-            nbt.putInt("xp_scarab_auriteh", xpScarabAuriteh);
-            nbt.putInt("xp_scarab_lazotep", xpScarabLazotep);
-        }
+        public static class Utils implements IXpScarabsData {
+            public static XpScarabsData getXpScarabsData(Player player) {
+                XpScarabsData fake = new XpScarabsData();
+                CompoundTag data = PlayerCapManager.getPlayerData(player);
 
-        private static void deserializeNBT(CompoundTag nbt) {
-            xpScarabSilver = nbt.getInt("xp_scarab_silver");
-            xpScarabGold = nbt.getInt("xp_scarab_gold");
-            xpScarabAuriteh = nbt.getInt("xp_scarab_auriteh");
-            xpScarabLazotep = nbt.getInt("xp_scarab_lazotep");
-        }
+                if (data.contains("tf_xp_scarabs_data"))
+                    fake.deserializeNBT(data.getCompound("tf_xp_scarabs_data"));
 
-        public int getXpScarabSilver() {
-            return xpScarabSilver;
-        }
-
-        public void setXpScarabSilver(int amount) {
-            if (amount > 500 + addExtraXp(ScarabsType.SILVER)) {
-                xpScarabSilver = 500 + addExtraXp(ScarabsType.SILVER);
-            } else {
-                xpScarabSilver = Math.max(amount, 0);
+                return fake;
             }
-        }
 
-        public int getXpScarabGold() {
-            return xpScarabGold;
-        }
+            public static void setXpScarabsData(Player player, XpScarabsData data) {
+                CompoundTag nbt = data.serializeNBT();
+                PlayerCapManager.getPlayerData(player).put("tf_xp_scarabs_data", nbt);
 
-        public void setXpScarabGold(int amount) {
-            if (amount > 1000 + addExtraXp(ScarabsType.GOLD)) {
-                xpScarabGold = 1000 + addExtraXp(ScarabsType.GOLD);
-            } else {
-                xpScarabGold = Math.max(amount, 0);
+                if (!player.level.isClientSide())
+                    Network.sendTo(new XpScarabsSyncPacket(nbt), player);
             }
-        }
 
-        public int getXpScarabAuriteh() {
-            return xpScarabAuriteh;
-        }
-
-        public void setXpScarabAuriteh(int amount) {
-            if (amount > 1500 + addExtraXp(ScarabsType.AURITEH)) {
-                xpScarabAuriteh = 1500 + addExtraXp(ScarabsType.AURITEH);
-            } else {
-                xpScarabAuriteh = Math.max(amount, 0);
+            public int getXpScarabSilver(Player player) {
+                return getXpScarabsData(player).getSilver();
             }
-        }
 
-        public int getXpScarabLazotep() {
-            return xpScarabLazotep;
-        }
-
-        public void setXpScarabLazotep(int amount) {
-            if (amount > 2000 + addExtraXp(ScarabsType.LAZOTEP)) {
-                xpScarabLazotep = 2000 + addExtraXp(ScarabsType.LAZOTEP);
-            } else {
-                xpScarabLazotep = Math.max(amount, 0);
+            public int getXpScarabGold(Player player) {
+                return getXpScarabsData(player).getGold();
             }
-        }
 
-        public void subXpScarab(int amount) {
-            subXpScarabsSilver(amount);
-            subXpScarabsGold(amount);
-            subXpScarabsAuriteh(amount);
-            subXpScarabsLazotep(amount);
-        }
+            public int getXpScarabAuriteh(Player player) {
+                return getXpScarabsData(player).getAuriteh();
+            }
 
-        public void subXpScarabsSilver(int amount) {
-            xpScarabSilver = Math.max(xpScarabSilver - amount, 0);
-        }
+            public int getXpScarabLazotep(Player player) {
+                return getXpScarabsData(player).getLazotep();
+            }
 
-        public void subXpScarabsGold(int amount) {
-            xpScarabGold = Math.max(xpScarabGold - amount, 0);
-        }
+            public void setXpScarabSilver(Player player, int amount) {
+                XpScarabsData data = getXpScarabsData(player);
+                data.setSilver(amount);
+                setXpScarabsData(player, data);
+            }
 
-        public void subXpScarabsAuriteh(int amount) {
-            xpScarabAuriteh = Math.max(xpScarabAuriteh - amount, 0);
-        }
+            public void setXpScarabGold(Player player, int amount) {
+                XpScarabsData data = getXpScarabsData(player);
+                data.setGold(amount);
+                setXpScarabsData(player, data);
+            }
 
-        public void subXpScarabsLazotep(int amount) {
-            xpScarabLazotep = Math.max(xpScarabLazotep - amount, 0);
-        }
+            public void setXpScarabAuriteh(Player player, int amount) {
+                XpScarabsData data = getXpScarabsData(player);
+                data.setAuriteh(amount);
+                setXpScarabsData(player, data);
+            }
 
-        private static int addExtraXp(ScarabsType type) {
-            IGuiLevelingData guiLevelingData = new GuiLevelingData();
+            public void setXpScarabLazotep(Player player, int amount) {
+                XpScarabsData data = getXpScarabsData(player);
+                data.setLazotep(amount);
+                setXpScarabsData(player, data);
+            }
 
-            return switch (type) {
-                case SILVER -> guiLevelingData.getProcentCurse() * 10;
-                case GOLD -> guiLevelingData.getProcentCurse() * 20;
-                case AURITEH -> guiLevelingData.getProcentCurse() * 30;
-                case LAZOTEP -> guiLevelingData.getProcentCurse() * 40;
-            };
-        }
+            public void subXpScarab(Player player, int amount) {
+                subXpScarabsSilver(player, amount);
+                subXpScarabsGold(player, amount);
+                subXpScarabsAuriteh(player, amount);
+                subXpScarabsLazotep(player, amount);
+            }
 
-        private enum ScarabsType {
-            SILVER,
-            GOLD,
-            AURITEH,
-            LAZOTEP
+            public void subXpScarabsSilver(Player player, int amount) {
+                setXpScarabSilver(player, getXpScarabSilver(player) - amount);
+            }
+
+            public void subXpScarabsGold(Player player, int amount) {
+                setXpScarabGold(player, getXpScarabGold(player) - amount);
+            }
+
+            public void subXpScarabsAuriteh(Player player, int amount) {
+                setXpScarabAuriteh(player, getXpScarabAuriteh(player) - amount);
+            }
+
+            public void subXpScarabsLazotep(Player player, int amount) {
+                setXpScarabLazotep(player, getXpScarabLazotep(player) - amount);
+            }
+
+            public static int addExtraXp(Player player, ScarabsType type) {
+                IGuiLevelingData guiLevelingData = new GuiLevelingData.Utils();
+
+                return switch (type) {
+                    case SILVER -> guiLevelingData.getProcentCurse(player) * 10;
+                    case GOLD -> guiLevelingData.getProcentCurse(player) * 20;
+                    case AURITEH -> guiLevelingData.getProcentCurse(player) * 30;
+                    case LAZOTEP -> guiLevelingData.getProcentCurse(player) * 40;
+                };
+            }
         }
     }
 
-    public static class ScarabsData implements IScarabsData {
-        private static int scarabGold;
-        private static int scarabAuriteh;
-        private static int scarabLazotep;
+    @Getter
+    @Setter
+    public static class ScarabsData implements IAutoNBTSerializable {
+        @NBTSerializable
+        private int scarabGold;
+        @NBTSerializable
+        private int scarabAuriteh;
+        @NBTSerializable
+        private int scarabLazotep;
 
-        private static void serializeNBT(CompoundTag nbt) {
-            nbt.putInt("scarab_gold", scarabGold);
-            nbt.putInt("scarab_auriteh", scarabAuriteh);
-            nbt.putInt("scarab_lazotep", scarabLazotep);
-        }
+        public static class Utils implements IScarabsData {
+            public static ScarabsData getScarabsData(Player player) {
+                ScarabsData fake = new ScarabsData();
+                CompoundTag data = PlayerCapManager.getPlayerData(player);
 
-        private static void deserializeNBT(CompoundTag nbt) {
-            scarabGold = nbt.getInt("scarab_gold");
-            scarabAuriteh = nbt.getInt("scarab_auriteh");
-            scarabLazotep = nbt.getInt("scarab_lazotep");
-        }
+                if (data.contains("tf_scarabs_data"))
+                    fake.deserializeNBT(data.getCompound("tf_scarabs_data"));
 
-        public int getScarabSilver(Player player) {
-            IPlayerSkills skills = PlayerSkillsProvider.get(player);
-            return skills.getSkillPoints();
-        }
+                return fake;
+            }
 
-        public void setScarabSilver(Player player, int amount) {
-            Network.sendToServer(new SetSkillPointPacket(Math.max(0, amount)));
-        }
+            public static void setScarabsData(Player player, ScarabsData data) {
+                CompoundTag nbt = data.serializeNBT();
+                PlayerCapManager.getPlayerData(player).put("tf_scarabs_data", nbt);
 
-        public int getScarabGold() {
-            return scarabGold;
-        }
+                if (!player.level.isClientSide())
+                    Network.sendTo(new ScarabsSyncPacket(nbt), player);
+            }
 
-        public void setScarabGold(int amount) {
-            scarabGold = amount;
-        }
+            public int getScarabSilver(Player player) {
+                IPlayerSkills skills = PlayerSkillsProvider.get(player);
+                return skills.getSkillPoints();
+            }
 
-        public int getScarabAuriteh() {
-            return scarabAuriteh;
-        }
+            public int getScarabGold(Player player) {
+                return getScarabsData(player).getScarabGold();
+            }
 
-        public void setScarabAuriteh(int amount) {
-            scarabAuriteh = amount;
-        }
+            public int getScarabAuriteh(Player player) {
+                return getScarabsData(player).getScarabAuriteh();
+            }
 
-        public int getScarabLazotep() {
-            return scarabLazotep;
-        }
+            public int getScarabLazotep(Player player) {
+                return getScarabsData(player).getScarabLazotep();
+            }
 
-        public void setScarabLazotep(int amount) {
-            scarabLazotep = amount;
-        }
+            public void setScarabSilver(Player player, int amount) {
+                Network.sendToServer(new SetSkillPointPacket(Math.max(0, amount)));
+            }
 
-        public void addScarabSilver(Player player, int amount) {
-            setScarabSilver(player, getScarabSilver(player) + amount);
-        }
+            public void setScarabGold(Player player, int amount) {
+                ScarabsData data = getScarabsData(player);
+                data.setScarabGold(amount);
+                setScarabsData(player, data);
+            }
 
-        public void addScarabGold(int amount) {
-            scarabGold = scarabGold + amount;
-        }
+            public void setScarabAuriteh(Player player, int amount) {
+                ScarabsData data = getScarabsData(player);
+                data.setScarabAuriteh(amount);
+                setScarabsData(player, data);
+            }
 
-        public void addScarabAuriteh(int amount) {
-            scarabAuriteh = scarabAuriteh + amount;
-        }
+            public void setScarabLazotep(Player player, int amount) {
+                ScarabsData data = getScarabsData(player);
+                data.setScarabLazotep(amount);
+                setScarabsData(player, data);
+            }
 
-        public void addScarabLazotep(int amount) {
-            scarabLazotep = scarabLazotep + amount;
-        }
+            public void addScarabSilver(Player player, int amount) {
+                setScarabSilver(player, getScarabSilver(player) + amount);
+            }
 
-        public void resetScarabs(Player player) {
-            setScarabSilver(player, 0);
-            setScarabGold(0);
-            setScarabAuriteh(0);
-            setScarabLazotep(0);
+            public void addScarabGold(Player player, int amount) {
+                setScarabGold(player, getScarabGold(player) + amount);
+            }
+
+            public void addScarabAuriteh(Player player, int amount) {
+                setScarabAuriteh(player, getScarabAuriteh(player) + amount);
+            }
+
+            public void addScarabLazotep(Player player, int amount) {
+                setScarabLazotep(player, getScarabLazotep(player) + amount);
+            }
+
+            public void resetScarabs(Player player) {
+                setScarabSilver(player, 0);
+                setScarabGold(player, 0);
+                setScarabAuriteh(player, 0);
+                setScarabLazotep(player, 0);
+            }
         }
     }
 
     @Mod.EventBusSubscriber
     public static class DataActions {
-        private static final IAbilitiesData abilitiesData = new AbilitiesData.Utils();
-        private static final IGuiLevelingData guiLevelingData = new GuiLevelingData();
-        private static final IXpScarabsData xpScarabsData = new XpScarabsData();
-        private static final IScarabsData scarabsData = new ScarabsData();
-        private static final IEffectData effectData = new EffectData();
-
         @SubscribeEvent
         public static void setBreakSpeed(PlayerEvent.BreakSpeed event) {
             Player player = event.getEntity();
 
+            if (player == null)
+                return;
+
             if (!player.isCreative())
-                event.setNewSpeed((float) (event.getOriginalSpeed() + (guiLevelingData.getGuiMiningLevelAmount() * 0.01)));
+                event.setNewSpeed((float) (event.getOriginalSpeed() + (GuiLevelingData.Utils.getGuiData(player).getMiningLevel() * 0.01)));
         }
 
         @SubscribeEvent
         public static void pickupXp(PlayerXpEvent.PickupXp event) {
-            effectData.subEffectHetAmount(event.getOrb().value);
+            new EffectData.Utils().subHet(event.getEntity(), event.getOrb().value);
+        }
+
+        @SubscribeEvent
+        public static void attackEntity(AttackEntityEvent event) {
+            Player player = event.getEntity();
+
+            if (player == null)
+                return;
+
+            new EffectData.Utils().subRonos(player, 1);
         }
 
         @SubscribeEvent
         public static void deathEntity(LivingDeathEvent event) {
             if (event.getSource().getEntity() instanceof Player player) {
                 LivingEntity entity = event.getEntity();
+                IXpScarabsData xpScarabsData = new XpScarabsData.Utils();
+                IEffectData effectData = new EffectData.Utils();
 
                 if (entity.getMaxHealth() <= 20) {
-                    xpScarabsData.subXpScarab(5);
-                    effectData.subEffectRonosAmount(1);
-                    effectData.subEffectKnefAmount(1);
+                    xpScarabsData.subXpScarab(player, 5);
+                    effectData.subKnef(player, 1);
                 } else if (entity.getMaxHealth() <= 50 && entity.getMaxHealth() > 20) {
-                    xpScarabsData.subXpScarab(10);
-                    effectData.subEffectRonosAmount(2);
-                    effectData.subEffectKnefAmount(1);
+                    xpScarabsData.subXpScarab(player, 10);
+                    effectData.subKnef(player, 1);
                 } else if (entity.getMaxHealth() <= 80 && entity.getMaxHealth() > 50) {
-                    xpScarabsData.subXpScarab(15);
-                    effectData.subEffectRonosAmount(3);
-                    effectData.subEffectKnefAmount(1);
+                    xpScarabsData.subXpScarab(player, 15);
+                    effectData.subKnef(player, 1);
                 } else if (entity.getMaxHealth() <= 100 && entity.getMaxHealth() > 80) {
-                    xpScarabsData.subXpScarab(20);
-                    effectData.subEffectRonosAmount(4);
-                    effectData.subEffectKnefAmount(1);
+                    xpScarabsData.subXpScarab(player, 20);
+                    effectData.subKnef(player, 1);
                 } else {
-                    xpScarabsData.subXpScarab(25);
-                    effectData.subEffectRonosAmount(6);
-                    effectData.subEffectKnefAmount(1);
+                    xpScarabsData.subXpScarab(player, 25);
+                    effectData.subKnef(player, 1);
                 }
             }
         }
 
         @SubscribeEvent
         public static void harvest(PlayerEvent.HarvestCheck event) {
-            xpScarabsData.subXpScarab(1);
+            new XpScarabsData.Utils().subXpScarab(event.getEntity(), 1);
         }
 
         @SubscribeEvent
         public static void bonemeal(BonemealEvent event) {
-            effectData.subEffectSelyaAmount(1);
+            new EffectData.Utils().subSelya(event.getEntity(), 1);
         }
 
         @SubscribeEvent
         public static void fished(ItemFishedEvent event) {
-            xpScarabsData.subXpScarab(4);
-            effectData.subEffectSelyaAmount(1);
+            new XpScarabsData.Utils().subXpScarab(event.getEntity(), 4);
+            new EffectData.Utils().subSelya(event.getEntity(), 1);
         }
 
         @SubscribeEvent
         public static void crafting(PlayerEvent.ItemCraftedEvent event) {
-            xpScarabsData.subXpScarab(2);
-            effectData.setEffectMontuAmount(1);
-        }
-
-        @SubscribeEvent
-        public static void playerLogged(PlayerEvent.PlayerLoggedInEvent event) {
-            Player player = event.getEntity();
-
-            if (xpScarabsData.getXpScarabSilver() <= 0)
-                xpScarabsData.setXpScarabSilver(500 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
-            if (xpScarabsData.getXpScarabGold() <= 0)
-                xpScarabsData.setXpScarabGold(750 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.GOLD));
-            if (xpScarabsData.getXpScarabAuriteh() <= 0)
-                xpScarabsData.setXpScarabAuriteh(1000 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.AURITEH));
-            if (xpScarabsData.getXpScarabLazotep() <= 0)
-                xpScarabsData.setXpScarabLazotep(2000 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.LAZOTEP));
+            new XpScarabsData.Utils().subXpScarab(event.getEntity(), 2);
+            new EffectData.Utils().setMontu(event.getEntity(), 1);
         }
 
         @SubscribeEvent
         public static void healPlayer(LivingHealEvent event) {
-            if (event.getEntity() instanceof Player player && guiLevelingData.getGuiHealthLevelAmount() > 0)
-                event.setAmount((float) (event.getAmount() * (0.8 * guiLevelingData.getGuiHealthLevelAmount())));
+            if (event.getEntity() instanceof Player player && new GuiLevelingData.Utils().getHealthLevel(player) > 0)
+                event.setAmount(event.getAmount() * (0.8F * new GuiLevelingData.Utils().getHealthLevel(player)));
         }
 
         @SubscribeEvent
@@ -765,7 +870,7 @@ public class Data implements IData {
             if (level == null && !(event.getSource().getEntity() instanceof Player))
                 return;
 
-            if (MathUtils.isRandom(level, guiLevelingData.getGuiCraftLevelAmount())) {
+            if (MathUtils.isRandom(level, new GuiLevelingData.Utils().getCraftLevel((Player) event.getSource().getEntity()))) {
                 if (MathUtils.isRandom(level, 85)) {
                     extraDrop(level, event.getEntity(), 2);
                 } else {
@@ -781,7 +886,7 @@ public class Data implements IData {
             if (level.isClientSide)
                 return;
 
-            List<ItemEntity> dropEntities = new ArrayList<ItemEntity>();
+            List<ItemEntity> dropEntities = new ArrayList<>();
 
             for (Entity entity1 : level.getEntities(null, new AABB(entity.getX()-1, entity.getY()-1, entity.getZ()-1, entity.getX()+1, entity.getY()+1, entity.getZ()+1))) {
                 if (entity1 instanceof ItemEntity)
@@ -804,74 +909,87 @@ public class Data implements IData {
         public static void playerTick(TickEvent.PlayerTickEvent event) {
             Player player = event.player;
 
-            if (player == null)
+            if (player == null || player.getLevel().isClientSide)
                 return;
 
-            if (guiLevelingData.getGuiMiningLevelAmount() < 0)
-                guiLevelingData.setGuiMiningLevelAmount(0);
-            if (guiLevelingData.getGuiCraftLevelAmount() < 0)
-                guiLevelingData.setGuiCraftLevelAmount(0);
-            if (guiLevelingData.getGuiFightLevelAmount() < 0)
-                guiLevelingData.setGuiFightLevelAmount(0);
-            if (guiLevelingData.getGuiHealthLevelAmount() < 0)
-                guiLevelingData.setGuiHealthLevelAmount(0);
+            IAbilitiesData abilitiesData = new AbilitiesData.Utils();
+            IGuiLevelingData guiLevelingData = new GuiLevelingData.Utils();
+            IXpScarabsData xpScarabsData = new XpScarabsData.Utils();
+            IEffectData effectData = new EffectData.Utils();
+            IScarabsData scarabsData = new ScarabsData.Utils();
 
-            if (guiLevelingData.getProcentCurse() <= 0) {
-                guiLevelingData.setProcentCurse(0);
-                effectData.setCurseKnef(false);
-                abilitiesData.setBuyAbility("recovery", false);
-            } else {
-                guiLevelingData.setProcentCurse(70 - (abilitiesData.isActiveAbility("recovery") ? abilitiesData.getLevelAbility("recovery") * 5 : 0));
+            if (abilitiesData.isActiveAbility(player, "recovery") && abilitiesData.getLevelAbility(player, "recovery") >= 14) {
+                guiLevelingData.setProcentCurse(player, 0);
+                effectData.setCurseKnef(player, false);
+                abilitiesData.setBuyAbility(player, "recovery", false);
+                abilitiesData.setActiveAbility(player, "recovery", false);
+                abilitiesData.setLevelAbility(player, "recovery", 1);
             }
 
-            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getGuiFightLevelAmount() * 0.01), AttributeModifier.Operation.ADDITION);
+            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getFightLevel(player) * 0.01), AttributeModifier.Operation.ADDITION);
             AttributeInstance attack_damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
-            if (!attack_damage.hasModifier(attack_damage_bonus)) {
+            if (!attack_damage.hasModifier(attack_damage_bonus))
                 attack_damage.addTransientModifier(attack_damage_bonus);
-            }
 
-            if (effectData.getEffectMontuAmount() <= 0) {
-                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_MONTU.get(), 18000, 1, true, true));
+            if (effectData.getMontu(player) <= 0) {
+                int level = player.getEffect(EffectRegistry.BLESSING_MONTU.get()) == null ? 1 : player.getEffect(EffectRegistry.BLESSING_MONTU.get()).getAmplifier() + 1;
+
+                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_MONTU.get(), 18000, level, true, true));
                 MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.montu.add_effect", ChatFormatting.GRAY);
-                effectData.setEffectMontuAmount(750);
-            }
-            if (effectData.getEffectRonosAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_RONOSA.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.ronos.add_effect", ChatFormatting.GRAY);
-                effectData.setEffectRonosAmount(750);
-            }
-            if (effectData.getEffectKnefAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_KNEF.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.knef.add_effect", ChatFormatting.GRAY);
-                effectData.setEffectKnefAmount(350);
-            }
-            if (effectData.getEffectSelyaAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_SELIASET.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.seliaset.add_effect", ChatFormatting.GRAY);
-                effectData.setEffectSelyaAmount(500);
-            }
-            if (effectData.getEffectHetAmount() <= 0) {
-                player.addEffect(new MobEffectInstance( EffectRegistry.BLESSING_HET.get(), 18000, 1, true, true));
-                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.het.add_effect", ChatFormatting.GRAY);
-                effectData.setEffectHetAmount(750);
+                effectData.setMontu(player, 750);
             }
 
-            if (xpScarabsData.getXpScarabSilver() <= 0) {
-                xpScarabsData.setXpScarabSilver(500 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
+            if (effectData.getRonos(player) <= 0) {
+                int level = player.getEffect(EffectRegistry.BLESSING_RONOSA.get()) == null ? 1 : player.getEffect(EffectRegistry.BLESSING_RONOSA.get()).getAmplifier() + 1;
+
+                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_RONOSA.get(), 18000, level, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.ronos.add_effect", ChatFormatting.GRAY);
+                effectData.setRonos(player, 1000);
+            }
+
+            if (effectData.getKnef(player) <= 0) {
+                int level = player.getEffect(EffectRegistry.BLESSING_KNEF.get()) == null ? 1 : player.getEffect(EffectRegistry.BLESSING_KNEF.get()).getAmplifier() + 1;
+
+                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_KNEF.get(), 18000, level, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.knef.add_effect", ChatFormatting.GRAY);
+                effectData.setKnef(player, 350);
+            }
+
+            if (effectData.getSelya(player) <= 0) {
+                int level = player.getEffect(EffectRegistry.BLESSING_SELIASET.get()) == null ? 1 : player.getEffect(EffectRegistry.BLESSING_SELIASET.get()).getAmplifier() + 1;
+
+                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_SELIASET.get(), 18000, level, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.seliaset.add_effect", ChatFormatting.GRAY);
+                effectData.setSelya(player, 500);
+            }
+
+            if (effectData.getHet(player) <= 0) {
+                int level = player.getEffect(EffectRegistry.BLESSING_HET.get()) == null ? 1 : player.getEffect(EffectRegistry.BLESSING_HET.get()).getAmplifier() + 1;
+
+                player.addEffect(new MobEffectInstance(EffectRegistry.BLESSING_HET.get(), 18000, level, true, true));
+                MessageUtil.displayClientMessageTranslateStyle(player, "message.thirteen_flames.het.add_effect", ChatFormatting.GRAY);
+                effectData.setHet(player, 750);
+            }
+
+            if (xpScarabsData.getXpScarabSilver(player) <= 0) {
+                xpScarabsData.setXpScarabSilver(player, 500 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
                 scarabsData.addScarabSilver(player, 1);
             }
-            if (xpScarabsData.getXpScarabGold() <= 0) {
-                xpScarabsData.setXpScarabGold(750 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
-                scarabsData.addScarabGold(1);
+
+            if (xpScarabsData.getXpScarabGold(player) <= 0) {
+                xpScarabsData.setXpScarabGold(player, 750 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
+                scarabsData.addScarabGold(player, 1);
             }
-            if (xpScarabsData.getXpScarabAuriteh() <= 0) {
-                xpScarabsData.setXpScarabAuriteh(1000 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
-                scarabsData.addScarabAuriteh(1);
+
+            if (xpScarabsData.getXpScarabAuriteh(player) <= 0) {
+                xpScarabsData.setXpScarabAuriteh(player, 1000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
+                scarabsData.addScarabAuriteh(player, 1);
             }
-            if (xpScarabsData.getXpScarabLazotep() <= 0) {
-                xpScarabsData.setXpScarabLazotep(2000 + XpScarabsData.addExtraXp(XpScarabsData.ScarabsType.SILVER));
-                scarabsData.addScarabLazotep(1);
+
+            if (xpScarabsData.getXpScarabLazotep(player) <= 0) {
+                xpScarabsData.setXpScarabLazotep(player, 2000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
+                scarabsData.addScarabLazotep(player, 1);
             }
         }
     }

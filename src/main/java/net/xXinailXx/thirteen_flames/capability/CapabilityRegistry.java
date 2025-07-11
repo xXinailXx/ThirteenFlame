@@ -1,46 +1,24 @@
 package net.xXinailXx.thirteen_flames.capability;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.StaminaData;
 import net.xXinailXx.thirteen_flames.network.packet.capability.*;
 import org.zeith.hammerlib.net.Network;
 
 @Mod.EventBusSubscriber
 public class CapabilityRegistry {
-    public static final Capability<IData> CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
-
-    @SubscribeEvent
-    public static void register(RegisterCapabilitiesEvent event) {
-        event.register(Data.class);
-    }
-
-    @SubscribeEvent
-    public static void attach(final AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof Player)
-            event.addCapability(new ResourceLocation(ThirteenFlames.MODID, "capability"), new CapabilityProvider());
-    }
-
     @SubscribeEvent
     public static void playerCloned(PlayerEvent.Clone event) {
-        IData origial = CapabilityProvider.get(event.getOriginal());
-        IData cloneData = CapabilityProvider.get(event.getEntity());
-
-        cloneData.deserializeNBT(origial.serializeNBT());
         StaminaData.Utils.setStaminaData(event.getEntity(), StaminaData.Utils.getStaminaData(event.getOriginal()));
+        Data.AbilitiesData.setAbilitiesData(event.getEntity(), Data.AbilitiesData.getAbilitiesData(event.getOriginal()));
+        Data.EffectData.Utils.setEffectData(event.getEntity(), Data.EffectData.Utils.getEffectData(event.getOriginal()));
+        Data.GuiLevelingData.Utils.setGuiData(event.getEntity(), Data.GuiLevelingData.Utils.getGuiData(event.getOriginal()));
+        Data.XpScarabsData.Utils.setXpScarabsData(event.getEntity(), Data.XpScarabsData.Utils.getXpScarabsData(event.getOriginal()));
+        Data.ScarabsData.Utils.setScarabsData(event.getEntity(), Data.ScarabsData.Utils.getScarabsData(event.getOriginal()));
 
         event.getOriginal().invalidateCaps();
     }
@@ -50,6 +28,11 @@ public class CapabilityRegistry {
         Player player = event.getEntity();
 
         Network.sendTo(new StaminaSyncPacket(StaminaData.Utils.getStaminaData(player).serializeNBT()), player);
+        Network.sendTo(new AbilitiesSyncPacket(Data.AbilitiesData.getAbilitiesData(player)), player);
+        Network.sendTo(new EffectSyncPacket(Data.EffectData.Utils.getEffectData(player).serializeNBT()), player);
+        Network.sendTo(new GuiSyncPacket(Data.GuiLevelingData.Utils.getGuiData(player).serializeNBT()), player);
+        Network.sendTo(new XpScarabsSyncPacket(Data.XpScarabsData.Utils.getXpScarabsData(player).serializeNBT()), player);
+        Network.sendTo(new ScarabsSyncPacket(Data.ScarabsData.Utils.getScarabsData(player).serializeNBT()), player);
     }
 
     @SubscribeEvent
@@ -58,6 +41,11 @@ public class CapabilityRegistry {
             return;
 
         StaminaData.Utils.setStaminaData(event.getEntity(), StaminaData.Utils.getStaminaData(event.getEntity()));
+        Data.AbilitiesData.setAbilitiesData(event.getEntity(), Data.AbilitiesData.getAbilitiesData(event.getEntity()));
+        Data.EffectData.Utils.setEffectData(event.getEntity(), Data.EffectData.Utils.getEffectData(event.getEntity()));
+        Data.GuiLevelingData.Utils.setGuiData(event.getEntity(), Data.GuiLevelingData.Utils.getGuiData(event.getEntity()));
+        Data.XpScarabsData.Utils.setXpScarabsData(event.getEntity(), Data.XpScarabsData.Utils.getXpScarabsData(event.getEntity()));
+        Data.ScarabsData.Utils.setScarabsData(event.getEntity(), Data.ScarabsData.Utils.getScarabsData(event.getEntity()));
     }
 
     @SubscribeEvent
@@ -66,5 +54,10 @@ public class CapabilityRegistry {
             return;
 
         StaminaData.Utils.setStaminaData(event.getEntity(), StaminaData.Utils.getStaminaData(event.getEntity()));
+        Data.AbilitiesData.setAbilitiesData(event.getEntity(), Data.AbilitiesData.getAbilitiesData(event.getEntity()));
+        Data.EffectData.Utils.setEffectData(event.getEntity(), Data.EffectData.Utils.getEffectData(event.getEntity()));
+        Data.GuiLevelingData.Utils.setGuiData(event.getEntity(), Data.GuiLevelingData.Utils.getGuiData(event.getEntity()));
+        Data.XpScarabsData.Utils.setXpScarabsData(event.getEntity(), Data.XpScarabsData.Utils.getXpScarabsData(event.getEntity()));
+        Data.ScarabsData.Utils.setScarabsData(event.getEntity(), Data.ScarabsData.Utils.getScarabsData(event.getEntity()));
     }
 }

@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.abilities.mining;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.level.BlockEvent;
@@ -18,18 +19,18 @@ public class GoldEltdorado extends AbstarctAbilityWidgets {
         super(x, y, 2);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("gold_eltdorado").screenID(ScreenID.MINING).maxLevel(10).requiredLevel(10).build();
     }
 
     @SubscribeEvent
     public static void breakeBlock(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
         BlockPos pos = event.getPos();
-        Level level = event.getPlayer().getLevel();
+        Level level = player.getLevel();
 
-        if (data.isActiveAbility("gold_eltdorado")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility("gold_eltdorado"))) {
+        if (data.isActiveAbility(player, "gold_eltdorado")) {
+            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "gold_eltdorado"))) {
                 ItemEntity itemEntity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), Items.GOLD_NUGGET.getDefaultInstance());
                 itemEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
                 level.addFreshEntity(itemEntity);

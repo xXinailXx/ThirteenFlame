@@ -7,15 +7,16 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.block.AbstractSkullBlock;
 import net.xXinailXx.thirteen_flames.client.progress.ProgressManager;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.item.base.ArmorItemTF;
 import net.xXinailXx.thirteen_flames.item.flame.MoonBow;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -41,18 +42,34 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;updatingUsingItem()V"))
     public void tick(CallbackInfo ci) {
-        if (data.isActiveAbility("desert_wind") && this.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BowItem && this.isUsingItem()) {
-            for (int i = 0; i < data.getLevelAbility("desert_wind"); i++)
-                this.updatingUsingItem();
-        }
+        LivingEntity entity = (LivingEntity) (Object) this;
+
+        if (entity instanceof Player player)
+            if (data.isActiveAbility(player, "desert_wind") && this.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BowItem && this.isUsingItem())
+                for (int i = 0; i < data.getLevelAbility(player, "desert_wind"); i++)
+                    this.updatingUsingItem();
     }
 
-    @Inject(method = "getEquipmentSlotForItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;canPerformAction(Lnet/minecraftforge/common/ToolAction;)Z"), remap = false, cancellable = true)
-    private static void getEquipmentSlotForItem(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> cir) {
-        if (stack.getItem() instanceof ArmorItemTF) {
-            cir.setReturnValue(((ArmorItemTF) stack.getItem()).getSlot());
-            cir.cancel();
-        }
+    @Overwrite
+    public static EquipmentSlot getEquipmentSlotForItem(ItemStack stack) {
+        final EquipmentSlot slot = stack.getEquipmentSlot();
+
+        if (slot != null)
+            return slot;
+
+        Item item = stack.getItem();
+
+        if (!stack.is(Items.CARVED_PUMPKIN) && (!(item instanceof BlockItem) || !(((BlockItem)item).getBlock() instanceof AbstractSkullBlock)))
+            if (item instanceof ArmorItem)
+                return ((ArmorItem)item).getSlot();
+            else if (item instanceof ArmorItemTF)
+                return ((ArmorItemTF)item).getSlot();
+            else if (stack.is(Items.ELYTRA))
+                return EquipmentSlot.CHEST;
+            else
+                return stack.canPerformAction(net.minecraftforge.common.ToolActions.SHIELD_BLOCK) ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
+        else
+            return EquipmentSlot.HEAD;
     }
 
     @Inject(method = "hurt", at = @At("HEAD"))
@@ -67,6 +84,7 @@ public abstract class LivingEntityMixin {
             if (amount > 0)
                 ((LivingEntity) (Object) this).setHealth(((LivingEntity) (Object) this).getHealth() - amount);
 
+            cir.setReturnValue(true);
             cir.cancel();
         }
     }

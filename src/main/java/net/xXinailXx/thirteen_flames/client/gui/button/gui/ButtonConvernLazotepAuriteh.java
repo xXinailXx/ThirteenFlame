@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
@@ -10,24 +11,30 @@ import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMini
 import net.xXinailXx.thirteen_flames.data.Data;
 
 public class ButtonConvernLazotepAuriteh extends AbstractWidgetUtils {
-    private static final IData.IScarabsData scarabsData = new Data.ScarabsData();
+    private static final IData.IScarabsData scarabsData = new Data.ScarabsData.Utils();
 
     public ButtonConvernLazotepAuriteh(int x, int y) {
         super(x, y, 93, 36);
     }
 
     public void onPress() {
-        if (scarabsData.getScarabLazotep() >= 1) {
-            scarabsData.addScarabLazotep(-1);
-            scarabsData.addScarabAuriteh(3);
+        if (scarabsData.getScarabLazotep(MC.player) >= 1) {
+            scarabsData.addScarabLazotep(MC.player, -1);
+            scarabsData.addScarabAuriteh(MC.player, 3);
         }
     }
 
     public void renderButton(PoseStack poseStack, int pMouseX, int pMouseY, float pPartialTick) {
         TextureManager manager = MC.getTextureManager();
         RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
-        RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
-        manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
+
+        if (new Data.EffectData.Utils().isCurseKnef(MC.player)) {
+            RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG_CURSE);
+            manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG_CURSE);
+        } else {
+            RenderSystem.setShaderTexture(0, GodPharaohScreenMining.BACKGROUNG);
+            manager.bindForSetup(GodPharaohScreenMining.BACKGROUNG);
+        }
 
         blit(poseStack, this.x, this.y, 376, 126, 93, 36, 512, 512);
 

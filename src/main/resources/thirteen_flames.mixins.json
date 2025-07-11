@@ -21,6 +21,7 @@
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityMixin",
+    "MobMixin",
     "MushroomCowMixin",
     "PlayerMixin",
     "PumpkinBlockMixin",

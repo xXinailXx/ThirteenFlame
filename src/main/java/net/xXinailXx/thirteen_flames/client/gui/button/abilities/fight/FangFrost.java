@@ -9,7 +9,6 @@ public class FangFrost extends AbstarctAbilityWidgets {
         super(x, y, 5);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("fang_frost").screenID(ScreenID.FIGHT).maxLevel(5).requiredLevel(20).build();
     }

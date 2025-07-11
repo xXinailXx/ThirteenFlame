@@ -6,27 +6,23 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.network.NetworkEvent;
-import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.data.StaminaData;
 import org.zeith.hammerlib.net.IPacket;
 import org.zeith.hammerlib.net.PacketContext;
 
-import java.util.function.Supplier;
-
 public class StaminaSyncPacket implements IPacket {
-    private CompoundTag nbt;
+    private CompoundTag tag;
 
     public StaminaSyncPacket(CompoundTag nbt) {
-        this.nbt = nbt;
+        this.tag = nbt;
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeNbt(this.nbt);
+        buf.writeNbt(this.tag);
     }
 
     public void read(FriendlyByteBuf buf) {
-        this.nbt = buf.readNbt();
+        this.tag = buf.readNbt();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -35,7 +31,7 @@ public class StaminaSyncPacket implements IPacket {
 
         if (player != null) {
             StaminaData fake = new StaminaData();
-            fake.deserializeNBT(this.nbt);
+            fake.deserializeNBT(this.tag);
             StaminaData.Utils.setStaminaData(player, fake);
         }
     }

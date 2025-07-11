@@ -20,7 +20,6 @@ public class MagomedWalks extends AbstarctAbilityWidgets {
         super( x, y, 7);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("magomed_walks").screenID(ScreenID.MINING).requiredLevel(100).requiredScarabsForOpen(5).build();
     }
@@ -34,15 +33,11 @@ public class MagomedWalks extends AbstarctAbilityWidgets {
 
         if (!player.isCreative()) {
             if (itemInHand.getItem() instanceof PickaxeItem) {
-                if (data.isActiveAbility("magomed_walks")) {
+                if (data.isActiveAbility(player, "magomed_walks")) {
                     boolean error = false;
 
-                    for (AbstarctAbilityWidgets ability : AbilityStorage.abilitiesList) {
-                        if (ability instanceof PathPlanner) {
-                            if (ability.isActiveAbility())
-                                error = true;
-                        }
-                    }
+                    if (data.isActiveAbility(player, "path_planner"))
+                        error = true;
 
                     if (!error) {
                         if (!player.isShiftKeyDown())

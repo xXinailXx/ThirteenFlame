@@ -73,7 +73,7 @@ public class ButtonItemEnchant extends AbstractWidgetUtils {
         poseStack.pushPose();
         poseStack.scale(1.2F, 1.2F, 1.2F);
 
-        this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.scroll.button.enchant_item_info"), this.x - 10 - MC.font.width(Component.translatable("gui.thirteen_flames.scroll.button.enchant_item_info")) / 2, this.y - 20, !this.isActive ? 0xf2d37f : 0x673E09);
+        this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.scroll.button.enchant_item_info"), this.x * 0.833F + 36 - MC.font.width(Component.translatable("gui.thirteen_flames.scroll.button.enchant_item_info")) / 2, this.y * 0.833F + 7, !this.isActive ? 0xf2d37f : 0x673E09);
 
         poseStack.popPose();
 

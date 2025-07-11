@@ -28,16 +28,14 @@ public class SheepMixin extends Sheep {
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
 
-        if (false && itemstack.getItem() == Items.SHEARS) { //Forge: Moved to onSheared
+        if (false && itemstack.getItem() == Items.SHEARS) {
             if (!this.level.isClientSide && this.readyForShearing()) {
                 this.shear(SoundSource.PLAYERS);
                 this.gameEvent(GameEvent.SHEAR, player);
 
-                if (!data.isActiveAbility("scissorhands")) {
-                    if (!this.level.isClientSide) {
+                if (!data.isActiveAbility(player, "scissorhands"))
+                    if (!this.level.isClientSide)
                         itemstack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(hand));
-                    }
-                }
 
                 return InteractionResult.SUCCESS;
             } else {

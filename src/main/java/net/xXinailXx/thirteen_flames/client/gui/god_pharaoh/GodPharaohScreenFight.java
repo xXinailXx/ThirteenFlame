@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.god_pharaoh;
 
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
@@ -13,9 +14,8 @@ public class GodPharaohScreenFight extends AbstractGuiPharaoh {
         super(ScreenID.FIGHT);
     }
 
-    @Override
     public void tick() {
-        levelGui = guiLeveling.getGuiFightLevelAmount();
+        levelGui = guiLeveling.getFightLevel(Minecraft.getInstance().player);
     }
 
     protected void init() {

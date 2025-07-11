@@ -16,7 +16,6 @@ public class Archaeology extends AbstarctAbilityWidgets {
         super(x, y, 1);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("archaeology").screenID(ScreenID.MINING).maxLevel(5).requiredLevel(100).requiredScarabsForOpen(5).requiredScarabsForUpgrade(5).build();
     }
@@ -28,8 +27,8 @@ public class Archaeology extends AbstarctAbilityWidgets {
 
         if (!player.isCreative()) {
             if (imenInHand.getItem() instanceof ShovelItem) {
-                if (data.isActiveAbility("archaeology"))
-                    event.setExpToDrop(event.getExpToDrop() + data.getLevelAbility("archaeology"));
+                if (data.isActiveAbility(player, "archaeology"))
+                    event.setExpToDrop(event.getExpToDrop() + data.getLevelAbility(player, "archaeology"));
             }
         }
     }

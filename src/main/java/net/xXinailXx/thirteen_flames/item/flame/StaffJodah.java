@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.item.flame;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
@@ -10,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingD
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,11 +26,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
+import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.SoulEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
@@ -37,7 +41,8 @@ import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
 
 import java.awt.*;
-import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class StaffJodah extends SwordItemTF {
     public StaffJodah() {
@@ -78,7 +83,7 @@ public class StaffJodah extends SwordItemTF {
                 if (entity.is(player))
                     continue;
 
-                entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "durability"))));
+                entity.addEffect(new MobEffectInstance(MobEffects.GLOWING, (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "durability")), 1, false, false));
 
                 LevelingUtils.addExperience(stack, 1);
             }
@@ -116,6 +121,16 @@ public class StaffJodah extends SwordItemTF {
         }
 
         return builder.build();
+    }
+
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
+
+            public BlockEntityWithoutLevelRenderer getCustomRenderer() {
+                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+            }
+        });
     }
 
     protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {

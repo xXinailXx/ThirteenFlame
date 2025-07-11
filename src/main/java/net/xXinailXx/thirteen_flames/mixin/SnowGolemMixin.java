@@ -32,7 +32,7 @@ public class SnowGolemMixin extends SnowGolem {
             this.shear(SoundSource.PLAYERS);
             this.gameEvent(GameEvent.SHEAR, player);
 
-            if (!data.isActiveAbility("scissorhands")) {
+            if (!data.isActiveAbility(player, "scissorhands")) {
                 if (!this.level.isClientSide)
                     itemstack.hurtAndBreak(1, player, (entity) -> entity.broadcastBreakEvent(hand));
             }

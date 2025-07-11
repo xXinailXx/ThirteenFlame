@@ -1,7 +1,6 @@
 package net.xXinailXx.thirteen_flames.client.gui.button.abilities.global;
 
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
@@ -17,10 +16,9 @@ public class PharaohsWings extends AbstarctAbilityWidgets {
     private static int flyTime = 0;
 
     public PharaohsWings(int x, int y) {
-        super(x, y, 10 + (effectData.isCurseKnef() ? 1 : 0));
+        super(x, y, 10 + (effectData.isCurseKnef(Minecraft.getInstance().player) ? 1 : 0));
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("pharaohs_wings").screenID(ScreenID.GLOBAL).maxLevel(5).build();
     }
@@ -32,12 +30,12 @@ public class PharaohsWings extends AbstarctAbilityWidgets {
         if (player == null)
             return;
 
-        if (data.isActiveAbility("pharaohs_wings")) {
+        if (data.isActiveAbility(player, "pharaohs_wings")) {
             if (!player.isCreative() && !player.isSpectator()) {
                 if (player.getLevel().isClientSide) {
                     if (flyTime > 0) {
                         if (player.isOnGround()) {
-                            flyTime = data.getLevelAbility("pharaohs_wings") * 2;
+                            flyTime = data.getLevelAbility(player, "pharaohs_wings") * 2;
 
                             return;
                         }
@@ -57,7 +55,7 @@ public class PharaohsWings extends AbstarctAbilityWidgets {
                         player.getAbilities().flying = false;
 
                         if (player.isOnGround())
-                            flyTime = data.getLevelAbility("pharaohs_wings") * 2;
+                            flyTime = data.getLevelAbility(player, "pharaohs_wings") * 2;
                     }
                 }
             }

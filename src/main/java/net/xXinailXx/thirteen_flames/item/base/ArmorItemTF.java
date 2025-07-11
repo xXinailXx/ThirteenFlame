@@ -2,12 +2,6 @@ package net.xXinailXx.thirteen_flames.item.base;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityData;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEntry;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
-import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
-import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -24,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -42,13 +35,6 @@ public abstract class ArmorItemTF extends FlameItemSetting implements Wearable {
     protected final float knockbackResistance;
     protected final ArmorMaterial material;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
-
-    @Override
-    public @org.jetbrains.annotations.Nullable RelicData getRelicData() {
-        return RelicData.builder().abilityData(RelicAbilityData.builder().ability("teleport", RelicAbilityEntry.builder().maxLevel(2).stat("range", RelicAbilityStat.builder().initialValue(1, 3).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
-            return MathUtils.round(value, 1);
-        }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();
-    }
 
     public ArmorItemTF(ArmorMaterial material, EquipmentSlot slot) {
         super(new Properties().defaultDurability(material.getDurabilityForSlot(slot)));

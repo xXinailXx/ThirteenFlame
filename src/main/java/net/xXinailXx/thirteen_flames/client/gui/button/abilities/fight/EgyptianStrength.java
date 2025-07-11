@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.managers.TimeManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
@@ -17,29 +17,28 @@ public class EgyptianStrength extends AbstarctAbilityWidgets {
         super(x, y, 8);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("egyptian_strength").screenID(ScreenID.FIGHT).requiredLevel(40).build();
     }
 
     @SubscribeEvent
     public static void addEffectPlayer(TickEvent.PlayerTickEvent event) {
-        if (data.isActiveAbility("egyptian_strength")) {
-            if (!TimeManager.getTimeMap().containsKey("ability_egyptian_strength"))
-                TimeManager.getTimeMap().put("ability_egyptian_strength", 0);
+        Player player = event.player;
 
-            if (TimeManager.isStop("ability_egyptian_strength")) {
-                Player player = event.player;
+        if (player == null)
+            return;
 
-                if (player == null)
-                    return;
+        if (data.isActiveAbility(player, "egyptian_strength")) {
+            if (!PlayerCapManager.getPlayerTimers(player).contains("tf_ability_egyptian_strength"))
+                PlayerCapManager.addPlayerTimer(player, "tf_ability_egyptian_strength", 0);
 
+            if (PlayerCapManager.getPlayerTimer(player, "tf_ability_egyptian_strength") == 0) {
                 if ((player.getMaxHealth() * 0.3) <= player.getHealth()) {
-                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 2));
-                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1200, 2));
-                    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 1200, 2));
+                    player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 2, true, true));
+                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1200, 2, true, true));
+                    player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 1200, 2, true, true));
 
-                    TimeManager.getTimeMap().put("ability_egyptian_strength", 24000);
+                    PlayerCapManager.addPlayerTimer(player, "tf_ability_egyptian_strength", 24000);
                 }
             }
         }

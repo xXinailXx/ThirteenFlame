@@ -1,8 +1,10 @@
 package net.xXinailXx.thirteen_flames.mixin;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -35,7 +37,7 @@ public class ItemMixin {
 
     @Inject(method = "inventoryTick", at = @At("HEAD"))
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int i, boolean b, CallbackInfo ci) {
-        if (stack.getFoodProperties((LivingEntity) entity) == null && data.isActiveAbility("sword_swallower")) {
+        if (entity instanceof Player player && stack.getFoodProperties((LivingEntity) entity) == null && data.isActiveAbility(player, "sword_swallower")) {
             Item item = (Item) (Object) this;
             int nuration = 0;
             float saturation = 0;
@@ -67,7 +69,7 @@ public class ItemMixin {
 
     @Inject(method = "getUseAnimation", at = @At(value = "HEAD"), cancellable = true)
     public void getUseAnimation(ItemStack stack, CallbackInfoReturnable<UseAnim> cir) {
-        if (data.isActiveAbility("sword_swallower"))
+        if (data.isActiveAbility(Minecraft.getInstance().player, "sword_swallower"))
             if (stack.getItem() instanceof PotionItem)
                cir.setReturnValue(UseAnim.NONE);
             else

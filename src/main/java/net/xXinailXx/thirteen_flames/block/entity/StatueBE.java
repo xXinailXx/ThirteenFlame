@@ -1,12 +1,17 @@
 package net.xXinailXx.thirteen_flames.block.entity;
 
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -35,14 +40,19 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
-public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimatable, ITickBlockEntity {
+public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEntity {
+    @Getter
     private AnimationFactory factory = new AnimationFactory(this);
-    private int timeToUpgrade;
+    @Setter
+    @Getter
+    private int timeToUpgrade = ThirteenFlamesConfig.TIME_TO_FLAME_UPGRADE.get();
+    @Getter
     private final Gods god;
-    protected int tickCount;
+    protected int tickCount = 0;
+    @Getter
     private final boolean finished;
 
     public StatueBE(BlockEntityType<?> type, BlockPos pos, BlockState state, Gods god, boolean finished) {
@@ -55,26 +65,33 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
         if (this.level == null || this.level.isClientSide)
             return;
 
-        if (this.tickCount == 0)
-            this.timeToUpgrade = ThirteenFlamesConfig.TIME_TO_FLAME_UPGRADE.get();
+        if (this.tickCount % 5 == 0 || this.tickCount == 0) {
+            Data.StatueBuilderData.StatueBuilder builder = null;
 
-        if (this.tickCount % 5 == 0 && !this.level.isClientSide) {
-            Iterable<BlockPos> iterable = null;
+            if (!Data.StatueBuilderData.containsStatue(this)) {
+                Iterable<BlockPos> iterable;
 
-            if (getGod().equals(Gods.GOD_PHARAOH))
-                iterable = BlockPos.betweenClosed(this.worldPosition.offset(-2, 0, -2), this.worldPosition.offset(2, 6, 2));
-            else
-                iterable = BlockPos.betweenClosed(this.worldPosition.offset(-1, 0, -1), this.worldPosition.offset(1, 4, 1));
+                if (getGod().equals(Gods.GOD_PHARAOH))
+                    iterable = BlockPos.betweenClosed(this.worldPosition.offset(- 2, 0, - 2), this.worldPosition.offset(2, 6, 2));
+                else
+                    iterable = BlockPos.betweenClosed(this.worldPosition.offset(- 1, 0, - 1), this.worldPosition.offset(1, 4, 1));
 
-            List<BlockPos> posList = new ArrayList<>();
+                List<BlockPos> posList = new ArrayList<>();
 
-            for (BlockPos pos : iterable)
-                posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
+                for (BlockPos pos : iterable)
+                    posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
 
-            Data.StatueBuilderData.StatueBuilder builder = new Data.StatueBuilderData.StatueBuilder(posList, this.worldPosition);
+                builder = new Data.StatueBuilderData.StatueBuilder(posList, this.worldPosition);
+                Data.StatueBuilderData.addStatue(builder);
+            }
 
-            if (!Data.StatueBuilderData.getStatueList().contains(builder))
-                Data.StatueBuilderData.addStatue(builder, this);
+            if (builder != null && !Data.StatueBuilderData.containsStatueBE(builder)) {
+                Data.StatueBuilderData.addStatueBE(builder);
+            } else if (builder == null) {
+                builder = Data.StatueBuilderData.getStatue(this.worldPosition);
+
+                Data.StatueBuilderData.addStatueBE(builder);
+            }
         }
 
         RandomSource random = this.level.getRandom();
@@ -89,15 +106,15 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
             case GOD_PHARAOH -> color = new Color(255, 152, 26);
         }
 
-        ParticleOptions options = null;
-
-        if (getGod().equals(Gods.KNEF))
-            options = ParticleUtils.createKnefParticle(color, 0.25F, random.nextInt(25, 60), 0.98F);
-        else
-            options = ParticleUtils.createStatueParticle(color, 0.25F, getGod().equals(Gods.GOD_PHARAOH) ? random.nextInt(40, 75) : random.nextInt(25, 60), 0.98F);
-
         if (this.finished && MathUtils.isRandom(this.level, getGod().equals(Gods.GOD_PHARAOH) ? 20 : 15)) {
-            Iterable<BlockPos> iterable = null;
+            ParticleOptions options;
+
+            if (getGod().equals(Gods.KNEF))
+                options = ParticleUtils.createKnefParticle(color, 0.25F, random.nextInt(25, 60), 0.98F);
+            else
+                options = ParticleUtils.createStatueParticle(color, 0.25F, getGod().equals(Gods.GOD_PHARAOH) ? random.nextInt(40, 75) : random.nextInt(25, 60), 0.98F);
+
+            Iterable<BlockPos> iterable;
 
             if (getGod().equals(Gods.GOD_PHARAOH))
                 iterable = BlockPos.betweenClosed(this.worldPosition.offset(-2, 0, -2), this.worldPosition.offset(2, 0, 2));
@@ -109,18 +126,14 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
             for (BlockPos pos : iterable)
                 posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
 
-            BlockPos pos = null;
+            BlockPos pos;
             pos = posList.get(random.nextInt(posList.size() - 1));
 
             Network.sendToAll(new SpawnParticlePacket(options, pos.getX() + 0.1 + random.nextInt(0, 8) * 0.1, pos.getY(), pos.getZ() + 0.1 + random.nextInt(0, 8) * 0.1, 0, random.nextInt(1, 12) * 0.01, 0));
         }
 
         if (this.tickCount % 5 == 0 && this.finished && !getGod().equals(Gods.GOD_PHARAOH)) {
-            Player player = Minecraft.getInstance().player;
-
             if (this.timeToUpgrade == 0) {
-                Vec3 center = new Vec3(this.worldPosition.getX() + 0.5, this.worldPosition.getY(), this.worldPosition.getZ() + 0.5);
-
                 ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                         .color(new Color(255, 140, 0).getRGB())
                         .renderType(getGod().equals(Gods.KNEF) ? ColoredParticleRendererTypes.DISABLE_RENDER_LIGHT_COLOR : ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
@@ -143,40 +156,30 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                 }
             }
 
+            Player player = Minecraft.getInstance().player;
+
             if (player != null) {
                 StatueEffect effect = null;
-                int amplifier = 0;
+                int amplifier = -1;
 
-                Collection<MobEffectInstance> collection = player.getActiveEffects();
+                Map<MobEffect, MobEffectInstance> map = player.getActiveEffectsMap();
 
-                if (collection != null && !collection.isEmpty()) {
-                    for (MobEffectInstance inst : collection) {
-                        if (inst.getEffect() instanceof StatueEffect eff && eff.getGod().equals(getGod())) {
-                            effect = (StatueEffect) inst.getEffect();
-                            amplifier = inst.getAmplifier();
+                if (map != null && !map.isEmpty()) {
+                    for (MobEffect mobEffect : map.keySet()) {
+                        if (mobEffect instanceof StatueEffect eff && eff.getGod().equals(getGod())) {
+                            effect = eff;
+                            amplifier = map.get(mobEffect).getAmplifier();
                         }
                     }
 
                     if (effect != null) {
                         Direction direction = this.getBlockState().getValue(CustomStatueUtils.FACING);
-                        BlockPos posCups = null;
-
-                        switch (direction) {
-                            case NORTH:
-                                posCups = this.worldPosition.north(2);
-                                break;
-                            case SOUTH:
-                                posCups = this.worldPosition.south(2);
-                                break;
-                            case WEST:
-                                posCups = this.worldPosition.west(2);
-                                break;
-                            case EAST:
-                                posCups = this.worldPosition.east(2);
-                                break;
-                            default:
-                                posCups = this.worldPosition.north(2);
-                        }
+                        BlockPos posCups = switch (direction) {
+                            case SOUTH -> this.worldPosition.south(2);
+                            case WEST -> this.worldPosition.west(2);
+                            case EAST -> this.worldPosition.east(2);
+                            default -> this.worldPosition.north(2);
+                        };
 
                         BlockPos pos = null;
 
@@ -190,40 +193,34 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
                         }
 
                         if (pos != null) {
-                            BlockPos cup1 = null;
-                            BlockPos cup2 = pos;
-                            BlockPos cup3 = null;
-
-                            switch (direction) {
-                                case NORTH:
-                                    cup1 = pos.east();
-                                    cup3 = pos.west();
-                                    break;
-                                case SOUTH:
+                            BlockPos cup1;
+                            BlockPos cup3 = switch (direction) {
+                                case SOUTH -> {
                                     cup1 = pos.west();
-                                    cup3 = pos.east();
-                                    break;
-                                case WEST:
+                                    yield pos.east();
+                                }
+                                case WEST -> {
                                     cup1 = pos.north();
-                                    cup3 = pos.south();
-                                    break;
-                                case EAST:
+                                    yield pos.south();
+                                }
+                                case EAST -> {
                                     cup1 = pos.south();
-                                    cup3 = pos.north();
-                                    break;
-                                default:
+                                    yield pos.north();
+                                }
+                                default -> {
                                     cup1 = pos.east();
-                                    cup3 = pos.west();
-                            }
+                                    yield pos.west();
+                                }
+                            };
 
                             if (cup1 != null && cup3 != null) {
                                 if (this.level.getBlockState(cup1).is(BlockRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlockRegistry.STATUE_CUP.get())) {
                                     ParticleUtils.spawnCupFire(level, color, cup1);
 
-                                    if (amplifier >= 2 && amplifier <= 256)
-                                        ParticleUtils.spawnCupFire(level, color, cup2);
+                                    if (amplifier >= 2)
+                                        ParticleUtils.spawnCupFire(level, color, pos);
 
-                                    if (amplifier >= 3 && amplifier <= 256)
+                                    if (amplifier >= 3)
                                         ParticleUtils.spawnCupFire(level, color, cup3);
                                 }
                             }
@@ -242,16 +239,34 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
     }
 
     public final Vec3 getPosition(float v, Vec3 vec3) {
-        double d0 = Mth.lerp((double)v, vec3.x, this.worldPosition.getX());
-        double d1 = Mth.lerp((double)v, vec3.y, this.worldPosition.getY());
-        double d2 = Mth.lerp((double)v, vec3.z, this.worldPosition.getZ());
+        double d0 = Mth.lerp(v, vec3.x, this.worldPosition.getX());
+        double d1 = Mth.lerp(v, vec3.y, this.worldPosition.getY());
+        double d2 = Mth.lerp(v, vec3.z, this.worldPosition.getZ());
         return new Vec3(d0, d1, d2);
     }
 
     protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
         tag.putInt("tick_count", this.tickCount);
         tag.putInt("time_to_upgrade", this.timeToUpgrade);
-        super.saveAdditional(tag);
+    }
+
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = new CompoundTag();
+
+        this.saveAdditional(tag);
+
+        return tag;
+    }
+
+    public ClientboundBlockEntityDataPacket getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+
+        this.load(pkt.getTag());
     }
 
     public void load(CompoundTag tag) {
@@ -260,32 +275,16 @@ public class StatueBE<T extends StatueBE> extends BlockEntity implements IAnimat
         this.timeToUpgrade = tag.getInt("time_to_upgrade");
     }
 
-    public boolean isFinished() {
-        return finished;
-    }
-
-    public Gods getGod() {
-        return this.god;
-    }
-
-    public int getTimeToUpgrade() {
-        return this.timeToUpgrade;
-    }
-
     public void resetFlameUpgradeData() {
         this.timeToUpgrade = ThirteenFlamesConfig.TIME_TO_FLAME_UPGRADE.get();
     }
 
     public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController<T>
-                ((T) this, "controller", 0, this::predicate));
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
 
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         return PlayState.CONTINUE;
     }
 
-    public AnimationFactory getFactory() {
-        return this.factory;
-    }
 }

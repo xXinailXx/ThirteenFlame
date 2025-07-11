@@ -18,10 +18,9 @@ import net.xXinailXx.thirteen_flames.data.StaminaData;
 @Mod.EventBusSubscriber
 public class Resistance extends AbstarctAbilityWidgets {
     public Resistance(int x, int y) {
-        super(x, y, 3);
+        super(x, y, 3, true);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("resistance").screenID(ScreenID.HEALTH).requiredLevel(60).requiredScarabsForOpen(2).build();
     }
@@ -36,7 +35,7 @@ public class Resistance extends AbstarctAbilityWidgets {
         AttributeInstance damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
         AttributeModifier bonusDamage = new AttributeModifier(UUIDManager.getOrCreate("ability_damage_bonus"), ThirteenFlames.MODID + ":damage_bonus", damage.getValue(), AttributeModifier.Operation.ADDITION);
 
-        if (data.isActiveAbility("resistance") && StaminaData.Utils.getStaminaData(player).isStaminaFull()) {
+        if (data.isActiveAbility(player, "resistance") && StaminaData.Utils.getStaminaData(player).isStaminaFull()) {
             if (!damage.hasModifier(bonusDamage))
                 damage.addTransientModifier(bonusDamage);
         } else {

@@ -9,7 +9,6 @@ public class DivineVeil extends AbstarctAbilityWidgets {
         super(x, y, 6);
     }
 
-    @Override
     public AbilityData constructAbilityData() {
         return AbilityData.builder("divine_veil").screenID(ScreenID.FIGHT).maxLevel(15).requiredLevel(5).build();
     }

@@ -23,7 +23,7 @@ import org.zeith.hammerlib.net.Network;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatueGodPharaohUnfinished extends CustomStatueUtils<StatueGodPharaohUBE> {
+public class StatueGodPharaohUnfinished extends CustomStatueUtils {
     public StatueGodPharaohUnfinished() {
         super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get(), Block.box(0.0D, 0.0D, 0.0D, 80.0D, 112.0D, 80.0D).move(-2, 0, -2));
     }
@@ -44,13 +44,13 @@ public class StatueGodPharaohUnfinished extends CustomStatueUtils<StatueGodPhara
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
         super.destroy(accessor, pos, state);
 
-        Data.StatueBuilderData.removeStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(pos, false), pos));
+        Data.StatueBuilderData.removeStatue(pos);
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
         super.playerDestroy(level, player, pos, state, entity, stack);
 
-        Data.StatueBuilderData.removeStatue(new Data.StatueBuilderData.StatueBuilder(getBlockPoses(pos, false), pos));
+        Data.StatueBuilderData.removeStatue(pos);
     }
 
     @Nullable

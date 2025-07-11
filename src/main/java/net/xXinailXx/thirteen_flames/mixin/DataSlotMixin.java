@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.mixin;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.inventory.DataSlot;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
@@ -16,17 +17,15 @@ public class DataSlotMixin {
         return new DataSlot() {
             private int value;
 
-            @Override
             public int get() {
-                if (data.isActiveAbility("forge_of_legends"))
+                if (data.isActiveAbility(Minecraft.getInstance().player, "forge_of_legends"))
                     return 1;
                 else
                     return value;
             }
 
-            @Override
             public void set(int value) {
-                if (!data.isActiveAbility("forge_of_legends"))
+                if (!data.isActiveAbility(Minecraft.getInstance().player, "forge_of_legends"))
                     this.value = value;
             }
         };

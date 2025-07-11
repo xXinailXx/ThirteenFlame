@@ -39,7 +39,7 @@ public class HoeItemMixin {
             cir.cancel();
         }
 
-        if (data.isActiveAbility("oasis")) {
+        if (data.isActiveAbility(player, "oasis")) {
             BlockPos.betweenClosed(use.getClickedPos().north().east(), use.getClickedPos().south().west()).forEach(pos -> {
                 BlockState state = level.getBlockState(pos);
 
@@ -60,7 +60,7 @@ public class HoeItemMixin {
             return;
         }
 
-        if (data.isActiveAbility("grain_grower")) {
+        if (data.isActiveAbility(player, "grain_grower")) {
             if (level.getBlockState(use.getClickedPos()).getBlock() instanceof BonemealableBlock) {
                 BlockState state = level.getBlockState(use.getClickedPos());
 
@@ -72,7 +72,7 @@ public class HoeItemMixin {
                         bonemealableBlock.performBonemeal((ServerLevel) level, level.getRandom(), use.getClickedPos(), state);
 
                         ItemStack stack = use.getItemInHand();
-                        int damage = 100 - (data.getLevelAbility("grain_grower") * 5);
+                        int damage = 100 - (data.getLevelAbility(player, "grain_grower") * 5);
 
                         stack.hurtAndBreak(damage, player, (entity) -> entity.broadcastBreakEvent(use.getHand()));
                     }

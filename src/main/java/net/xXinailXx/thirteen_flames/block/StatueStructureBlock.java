@@ -17,10 +17,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
+import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.network.packet.CreativeUpdateStatuePacket;
 import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
-import net.xXinailXx.thirteen_flames.utils.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.net.Network;
 
@@ -30,20 +34,35 @@ public class StatueStructureBlock extends Block {
     }
 
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
-        if (level.getBlockState(pos).is(BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get()) || level.isClientSide)
-            return InteractionResult.FAIL;
+        if (level.getBlockState(pos).is(BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get())) {
+            StatueBE be = getMainBlockBE(pos);
+
+            if (be == null || !be.isFinished() || !be.getGod().equals(Gods.GOD_PHARAOH))
+                return InteractionResult.FAIL;
+
+            if (level.isClientSide)
+                StatueGodPharaoh.openPharaohScreen();
+
+            return InteractionResult.SUCCESS;
+        }
 
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!(stack.getItem() instanceof FlameItemSetting setting))
-            return InteractionResult.FAIL;
+        if (stack.getItem() instanceof FlameItemSetting setting) {
+            RelicLevelingData data = setting.getRelicData().getLevelingData();
 
-        RelicLevelingData data = setting.getRelicData().getLevelingData();
+            if (LevelingUtils.getLevel(stack) >= data.getMaxLevel())
+                return InteractionResult.FAIL;
 
-        if (data.getMaxLevel() == LevelingUtils.getLevel(stack))
-            return InteractionResult.FAIL;
+            StatueBE be = getMainBlockBE(pos);
 
-        Network.sendToServer(new FlameUpgradePacket(pos, stack));
+            if (be == null || !be.isFinished() || be.getTimeToUpgrade() > 0)
+                return InteractionResult.FAIL;
+
+            Network.sendToServer(new FlameUpgradePacket(stack));
+
+            be.resetFlameUpgradeData();
+        }
 
         return InteractionResult.SUCCESS;
     }
@@ -51,12 +70,13 @@ public class StatueStructureBlock extends Block {
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
         super.destroy(accessor, pos, state);
 
-        if (getBuilder(pos) == null)
+        if (getBuilder(pos) == null) {
+            accessor.destroyBlock(pos, true);
             return;
-
-        for (BlockPos pos1 : getBuilder(pos).posList()) {
-            accessor.destroyBlock(pos1, false);
         }
+
+        for (BlockPos pos1 : getBuilder(pos).posList())
+            accessor.destroyBlock(pos1, false);
 
         accessor.destroyBlock(getBuilder(pos).mainPos(), true);
     }
@@ -64,8 +84,10 @@ public class StatueStructureBlock extends Block {
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
         super.playerDestroy(level, player, pos, state, entity, stack);
 
-        if (getBuilder(pos) == null)
+        if (getBuilder(pos) == null) {
+            level.destroyBlock(pos, true);
             return;
+        }
 
         for (BlockPos pos1 : getBuilder(pos).posList()) {
             level.destroyBlock(pos1, false);
@@ -74,18 +96,17 @@ public class StatueStructureBlock extends Block {
         level.destroyBlock(getBuilder(pos).mainPos(), true);
     }
 
+    @Nullable
     public Data.StatueBuilderData.StatueBuilder getBuilder(BlockPos pos) {
-        for (Data.StatueBuilderData.StatueBuilder b : Data.StatueBuilderData.getStatueList()) {
-            if (b.posList().contains(pos)) {
-                return b;
-            }
-        }
-
-        return null;
+        return Data.StatueBuilderData.getStatue(pos);
     }
 
+    @Nullable
     public StatueBE getMainBlockBE(BlockPos pos) {
-        return Data.StatueBuilderData.getStatueBEList().get(Data.StatueBuilderData.getStatueList().indexOf(getBuilder(pos)));
+        if (Data.StatueBuilderData.containsStatue(pos))
+            return Data.StatueBuilderData.getStatueBE(Data.StatueBuilderData.getStatue(pos));
+
+        return null;
     }
 
     public boolean propagatesSkylightDown(BlockState state, BlockGetter getter, BlockPos pos) {
