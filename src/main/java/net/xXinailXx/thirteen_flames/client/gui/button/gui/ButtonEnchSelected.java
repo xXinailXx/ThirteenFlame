@@ -2,22 +2,15 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.thirteen_flames.client.gui.scroll.EnchantmentUtils;
 import net.xXinailXx.thirteen_flames.client.gui.scroll.ScrollScreen;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
 import org.zeith.hammerlib.net.Network;
-import oshi.util.tuples.Pair;
 
-import java.util.Map;
-import java.util.Objects;
-
-public class ButtonEnchSelected extends AbstractWidgetUtils {
+public class ButtonEnchSelected extends AbstractWidget {
     private final ScrollScreen screen;
     private final EnchantmentUtils.Ench ench;
     private boolean isActive;

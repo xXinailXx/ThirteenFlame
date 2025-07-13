@@ -3,12 +3,12 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenCraft;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 import net.xXinailXx.thirteen_flames.data.Data;
 
-public class ButtonCraftOpenGui extends AbstractWidgetUtils {
+public class ButtonCraftOpenGui extends AbstractWidget {
     public ButtonCraftOpenGui(int x, int y, boolean active) {
         super(active ? (x + 5) : x, y, 61, 29);
     }

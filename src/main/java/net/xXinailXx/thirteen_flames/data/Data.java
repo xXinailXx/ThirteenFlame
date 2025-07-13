@@ -228,6 +228,9 @@ public class Data implements IData {
         public static void setAbilitiesData(Player player, CompoundTag tag) {
             PlayerCapManager.getPlayerData(player).put("tf_abilities_data", tag);
 
+            if (player == null)
+                return;
+
             if (!player.level.isClientSide())
                 Network.sendTo(new AbilitiesSyncPacket(tag), player);
         }
@@ -867,17 +870,21 @@ public class Data implements IData {
         public static void addExtraDrop(LivingDropsEvent event) {
             Level level = event.getEntity().getLevel();
 
-            if (level == null && !(event.getSource().getEntity() instanceof Player))
+            if (level == null && ! (event.getSource().getEntity() instanceof Player))
                 return;
 
-            if (MathUtils.isRandom(level, new GuiLevelingData.Utils().getCraftLevel((Player) event.getSource().getEntity()))) {
-                if (MathUtils.isRandom(level, 85)) {
-                    extraDrop(level, event.getEntity(), 2);
-                } else {
-                    if (MathUtils.isRandom(level, 95))
-                        extraDrop(level, event.getEntity(), 3);
-                    else
-                        extraDrop(level, event.getEntity(), 4);
+            Entity entity = event.getSource().getEntity();
+
+            if (entity instanceof LivingEntity living && living instanceof Player player){
+                if (MathUtils.isRandom(level, new GuiLevelingData.Utils().getCraftLevel(player))) {
+                    if (MathUtils.isRandom(level, 85)) {
+                        extraDrop(level, event.getEntity(), 2);
+                    } else {
+                        if (MathUtils.isRandom(level, 95))
+                            extraDrop(level, event.getEntity(), 3);
+                        else
+                            extraDrop(level, event.getEntity(), 4);
+                    }
                 }
             }
         }

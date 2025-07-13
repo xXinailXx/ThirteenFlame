@@ -129,6 +129,10 @@ public class TravelersSword extends SwordItemTF {
     @SubscribeEvent
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
+
+        if (player == null)
+            return;
+
         ItemStack stack = player.getMainHandItem();
 
         double clumbHeight = AbilityUtils.getAbilityValue(stack, "wide_step", "climbing_height");

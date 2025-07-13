@@ -2,23 +2,20 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.thirteen_flames.client.gui.scroll.EnchantmentUtils;
 import net.xXinailXx.thirteen_flames.client.gui.scroll.ScrollScreen;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
 import org.zeith.hammerlib.net.Network;
 
 import java.util.HashMap;
-import java.util.Map;
 
-public class ButtonItemEnchant extends AbstractWidgetUtils {
+public class ButtonItemEnchant extends AbstractWidget {
     private final ItemStack stack;
     private final ScrollScreen screen;
     private final boolean isActive;

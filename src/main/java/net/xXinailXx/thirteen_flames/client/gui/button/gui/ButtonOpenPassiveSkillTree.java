@@ -5,11 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import daripher.skilltree.client.screen.SkillTreeScreen;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 import net.xXinailXx.thirteen_flames.data.Data;
 
-public class ButtonOpenPassiveSkillTree extends AbstractWidgetUtils {
+public class ButtonOpenPassiveSkillTree extends AbstractWidget {
     public ButtonOpenPassiveSkillTree(int x, int y) {
         super(x, y, 61, 29);
     }

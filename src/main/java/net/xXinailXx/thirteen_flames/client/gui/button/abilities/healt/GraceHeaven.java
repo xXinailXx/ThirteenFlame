@@ -30,7 +30,7 @@ public class GraceHeaven extends AbstarctAbilityWidgets {
         Player player = event.player;
         Level level = player.getLevel();
 
-        if (player == null && level == null)
+        if (player == null || level == null)
             return;
 
         if (data.isActiveAbility(player, "grace_heaven")) {

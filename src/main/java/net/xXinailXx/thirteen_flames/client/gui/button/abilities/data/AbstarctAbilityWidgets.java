@@ -14,7 +14,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.global.GiftGodPharaoh;
@@ -26,9 +26,9 @@ import org.zeith.hammerlib.net.Network;
 
 import java.util.List;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 @Mod.EventBusSubscriber
-public abstract class AbstarctAbilityWidgets extends AbstractWidgetUtils implements IHoverableWidget, IAbilityData {
+public abstract class AbstarctAbilityWidgets extends AbstractWidget implements IHoverableWidget, IAbilityData {
     private static final ResourceLocation GUI_BACKGROUND = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/god_faraon_background_screen.png");
     private final ResourceLocation ABILITY_ICON = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/ability/" + getScreenId() + "/" + getAbilityData().getAbilityName() + ".png");
     protected static final IData.IAbilitiesData data = new Data.AbilitiesData.Utils();

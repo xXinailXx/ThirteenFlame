@@ -5,7 +5,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = '0.0.7'
+version = '0.0.8'
 group = 'net.xXinailXx.thirteen_flames'
 archivesBaseName = 'thirteen_flames'
 

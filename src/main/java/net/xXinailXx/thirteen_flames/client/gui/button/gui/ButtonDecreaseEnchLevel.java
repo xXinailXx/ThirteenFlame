@@ -3,16 +3,12 @@ package net.xXinailXx.thirteen_flames.client.gui.button.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.thirteen_flames.client.gui.scroll.ScrollScreen;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
 import org.zeith.hammerlib.net.Network;
 
-import java.util.Map;
-
-public class ButtonDecreaseEnchLevel extends AbstractWidgetUtils {
+public class ButtonDecreaseEnchLevel extends AbstractWidget {
     private final ScrollScreen screen;
 
     public ButtonDecreaseEnchLevel(int x, int y, ScrollScreen screen) {

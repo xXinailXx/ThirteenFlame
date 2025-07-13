@@ -14,16 +14,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidgetUtils;
+import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.gui.*;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollScreenClosePacket;
 import org.zeith.hammerlib.net.Network;
-import oshi.util.tuples.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +29,8 @@ import java.util.Map;
 public class ScrollScreen extends AbstractContainerScreen<ScrollMenu> {
     public static final ResourceLocation BACKGROUNG = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/scroll_background.png");
     private final Minecraft MC = Minecraft.getInstance();
-    private final List<AbstractWidgetUtils> possibleWidget = new ArrayList<>();
-    private final List<AbstractWidgetUtils> enchWidget = new ArrayList<>();
+    private final List<AbstractWidget> possibleWidget = new ArrayList<>();
+    private final List<AbstractWidget> enchWidget = new ArrayList<>();
     public final Map<Enchantment, EnchantmentUtils.Ench> possibleEnchs;
     public final Map<Enchantment, Integer> enchs;
     private EnchantmentUtils.Ench enchSelected;

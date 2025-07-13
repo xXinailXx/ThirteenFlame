@@ -234,6 +234,10 @@ public class StaminaData implements IAutoNBTSerializable {
 
             if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.SERVER) {
                 Player player = event.player;
+
+                if (player == null)
+                    return;
+
                 int staminaLevel = abilitiesData.isActiveAbility(player, "stamina_mantra") ? abilitiesData.getLevelAbility(player, "stamina_mantra") : 1;
 
                 staminaData.setMaxStamina(player, 10 * staminaLevel);
@@ -284,6 +288,9 @@ public class StaminaData implements IAutoNBTSerializable {
 
             if (event.phase == TickEvent.Phase.END) {
                 Player player = event.player;
+
+                if (player == null)
+                    return;
 
                 int stamina = staminaData.getStamina(player);
 
