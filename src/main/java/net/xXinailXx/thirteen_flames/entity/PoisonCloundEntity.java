@@ -24,6 +24,7 @@ import net.xXinailXx.thirteen_flames.init.EffectRegistry;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class PoisonCloundEntity extends Projectile {
@@ -58,6 +59,9 @@ public class PoisonCloundEntity extends Projectile {
 
         if (this.cooldown == 0) {
             for(LivingEntity e : entities) {
+                if (e.is(Objects.requireNonNull(this.getOwner())))
+                    continue;
+
                 e.hurt(DamageSource.MAGIC, 2.0F + radius);
                 int maxAmp = this.getAmplifire();
                 int duration = this.getDuration();

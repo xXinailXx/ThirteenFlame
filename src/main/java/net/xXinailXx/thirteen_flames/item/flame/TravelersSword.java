@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
@@ -62,6 +63,9 @@ public class TravelersSword extends SwordItemTF {
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (!ResearchUtils.isItemResearched(player, player.getItemInHand(hand).getItem()))
+            return InteractionResultHolder.success(player.getItemInHand(hand));
+
         if (hand.equals(InteractionHand.MAIN_HAND)) {
             ItemStack stack = player.getMainHandItem();
             double speedValue = AbilityUtils.getAbilityValue(stack, "wind_wandering", "speed");
@@ -134,6 +138,9 @@ public class TravelersSword extends SwordItemTF {
             return;
 
         ItemStack stack = player.getMainHandItem();
+
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
+            return;
 
         double clumbHeight = AbilityUtils.getAbilityValue(stack, "wide_step", "climbing_height");
         AttributeInstance stepHeight = player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());

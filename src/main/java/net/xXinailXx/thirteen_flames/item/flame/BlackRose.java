@@ -92,7 +92,7 @@ public class BlackRose extends FlameItemSetting {
 
         Entity source = event.getSource().getEntity();
 
-        if (!(source instanceof Player player)) {
+        if (!(source instanceof LivingEntity living) || !(living instanceof Player player)) {
             return;
         }
 
@@ -146,7 +146,7 @@ public class BlackRose extends FlameItemSetting {
                     NBTUtils.setInt(stack, "bone", 0);
                 }
 
-                LevelingUtils.addExperience((Entity) player, stack, (int) newDamage / 2);
+                LevelingUtils.addExperience(stack, (int) newDamage / 2);
 
                 player.heal(newDamage);
             }

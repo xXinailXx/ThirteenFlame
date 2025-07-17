@@ -9,6 +9,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -56,6 +57,9 @@ public class ShieldRonosa extends FlameItemSetting {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
+            return InteractionResultHolder.success(stack);
+
         player.startUsingItem(hand);
         NBTUtils.setInt(stack, "use", 1);
 
@@ -100,6 +104,9 @@ public class ShieldRonosa extends FlameItemSetting {
         else if (player.getOffhandItem().is(ItemRegistry.SHIELD_RONOSA.get()))
             stack = player.getOffhandItem();
         else
+            return;
+
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
             return;
 
         if (NBTUtils.getInt(stack, "use", 0) == 0)

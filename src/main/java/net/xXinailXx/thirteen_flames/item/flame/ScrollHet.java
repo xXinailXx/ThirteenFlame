@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityEn
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilityStat;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
 import net.minecraft.client.Minecraft;
@@ -51,6 +52,9 @@ public class ScrollHet extends FlameItemSetting {
         if (hand == InteractionHand.OFF_HAND)
             return InteractionResultHolder.fail(player.getOffhandItem());
 
+        if (!ResearchUtils.isItemResearched(player, player.getItemInHand(hand).getItem()))
+            return InteractionResultHolder.success(player.getItemInHand(hand));
+
         Network.sendToServer(new ScrollMenuOpenPacket(player.getMainHandItem(), -1, 0, 0, 0, null, ItemStack.EMPTY, new HashMap<>(), new HashMap<>()));
 
         return super.use(level, player, hand);
@@ -78,6 +82,9 @@ public class ScrollHet extends FlameItemSetting {
             return;
 
         ItemStack stack = player.getMainHandItem();
+
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
+            return;
 
         if (!(stack.getItem() instanceof ScrollHet))
             return;
@@ -114,6 +121,9 @@ public class ScrollHet extends FlameItemSetting {
                 stack = offStack;
 
         if (stack == null)
+            return;
+
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
             return;
 
         int effectValue = (int) AbilityUtils.getAbilityValue(stack, "techn", "level");

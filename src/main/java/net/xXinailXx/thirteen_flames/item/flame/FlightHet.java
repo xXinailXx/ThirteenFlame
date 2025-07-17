@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
@@ -37,6 +38,10 @@ public class FlightHet extends FlameItemSetting {
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack mainStack = player.getMainHandItem();
+
+        if (!ResearchUtils.isItemResearched(player, mainStack.getItem()))
+            return super.use(level, player, hand);
+
         ItemStack offStack = player.getOffhandItem();
 
         if (mainStack.is(ItemRegistry.FLIGHT_HET.get()) && offStack.is(Items.PAPER)) {

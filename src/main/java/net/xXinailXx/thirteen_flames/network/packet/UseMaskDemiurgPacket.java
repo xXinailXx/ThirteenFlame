@@ -1,6 +1,7 @@
 package net.xXinailXx.thirteen_flames.network.packet;
 
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,6 +21,9 @@ public class UseMaskDemiurgPacket implements IPacket {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.HEAD);
 
         if (!stack.is(ItemRegistry.MASK_DEMIURG.get()))
+            return;
+
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
             return;
 
         if (AbilityUtils.isAbilityOnCooldown(stack, "dematerialization"))

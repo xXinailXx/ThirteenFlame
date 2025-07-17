@@ -11,6 +11,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -147,6 +148,9 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
         ItemStack curio = optional.get().getRight();
 
         if (curio.isEmpty())
+            return;
+
+        if (!ResearchUtils.isItemResearched(player, curio.getItem()))
             return;
 
         ItemEntity itemEntity = (ItemEntity) event.getEntityHitResult().getEntity();

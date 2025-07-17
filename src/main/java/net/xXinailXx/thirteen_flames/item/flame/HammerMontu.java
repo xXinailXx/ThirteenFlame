@@ -8,6 +8,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
@@ -54,6 +55,9 @@ public class HammerMontu extends PickaxeItemTF {
         Player player = use.getPlayer();
         ItemStack stack = use.getItemInHand();
 
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
+            return super.useOn(use);
+
         if (!AbilityUtils.isAbilityOnCooldown(stack, "ejection")) {
             Level level = player.getCommandSenderWorld();
 
@@ -88,6 +92,10 @@ public class HammerMontu extends PickaxeItemTF {
     @SubscribeEvent
     public static void onBlockDestroy(BlockEvent.BreakEvent event) {
         ItemStack stack = event.getPlayer().getMainHandItem();
+
+        if (!ResearchUtils.isItemResearched(event.getPlayer(), stack.getItem()))
+            return;
+
         BlockPos pos = event.getPos();
         Level level = event.getPlayer().getLevel();
         double maxLevel = AbilityUtils.getAbilityValue(stack, "digging", "mining");

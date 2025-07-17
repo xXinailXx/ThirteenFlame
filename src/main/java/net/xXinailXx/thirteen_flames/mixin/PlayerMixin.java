@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.mixin;
 
 import com.mojang.authlib.GameProfile;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -50,6 +51,10 @@ public abstract class PlayerMixin extends Player {
             ItemStack curio = optional.get().getRight();
 
             if (!curio.isEmpty()) {
+
+                if (!ResearchUtils.isItemResearched(player, curio.getItem()))
+                    return;
+
                 double value = AbilityUtils.getAbilityValue(curio, "usin", "boost");
 
                 ci.setReturnValue((float) (1.0D / this.getAttributeValue(Attributes.ATTACK_SPEED) * 20.0D * (1 - value * 0.01)));

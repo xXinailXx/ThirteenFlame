@@ -10,6 +10,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.InteractionHand;
@@ -65,6 +66,9 @@ public class StaffJodah extends SwordItemTF {
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+
+        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
+            return InteractionResultHolder.success(stack);
 
         if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && !AbilityUtils.isAbilityOnCooldown(stack, "backlight")) {
             ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()

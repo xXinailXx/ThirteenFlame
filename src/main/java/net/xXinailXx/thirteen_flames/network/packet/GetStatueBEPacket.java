@@ -35,6 +35,6 @@ public class GetStatueBEPacket implements IPacket {
         if (!(entity instanceof StatueBE))
             return;
 
-        Data.StatueBuilderData.STATUE_BE = (StatueBE) entity;
+        Data.StatueBuilderData.be = (StatueBE) entity;
     }
 }

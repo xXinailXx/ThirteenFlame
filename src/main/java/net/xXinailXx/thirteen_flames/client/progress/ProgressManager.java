@@ -98,20 +98,15 @@ public class ProgressManager {
 
             maxCondition++;
 
-            if (type.equals(ProgressType.MINING))
-                allowCondition += data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
-            else if (type.equals(ProgressType.CRAFT))
-                allowCondition += data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
-            else if (type.equals(ProgressType.FIGHT))
-                allowCondition += data.getFightLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
-            else
-                allowCondition += data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
+            allowCondition += switch (type) {
+                case MINING -> data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
+                case CRAFT -> data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
+                case FIGHT -> data.getFightLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
+                case HEALTH -> data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel ? 1 : 0;
+            };
         }
 
-        if (maxCondition == allowCondition)
-            return true;
-        else
-            return false;
+        return maxCondition == allowCondition;
     }
 
     public static boolean isAllowStatUsage(ProgressType type, ItemStack stack) {
@@ -121,14 +116,12 @@ public class ProgressManager {
 
         int reqLevel = getToolReqLevel(type, stack);
 
-        if (type.equals(ProgressType.MINING))
-            return data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel;
-        else if (type.equals(ProgressType.CRAFT))
-            return data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel;
-        else if (type.equals(ProgressType.FIGHT))
-            return data.getFightLevel(Minecraft.getInstance().player) >= reqLevel;
-        else
-            return data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel;
+        return switch (type) {
+            case MINING -> data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel;
+            case CRAFT -> data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel;
+            case FIGHT -> data.getFightLevel(Minecraft.getInstance().player) >= reqLevel;
+            case HEALTH -> data.getHealthLevel(Minecraft.getInstance().player) >= reqLevel;
+        };
     }
 
     private static int getToolReqLevel(ProgressType type, ItemStack stack) {

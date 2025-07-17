@@ -8,10 +8,12 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -54,6 +56,9 @@ public class SunSeliaset extends FlameItemSetting {
         Level level = use.getLevel();
         BlockState state = level.getBlockState(pos);
         ItemStack stack = use.getItemInHand();
+
+        if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
+            return InteractionResult.SUCCESS;
 
         if (state.getBlock() instanceof StatueHandler handler || state.getBlock() instanceof StatueStructureBlock structureBlock) {
             StatueBE be = state.getBlock() instanceof StatueHandler handler ? handler.getBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos);

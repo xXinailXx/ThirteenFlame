@@ -12,6 +12,7 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import it.hurts.sskirillss.relics.utils.Scheduler;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -83,10 +84,13 @@ public class SwordRonosa extends SwordItemTF {
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        if (! ResearchUtils.isItemResearched(player, player.getItemInHand(hand).getItem()))
+            return InteractionResultHolder.success(player.getItemInHand(hand));
+
         if (player.isCrouching() && !AbilityUtils.isAbilityOnCooldown(player.getItemInHand(hand), "fart")) {
-            level.playSound((Player)null, player, SoundEvents.CHORUS_FLOWER_DEATH, SoundSource.MASTER, 1.2F, 0.1F);
-            level.playSound((Player)null, player, SoundEvents.SCULK_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);
-            level.playSound((Player)null, player, SoundEvents.AZALEA_FALL, SoundSource.MASTER, 1.0F, 0.01F);
+            level.playSound(null, player, SoundEvents.CHORUS_FLOWER_DEATH, SoundSource.MASTER, 1.2F, 0.1F);
+            level.playSound(null, player, SoundEvents.SCULK_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);
+            level.playSound(null, player, SoundEvents.AZALEA_FALL, SoundSource.MASTER, 1.0F, 0.01F);
 
             ItemStack sword = player.getItemInHand(hand);
             int lifetime = (int)AbilityUtils.getAbilityValue(sword, "fart", "duration") * 20;
