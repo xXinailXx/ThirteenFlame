@@ -136,7 +136,7 @@ public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEnti
             if (this.timeToUpgrade == 0) {
                 ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                         .color(new Color(255, 140, 0).getRGB())
-                        .renderType(getGod().equals(Gods.KNEF) ? ColoredParticleRendererTypes.DISABLE_RENDER_LIGHT_COLOR : ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
+                        .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                         .diameter(0.2F)
                         .lifetime(100)
                         .scaleModifier(0.95F)

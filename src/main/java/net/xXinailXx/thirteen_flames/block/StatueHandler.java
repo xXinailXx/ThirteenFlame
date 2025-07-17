@@ -19,11 +19,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.AddStatueBuilderDataPacket;
-import net.xXinailXx.thirteen_flames.network.packet.CreativeUpdateStatuePacket;
 import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import net.xXinailXx.thirteen_flames.utils.Gods;
@@ -51,7 +48,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
     protected final Gods god;
 
     public StatueHandler(Block block, @NotNull Gods gods, GeoItemRenderer renderer) {
-        super(Properties.of(Material.METAL).strength(1), block, Block.box(0.0D, 0.0D, 0.0D, 48.0D, 80.0D, 48.0D).move(-1, 0, -1));
+        super(Properties.of(Material.METAL).strength(1), block, Block.box(0, 0, 0, 48, 80, 48).move(-1, 0, -1));
         this.renderer = renderer;
         this.god = gods;
     }
