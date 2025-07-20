@@ -27,7 +27,7 @@ public class Metabolism extends AbstarctAbilityWidgets {
             return;
 
         if (data.isActiveAbility(player, "metabolism")) {
-            if (player.tickCount % 20 == 0) {
+            if (player.tickCount % 20 == 0 && !player.getLevel().isClientSide) {
                 FoodData foodData = player.getFoodData();
 
                 if (player.getHealth() < player.getMaxHealth() && foodData.getFoodLevel() != 0) {

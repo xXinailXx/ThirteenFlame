@@ -20,19 +20,6 @@ import java.util.List;
 public class AbilityUtils {
     private static final IData.IAbilitiesData data = new Data.AbilitiesData.Utils();
 
-    public static boolean isRandomSuccess(Level level, int change) {
-        RandomSource random = level.getRandom();
-
-        if (change == 0)
-            return false;
-        else if (change > 100)
-            throw new IllegalArgumentException("The chance of falling out cannot be more than 100%.");
-        else if (change < 0)
-            throw new IllegalArgumentException("The chance of falling out cannot be less than 100%.");
-
-        return random.nextInt(1, 100) <= change;
-    }
-
     public static void breakBlock(Player player, Level level, BlockPos pos, int range) {
         if (player.getDirection() == Direction.NORTH || player.getDirection() == Direction.SOUTH) {
             Iterator iterator = BlockPos.betweenClosed(pos.offset(-range, -range, 0), pos.offset(range, range, 0)).iterator();
@@ -68,8 +55,6 @@ public class AbilityUtils {
     public static List<LivingEntity> getEntities(LivingEntity entity, double radius) {
         if (entity == null || entity.getLevel() == null)
             return List.of();
-
-
 
         return AABBUtils.getEntities(LivingEntity.class, entity, radius);
     }

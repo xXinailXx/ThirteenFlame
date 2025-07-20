@@ -8,6 +8,7 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -33,7 +34,7 @@ public class ExcisionFlesh extends AbstarctAbilityWidgets {
         if (data.isActiveAbility(player, "excision_flesh"))
             if (event.getTarget() instanceof LivingEntity entity)
                 if (player.getMainHandItem().getItem() instanceof SwordItem)
-                    if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility(player, "excision_flesh")))
+                    if (MathUtils.isRandom(event.getEntity().level, data.getLevelAbility(player, "excision_flesh")))
                         entity.addEffect(new MobEffectInstance(EffectRegistry.BLEEDING.get(), 200));
     }
 }

@@ -31,7 +31,7 @@ public class CoverNight extends AbstarctAbilityWidgets {
     public static void playerTick(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
 
-        if (player == null)
+        if (player == null || player.getLevel().isClientSide)
             return;
 
         if (data.isActiveAbility(player, "cover_night")) {
@@ -56,9 +56,8 @@ public class CoverNight extends AbstarctAbilityWidgets {
                 if (!player.hasEffect(MobEffects.REGENERATION))
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1, 2, true, true));
             } else {
-                if (!player.getLevel().isClientSide)
-                    if (player.tickCount % 20 == 0)
-                        tickState--;
+                if (player.tickCount % 20 == 0)
+                    tickState--;
             }
         } else {
             tickState = 3;

@@ -12,6 +12,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -58,7 +59,7 @@ public class Abundance extends AbstarctAbilityWidgets {
             return;
 
         if (data.isActiveAbility(player, "abundance")) {
-            if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility(player, "abundance") * 5)) {
+            if (MathUtils.isRandom(event.getEntity().level, data.getLevelAbility(player, "abundance") * 5)) {
                 Level level = event.getEntity().level;
 
                 ItemEntity itemEntity = new ItemEntity(level, event.getTarget().getX(), event.getTarget().getY(), event.getTarget().getZ(), Items.GOLD_NUGGET.getDefaultInstance());
@@ -72,7 +73,7 @@ public class Abundance extends AbstarctAbilityWidgets {
     public static void addExtraDrop(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof Player player) {
             if (data.isActiveAbility(player, "abundance")) {
-                if (AbilityUtils.isRandomSuccess(event.getEntity().level, data.getLevelAbility(player, "abundance") * 5)) {
+                if (MathUtils.isRandom(event.getEntity().level, data.getLevelAbility(player, "abundance") * 5)) {
                     Level level = event.getEntity().level;
                     RandomSource random = level.getRandom();
 

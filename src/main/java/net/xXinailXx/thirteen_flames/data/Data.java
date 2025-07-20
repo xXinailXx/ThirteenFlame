@@ -228,9 +228,6 @@ public class Data implements IData {
         public static void setAbilitiesData(Player player, CompoundTag tag) {
             PlayerCapManager.getPlayerData(player).put("tf_abilities_data", tag);
 
-            if (player == null)
-                return;
-
             if (!player.level.isClientSide())
                 Network.sendTo(new AbilitiesSyncPacket(tag), player);
         }

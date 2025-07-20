@@ -3,6 +3,7 @@ package net.xXinailXx.thirteen_flames.block;
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -16,12 +17,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
-import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.Nullable;
 import org.zeith.hammerlib.net.Network;
 
@@ -34,7 +35,7 @@ public class StatueStructureBlock extends Block {
         if (level.getBlockState(pos).is(BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get())) {
             StatueBE be = getMainBlockBE(pos);
 
-            if (be == null || !be.isFinished() || !be.getGod().equals(Gods.GOD_PHARAOH))
+            if (be == null)
                 return InteractionResult.FAIL;
 
             if (level.isClientSide)

@@ -30,27 +30,21 @@ public class GraceHeaven extends AbstarctAbilityWidgets {
         Player player = event.player;
         Level level = player.getLevel();
 
-        if (player == null || level == null)
+        if (level.isClientSide)
             return;
 
         if (data.isActiveAbility(player, "grace_heaven")) {
-            if (player.tickCount % 300 == 0)
+            if (player.tickCount % 300 != 0)
                 return;
 
-            if (!level.isDay())
-                return;
+            if (level.isDay()) {
+                float f = player.getLightLevelDependentMagicValue();
+                BlockPos blockpos = new BlockPos(player.getX(), player.getEyeY(), player.getZ());
 
-            Iterator iterator = BlockPos.betweenClosed(new BlockPos(player.getX(), player.getY(), player.getZ()), new BlockPos(player.getX(), 1000, player.getZ())).iterator();
-            boolean isBlock = false;
-
-            while (iterator.hasNext()) {
-                if (level.getBlockState((BlockPos) iterator.next()).isAir())
-                    isBlock = true;
-            }
-
-            if (isBlock) {
-                FoodData foodData = player.getFoodData();
-                foodData.eat(1, 0);
+                if (f > 0.5F && level.random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && level.canSeeSky(blockpos)) {
+                    FoodData foodData = player.getFoodData();
+                    foodData.eat(1, 0);
+                }
             }
         }
     }

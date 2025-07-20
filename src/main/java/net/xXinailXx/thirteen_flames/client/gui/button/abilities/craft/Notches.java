@@ -26,14 +26,14 @@ public class Notches extends AbstarctAbilityWidgets {
 
         if (player != null) {
             if (data.isActiveAbility(player, "notches")) {
-                if (player.getMainHandItem().getItem() != null) {
+                if (player.getMainHandItem().isEmpty()) {
                     ItemStack item = player.getMainHandItem();
 
                     int maxDurability = item.getMaxDamage();
                     int durability = item.getDamageValue();
 
                     if (item.isDamaged()) {
-                        float extraDamage = (float) ((maxDurability - durability) * (data.getLevelAbility(player, "notches") * 0.001));
+                        float extraDamage = (float) ((maxDurability - durability) * (data.getLevelAbility(player, "notches") * 0.01));
 
                         event.getTarget().hurt(DamageSource.playerAttack(player), extraDamage);
                     }

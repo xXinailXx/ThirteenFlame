@@ -57,7 +57,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         if (level.getBlockState(pos).getBlock() instanceof StatueGodPharaoh) {
             StatueBE be = getBE(pos);
 
-            if (be == null || !be.isFinished() || !be.getGod().equals(Gods.GOD_PHARAOH))
+            if (be == null)
                 return InteractionResult.FAIL;
 
             if (level.isClientSide)
@@ -135,9 +135,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
     @Nullable
     public StatueBE getBE(BlockPos pos) {
         if (Data.StatueBuilderData.containsStatue(pos)) {
-            Data.StatueBuilderData.StatueBuilder builder = Data.StatueBuilderData.getStatue(pos);
-
-            return Data.StatueBuilderData.getStatueBE(builder);
+            return Data.StatueBuilderData.getStatueBE(Data.StatueBuilderData.getStatue(pos));
         }
 
         return null;

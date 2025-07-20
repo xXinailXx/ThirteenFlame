@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -30,7 +31,7 @@ public class GoldEltdorado extends AbstarctAbilityWidgets {
         Level level = player.getLevel();
 
         if (data.isActiveAbility(player, "gold_eltdorado")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "gold_eltdorado"))) {
+            if (MathUtils.isRandom(level, data.getLevelAbility(player, "gold_eltdorado"))) {
                 ItemEntity itemEntity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), Items.GOLD_NUGGET.getDefaultInstance());
                 itemEntity.setPos(pos.getX(), pos.getY(), pos.getZ());
                 level.addFreshEntity(itemEntity);

@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -27,7 +28,7 @@ public class GehennaFire extends AbstarctAbilityWidgets {
     public static void deathEntity(LivingDeathEvent event) {
         if (event.getEntity() instanceof WitherSkeleton && event.getSource().getEntity() instanceof Player player) {
             if (data.isActiveAbility(player, "cover_night")) {
-                if (AbilityUtils.isRandomSuccess(player.getLevel(), 50)) {
+                if (MathUtils.isRandom(player.getLevel(), 50)) {
                     WitherBoss wither = EntityType.WITHER.create(player.getLevel());
                     wither.setPos(event.getEntity().position());
                     player.getLevel().addFreshEntity(wither);

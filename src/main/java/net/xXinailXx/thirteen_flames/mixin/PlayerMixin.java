@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
@@ -24,7 +25,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -84,18 +84,10 @@ public abstract class PlayerMixin extends Player {
             entity.hurt(DamageSource.MAGIC, (float)(amount * (data.getLevelAbility(player, "retribution") * 0.02)));
 
         if (data.isActiveAbility(player, "divine_veil")) {
-            if (net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils.isRandomSuccess(entity.getLevel(), data.getLevelAbility(player, "divine_veil"))) {
+            if (MathUtils.isRandom(entity.getLevel(), data.getLevelAbility(player, "divine_veil"))) {
                 cir.setReturnValue(false);
                 cir.cancel();
             }
         }
-    }
-
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;updateIsUnderwater()Z"))
-    public void tick(CallbackInfo ci) {
-        Player player = (Player) (Object) this;
-
-        if (data.isActiveAbility(player, "lord_elements"))
-            player.setAirSupply(player.getMaxAirSupply());
     }
 }

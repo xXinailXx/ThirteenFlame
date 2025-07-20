@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -33,7 +34,7 @@ public class PhoenixHeat extends AbstarctAbilityWidgets {
         RandomSource random = level.getRandom();
 
         if (data.isActiveAbility(player, "phoenix_heat")) {
-            if (AbilityUtils.isRandomSuccess(level, 50)) {
+            if (MathUtils.isRandom(level, 50)) {
                 if (level.getBlockState( pos ).getBlock().equals( Blocks.SAND )) {
                     ItemEntity itemEntity = new ItemEntity( level, pos.getX(), pos.getY(), pos.getZ(), Items.GLASS.getDefaultInstance() );
                     itemEntity.setPos(pos.getX(), pos.getY(), pos.getZ());

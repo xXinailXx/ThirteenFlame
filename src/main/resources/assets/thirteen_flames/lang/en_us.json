@@ -87,8 +87,6 @@
   "command.thirteen_flames.nar-safar.series_int_error_1": "§cЦифровая серия нар-сафара больше 999.",
   "command.thirteen_flames.nar-safar.create_message": "Игроку выдан уникальный нар-сафар.",
 
-  "item.thirteen_flames.record": "§6Великое пламя",
-  "item.thirteen_flames.record.desc": "Восход, PryAnnya, AE, MrLololoshka - Великое пламя (CCB)",
   "item.thirteen_flames.raw_auriteh": "Необработанный ауритэх",
   "item.thirteen_flames.auriteh_nugget": "Кусочек ауритэха",
   "item.thirteen_flames.auriteh_ingot": "Слиток ауритэха",

@@ -25,20 +25,20 @@ public class EgyptianStrength extends AbstarctAbilityWidgets {
     public static void addEffectPlayer(TickEvent.PlayerTickEvent event) {
         Player player = event.player;
 
-        if (player == null)
+        if (player == null || player.getLevel().isClientSide)
             return;
 
         if (data.isActiveAbility(player, "egyptian_strength")) {
-            if (!PlayerCapManager.getPlayerTimers(player).contains("tf_ability_egyptian_strength"))
-                PlayerCapManager.addPlayerTimer(player, "tf_ability_egyptian_strength", 0);
+            if (!PlayerCapManager.getTimers(player).contains("tf_ability_egyptian_strength"))
+                PlayerCapManager.addTimer(player, "tf_ability_egyptian_strength", 0);
 
-            if (PlayerCapManager.getPlayerTimer(player, "tf_ability_egyptian_strength") == 0) {
+            if (PlayerCapManager.getTimer(player, "tf_ability_egyptian_strength") == 0) {
                 if ((player.getMaxHealth() * 0.3) <= player.getHealth()) {
                     player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 1200, 2, true, true));
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1200, 2, true, true));
                     player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 1200, 2, true, true));
 
-                    PlayerCapManager.addPlayerTimer(player, "tf_ability_egyptian_strength", 24000);
+                    PlayerCapManager.addTimer(player, "tf_ability_egyptian_strength", 24000);
                 }
             }
         }

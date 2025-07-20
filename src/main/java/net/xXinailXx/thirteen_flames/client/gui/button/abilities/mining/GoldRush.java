@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -34,7 +35,7 @@ public class GoldRush extends AbstarctAbilityWidgets {
         RandomSource random = level.getRandom();
 
         if (data.isActiveAbility(player, "gold_rush")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "gold_rush"))) {
+            if (MathUtils.isRandom(level, data.getLevelAbility(player, "gold_rush"))) {
                 Block block = level.getBlockState(pos).getBlock();
 
                 if (block.equals(Blocks.SAND)) {

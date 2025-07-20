@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -28,7 +29,7 @@ public class Perseverance extends AbstarctAbilityWidgets {
         Level level = event.getPlayer().getLevel();
 
         if (data.isActiveAbility(player, "perseverance")) {
-            if (AbilityUtils.isRandomSuccess(level, data.getLevelAbility(player, "perseverance")))
+            if (MathUtils.isRandom(level, data.getLevelAbility(player, "perseverance")))
                 player.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 1000, data.getLevelAbility(player, "perseverance")));
         }
     }

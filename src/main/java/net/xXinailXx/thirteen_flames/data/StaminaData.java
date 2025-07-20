@@ -128,25 +128,22 @@ public class StaminaData implements IAutoNBTSerializable {
         }
 
         public void addStamina(Player player, int stamina) {
-            if (stamina < 0)
-                setRegenCooldown(player, 5);
-
-            setStamina(player, getStamina(player) + stamina);
-        }
-
-        public void addStaminaReqAbil(Player player, int stamina) {
             if (stamina < 0) {
                 if (abilitiesData.isActiveAbility(player, "second_wind") && player.getHealth() < (player.getMaxHealth() / 2)) {
                     return;
                 }
 
-                addStamina(player, stamina);
+                setRegenCooldown(player, 5);
+            }
+
+            setStamina(player, getStamina(player) + stamina);
+        }
+
+        public void addStaminaReqAbil(Player player, int stamina) {
+            if (abilitiesData.isActiveAbility(player, "stamina_mantra")) {
+                addStamina(player, stamina * abilitiesData.getLevelAbility(player, "stamina_mantra"));
             } else {
-                if (abilitiesData.isActiveAbility(player, "stamina_mantra")) {
-                    addStamina(player, stamina * abilitiesData.getLevelAbility(player, "stamina_mantra"));
-                } else {
-                    addStamina(player, stamina);
-                }
+                addStamina(player, stamina);
             }
         }
 
@@ -296,7 +293,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
                 if (stamina <= 0 && player.isSprinting()) {
                     if (abilitiesData.isActiveAbility(player, "overcoming") && player.getFoodData().getFoodLevel() > 0) {
-                        if (player.tickCount % 20 == 0)
+                        if (player.tickCount % 40 == 0 && !player.getLevel().isClientSide)
                             player.getFoodData().setFoodLevel(player.getFoodData().getFoodLevel() - 1);
 
                         player.getFoodData().setExhaustion(0);

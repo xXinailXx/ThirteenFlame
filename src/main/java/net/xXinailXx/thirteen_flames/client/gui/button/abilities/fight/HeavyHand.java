@@ -8,6 +8,7 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
@@ -33,7 +34,7 @@ public class HeavyHand extends AbstarctAbilityWidgets {
         if (data.isActiveAbility(player, "heavy_hand"))
             if (event.getTarget() instanceof LivingEntity entity)
                 if (player.getMainHandItem().getItem() instanceof AxeItem)
-                    if (AbilityUtils.isRandomSuccess(player.getLevel(), data.getLevelAbility(player, "heavy_hand")))
+                    if (MathUtils.isRandom(player.getLevel(), data.getLevelAbility(player, "heavy_hand")))
                         entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), 30));
     }
 }

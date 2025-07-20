@@ -293,26 +293,10 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
 
     private int getTime() {
         if (getAbilityData().getAbilityName().equals("egyptian_strength")) {
-            int time = PlayerCapManager.getPlayerTimers(MC.player).contains("tf_ability_egyptian_strength") ? PlayerCapManager.getPlayerTimer(MC.player, "tf_ability_egyptian_strength") : 0;
+            int time = PlayerCapManager.getTimers(MC.player).contains("tf_ability_egyptian_strength") ? PlayerCapManager.getTimer(MC.player, "tf_ability_egyptian_strength") : 0;
 
-            if (time % 20 != 0)
-                time -= time % 20;
-
-            return time / 20;
+            return (int) Math.floor((double) time / 20);
         }
-
-        return 0;
-    }
-
-    private int getExtraYOff() {
-        if (this.locationNumber < 5)
-            return 0;
-        else if (this.locationNumber >= 5 && this.locationNumber < 10)
-            return 1;
-        else if (this.locationNumber >= 10 && this.locationNumber < 15)
-            return 2;
-        else if (this.locationNumber >= 15 && this.locationNumber < 20)
-            return 3;
 
         return 0;
     }
@@ -353,11 +337,12 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
     public void setActiveAbility(boolean value) {
         Network.sendToServer(new AbilityWidgetActionPacket(getAbilityData().getAbilityName(), 1, value, -1));
 
-        if (getAbilityData().getAbilityName().equals("recovery"))
+        if (getAbilityData().getAbilityName().equals("recovery")) {
             if (value)
                 guiLevelingData.setProcentCurse(MC.player, 70 - getLevelAbility() * 5);
             else
-            guiLevelingData.setProcentCurse(MC.player, 70);
+                guiLevelingData.setProcentCurse(MC.player, 70);
+        }
     }
 
     public void setLevelAbility(int amount) {
