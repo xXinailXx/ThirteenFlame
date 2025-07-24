@@ -35,13 +35,13 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
 import net.xXinailXx.thirteen_flames.block.StatueHandler;
 import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.HornSeliasetEntity;
 import net.xXinailXx.thirteen_flames.entity.HornWindSeliasetEntity;
-import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
@@ -76,20 +76,12 @@ public class HornSeliaset extends FlameItemSetting {
             return InteractionResult.SUCCESS;
 
         if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
-            StatueBE be = state.getBlock() instanceof StatueHandler handler ? handler.getBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos);
+            StatueBE be = (StatueBE) (state.getBlock() instanceof StatueHandler ? StatueData.getStatueBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos));
 
-            if (be != null && be.getTimeToUpgrade() == 0) {
-                RelicLevelingData data = ((FlameItemSetting) stack.getItem()).getRelicData().getLevelingData();
+            StatueHandler.upgrade(be, level, stack, use.getPlayer(), use.getHand());
 
-                if (LevelingUtils.getLevel(stack) < data.getMaxLevel()) {
-                    Network.sendToServer(new FlameUpgradePacket(stack));
-                    be.resetFlameUpgradeData();
-
-                    return InteractionResult.SUCCESS;
-                }
-            } else {
-                return InteractionResult.FAIL;
-            }
+            if (be != null && be.isFinished() && be.getTimeToUpgrade() > 0 && !StatueHandler.isUpgrade(stack, be.getGod()) && !level.isClientSide)
+                return InteractionResult.SUCCESS;
         }
 
         HornSeliasetEntity horn = new HornSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "rhythm", "waves"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "cooldown"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "stun"));
@@ -101,10 +93,8 @@ public class HornSeliaset extends FlameItemSetting {
         switch (use.getPlayer().getDirection()) {
             case NORTH -> direction = Direction.WEST;
             case SOUTH -> direction = Direction.EAST;
-            case EAST -> direction = Direction.NORTH;
-            case WEST -> direction = Direction.SOUTH;
-            case UP -> direction = Direction.NORTH;
-            case DOWN -> direction = Direction.NORTH;
+            case EAST -> direction = Direction.SOUTH;
+            case WEST, DOWN, UP -> direction = Direction.NORTH;
         }
 
         horn.setYRot(direction.toYRot());
@@ -174,7 +164,7 @@ public class HornSeliaset extends FlameItemSetting {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
     }

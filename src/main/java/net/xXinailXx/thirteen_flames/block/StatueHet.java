@@ -14,11 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class StatueHet extends StatueHandler {
     public StatueHet() {
-        super(BlockRegistry.STATUE_HET_STRUCTURE.get(), Gods.HET, new GeoItemRenderer(new StatueHetModel()) {
-            public ResourceLocation getTextureLocation(Object animatable) {
-                return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_het.png");
-            }
-        });
+        super(BlockRegistry.STATUE_HET_STRUCTURE.get(), Gods.HET);
     }
 
     @Nullable

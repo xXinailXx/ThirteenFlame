@@ -41,7 +41,7 @@ public class CoverNight extends AbstarctAbilityWidgets {
                 lastPos = playerPos;
                 tickState = 3;
 
-                player.removeEffect(MobEffects.INVISIBILITY);
+                player.setInvisible(false);
                 player.removeEffect(MobEffects.REGENERATION);
 
                 PlayerCapManager.addData(player, "tf_ability_cover_night", IntTag.valueOf(tickState));
@@ -49,9 +49,8 @@ public class CoverNight extends AbstarctAbilityWidgets {
                 return;
             }
 
-            if (tickState == 0) {
-                if (!player.hasEffect(MobEffects.INVISIBILITY))
-                    player.addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, 1, 1, true, true));
+            if (tickState == 0 && !player.getLevel().isClientSide) {
+                player.setInvisible(true);
 
                 if (!player.hasEffect(MobEffects.REGENERATION))
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 1, 2, true, true));
@@ -60,6 +59,9 @@ public class CoverNight extends AbstarctAbilityWidgets {
                     tickState--;
             }
         } else {
+            if (PlayerCapManager.getData(player, "tf_ability_cover_night") != null && ((IntTag) PlayerCapManager.getData(player, "tf_ability_cover_night")).getAsInt() == 4)
+                player.setInvisible(false);
+
             tickState = 3;
         }
 

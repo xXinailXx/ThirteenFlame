@@ -105,6 +105,7 @@ public class SwordRonosa extends SwordItemTF {
             cloud.setSword(player.getItemInHand(hand));
 
             Vec3 pos = player.getEyePosition(1.0F).add(player.getLookAngle().scale((radius + 1.0F)));
+
             cloud.setPos(pos);
             level.addFreshEntity(cloud);
 
@@ -137,14 +138,6 @@ public class SwordRonosa extends SwordItemTF {
         return super.hurtEnemy(stack, living, entity);
     }
 
-    @SubscribeEvent
-    public static void attackEntity(AttackEntityEvent event) {
-        if (event.getEntity().getMainHandItem().is(ItemRegistry.SWORD_RONOSA.get()) && event.getTarget() instanceof LivingEntity living) {
-            poisonSwipe(event.getEntity(), event.getEntity().getMainHandItem());
-            living.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), 100, 0, false, true, false));
-        }
-    }
-
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment.category == EnchantmentCategory.WEAPON;
     }
@@ -152,17 +145,16 @@ public class SwordRonosa extends SwordItemTF {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slot, isSelected);
 
-        if (entity instanceof Player player) {
-            if (stack.is(this) && (!player.hasEffect(EffectRegistry.ANEMIA.get()) || player.hasEffect(EffectRegistry.ANEMIA.get()) && player.getEffect(EffectRegistry.ANEMIA.get()).getDuration() < 20) || AbilityUtils.getAbilityValue(stack, "anemia", "level") < 5) {
-                player.addEffect(new MobEffectInstance(EffectRegistry.ANEMIA.get(), 1, 0, true, false, true));
-            }
-        }
+        if (entity instanceof Player player)
+            if (AbilityUtils.getAbilityValue(stack, "anemia", "level") < 5)
+                if (stack.is(this) && (!player.hasEffect(EffectRegistry.ANEMIA.get()) || player.hasEffect(EffectRegistry.ANEMIA.get()) && player.getEffect(EffectRegistry.ANEMIA.get()).getDuration() < 20))
+                    player.addEffect(new MobEffectInstance(EffectRegistry.ANEMIA.get(), 1, 0, true, false, true));
     }
 
     public static void poisonSwipe(LivingEntity p, ItemStack sword) {
-        p.level.playSound((Player)null, p, SoundEvents.AZALEA_FALL, SoundSource.MASTER, 1.0F, 0.02F);
-        p.level.playSound((Player)null, p, SoundEvents.SCULK_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);
-        p.level.playSound((Player)null, p, SoundEvents.AZALEA_LEAVES_FALL, SoundSource.MASTER, 1.0F, 1.8F);
+        p.level.playSound(null, p, SoundEvents.AZALEA_FALL, SoundSource.MASTER, 1.0F, 0.02F);
+        p.level.playSound(null, p, SoundEvents.SCULK_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);
+        p.level.playSound(null, p, SoundEvents.AZALEA_LEAVES_FALL, SoundSource.MASTER, 1.0F, 1.8F);
 
         double spreadAngle = 20.0F + AbilityUtils.getAbilityValue(sword, "spit", "range") * 1.8;
         double range = AbilityUtils.getAbilityValue(sword, "spit", "range");
@@ -182,6 +174,7 @@ public class SwordRonosa extends SwordItemTF {
                 Scheduler.schedule(i, () -> {
                     for(int j = 0; j < range * 4.0F + 1.0F; ++j) {
                         Vec3 vec = startVec.add(luk.yRot((float)Math.toRadians(-spreadAngle + j * (spreadAngle * 2.0F / range / 4.0F))).add(down).normalize().scale(0.7 + finalI / 1.8));
+
                         level.sendParticles(new CircleTintData(new Color(85 - dark + yellowness, 255 - dark - RandomSource.create().nextInt(100), 0), (float)(0.2F + 0.025F * range), 20, 0.83F, false), vec.x, vec.y, vec.z, 1, 0.018 * range, 0.018 * range, 0.018 * range, 0.005 + finalI * 0.008);
 
                         if (j % 3 == 0)
@@ -192,9 +185,11 @@ public class SwordRonosa extends SwordItemTF {
         }
 
         AABB eBox = (new AABB(startVec.add(p.getLookAngle().scale(range * 0.6)), startVec.add(p.getLookAngle().scale(range * 0.6)))).inflate(range * 0.3);
-        HashSet<LivingEntity> hashSet = new HashSet(p.level.getEntitiesOfClass(LivingEntity.class, eBox, (entity) -> !entity.equals(p)));
+        HashSet<LivingEntity> hashSet = new HashSet<>(p.level.getEntitiesOfClass(LivingEntity.class, eBox, (entity) -> !entity.equals(p)));
         eBox = (new AABB(startVec.add(p.getLookAngle().scale(range * 0.2)), startVec.add(p.getLookAngle().scale(range * 0.2)))).inflate(range * 0.1);
+
         hashSet.addAll(p.level.getEntitiesOfClass(LivingEntity.class, eBox, (ex) -> !ex.equals(p)));
+
         int duration = (int)Math.round(AbilityUtils.getAbilityValue(sword, "spit", "duration") * 20.0F);
         RandomSource random = p.getRandom();
 
@@ -231,9 +226,17 @@ public class SwordRonosa extends SwordItemTF {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void attackEntity(AttackEntityEvent event) {
+        if (event.getEntity().getMainHandItem().is(ItemRegistry.SWORD_RONOSA.get()) && event.getTarget() instanceof LivingEntity living) {
+            poisonSwipe(event.getEntity(), event.getEntity().getMainHandItem());
+            living.addEffect(new MobEffectInstance(EffectRegistry.POISON.get(), 100, 0, false, true, false));
+        }
     }
 
     @SubscribeEvent
@@ -246,7 +249,7 @@ public class SwordRonosa extends SwordItemTF {
         if (!(stack.getItem() instanceof SwordRonosa))
             return;
 
-        double anemia = AbilityUtils.getAbilityPoints(stack, "anemia");
+        int anemia = (int) AbilityUtils.getAbilityValue(stack, "anemia", "level");
 
         if (anemia < 5) {
             if (event.getEntity().getItem().is(ItemRegistry.SWORD_RONOSA.get())) {

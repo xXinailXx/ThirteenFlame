@@ -62,7 +62,7 @@ public class BlackRose extends FlameItemSetting {
             if (fire_type + 1 > 8)
                 NBTUtils.setInt(stack, "fire_type", 1);
             else
-                NBTUtils.setInt(stack, "fire_type", fire_type += 1);
+                NBTUtils.setInt(stack, "fire_type", fire_type + 1);
         } else if (NBTUtils.getInt(stack, "bone", 0) == 0) {
             if (NBTUtils.getInt(stack, "fire_type", 0) > 0)
                 NBTUtils.setInt(stack, "fire_type", 0);
@@ -76,7 +76,7 @@ public class BlackRose extends FlameItemSetting {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
     }
@@ -105,8 +105,6 @@ public class BlackRose extends FlameItemSetting {
 
                 if (!net.xXinailXx.enderdragonlib.utils.MathUtils.isRandom(player.getLevel(), (int) AbilityUtils.getAbilityValue(stack, "flesh", "revival")))
                     return;
-
-                player.sendSystemMessage(Component.literal(String.valueOf(AbilityUtils.getAbilityValue(stack, "stillbirth", "size"))));
 
                 LivingFleshEntity entity = new LivingFleshEntity(player.getLevel(), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "size"), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "separation"), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "piece"), stack);
                 entity.setPos(event.getEntity().position());

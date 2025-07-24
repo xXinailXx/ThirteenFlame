@@ -7,6 +7,7 @@ import it.hurts.sskirillss.relics.client.screen.base.IHoverableWidget;
 import lombok.EqualsAndHashCode;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -18,7 +19,7 @@ import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.global.GiftGodPharaoh;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.network.packet.AbilityWidgetActionPacket;
@@ -302,7 +303,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
     }
 
     private boolean isUnlock() {
-        if (isLockAbility() || (this.isConfigBlock && !ThirteenFlamesConfig.STAMINA_ACTIVE.get()))
+        if (isLockAbility() || (this.isConfigBlock && ! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get()))
             return false;
 
         if (this instanceof GiftGodPharaoh)
@@ -315,7 +316,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
     }
 
     public boolean isLockAbility() {
-        return data.isLockAbility(MC.player, getAbilityData().getAbilityName()) || (this.isConfigBlock && !ThirteenFlamesConfig.STAMINA_ACTIVE.get());
+        return data.isLockAbility(MC.player, getAbilityData().getAbilityName()) || (this.isConfigBlock && ! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get());
     }
 
     public boolean isBuyAbility() {
@@ -342,6 +343,9 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
                 guiLevelingData.setProcentCurse(MC.player, 70 - getLevelAbility() * 5);
             else
                 guiLevelingData.setProcentCurse(MC.player, 70);
+        } else if (getAbilityData().getAbilityName().equals("cover_night")) {
+            if (!value)
+                PlayerCapManager.addData(MC.player, "tf_ability_cover_night", IntTag.valueOf(4));
         }
     }
 

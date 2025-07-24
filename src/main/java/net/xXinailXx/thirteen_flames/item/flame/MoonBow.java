@@ -88,7 +88,7 @@ public class MoonBow extends FlameItemSetting {
     }
 
     public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, LivingEntity entity, int timeCharged) {
-        if (!entity.isEyeInFluidType((FluidType) ForgeMod.WATER_TYPE.get()) && entity instanceof Player player) {
+        if (!entity.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) && entity instanceof Player player) {
             if (player.isCrouching() && AbilityUtils.canUseAbility(stack, "storm") && !AbilityUtils.isAbilityOnCooldown(stack, "storm")) {
                 if (this.getUseDuration(stack) - timeCharged > 19 && !AbilityUtils.isAbilityOnCooldown(stack, "storm")) {
                     level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.7F, 0.6F);
@@ -111,7 +111,7 @@ public class MoonBow extends FlameItemSetting {
                 } else if (this.getUseDuration(stack) - timeCharged > 5) {
                     if (!level.isClientSide()) {
                         float fl = this.random.nextFloat();
-                        level.playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.75F + fl * 0.1F);
+                        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.MOON_BOW_SHOT.get(), SoundSource.MASTER, 0.5F, 1.75F + fl * 0.1F);
                     }
 
                     Vec3 pos = entity.getEyePosition(1.0F).add(entity.getLookAngle().scale(0.3)).add(entity.getLookAngle().cross(entity.getLookAngle().x < 0.001 && entity.getLookAngle().z < 0.001 ? Vec3.directionFromRotation(0.0F, entity.getYHeadRot()).scale(entity.getLookAngle().y > 0 ? -1 : 1).normalize() : new Vec3(0, 1, 0)).normalize().scale(0.2)).add(0, -0.13, 0).subtract(entity.getLookAngle().scale(1.4));
@@ -139,9 +139,8 @@ public class MoonBow extends FlameItemSetting {
                 carrier.shootFromRotation(entity, entity.getXRot(), entity.getYRot(), 0.75F, 1.0F, 0.0F);
                 level.addFreshEntity(carrier);
 
-                for(MoonProjectileEntity proj : carrier.rays) {
+                for(MoonProjectileEntity proj : carrier.rays)
                     level.addFreshEntity(proj);
-                }
             } else if (this.getUseDuration(stack) - timeCharged > 5) {
                 if (!level.isClientSide()) {
                     float fl = this.random.nextFloat();
@@ -163,7 +162,7 @@ public class MoonBow extends FlameItemSetting {
     }
 
     public void onUsingTick(ItemStack stack, LivingEntity entity, int count) {
-        if ((entity.isEyeInFluidType((FluidType)ForgeMod.WATER_TYPE.get()) || this.isSurging) && entity instanceof Player player) {
+        if ((entity.isEyeInFluidType(ForgeMod.WATER_TYPE.get()) || this.isSurging) && entity instanceof Player player) {
             if (!player.isCreative())
                 if (entity.getHealth() > 1)
                     entity.hurt(SUCC, entity.getMaxHealth() * (float)AbilityUtils.getAbilityValue(stack, "shot", "drain") * 0.02F);
@@ -262,7 +261,7 @@ public class MoonBow extends FlameItemSetting {
             final Supplier<MoonBowRenderer> renderer = Suppliers.memoize(MoonBowRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
     }

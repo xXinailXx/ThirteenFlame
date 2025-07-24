@@ -13,7 +13,6 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,14 +26,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
 import net.xXinailXx.thirteen_flames.block.StatueHandler;
 import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
 import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.SunSeliasetEntity;
-import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
-import org.zeith.hammerlib.net.Network;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
 import oshi.util.tuples.Pair;
 
@@ -60,21 +58,13 @@ public class SunSeliaset extends FlameItemSetting {
         if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
             return InteractionResult.SUCCESS;
 
-        if (state.getBlock() instanceof StatueHandler handler || state.getBlock() instanceof StatueStructureBlock structureBlock) {
-            StatueBE be = state.getBlock() instanceof StatueHandler handler ? handler.getBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos);
+        if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
+            StatueBE be = (StatueBE) (state.getBlock() instanceof StatueHandler ? StatueData.getStatueBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos));
 
-            if (be != null && be.getTimeToUpgrade() == 0) {
-                RelicLevelingData data = ((FlameItemSetting) stack.getItem()).getRelicData().getLevelingData();
+            StatueHandler.upgrade(be, level, stack, use.getPlayer(), use.getHand());
 
-                if (LevelingUtils.getLevel(stack) < data.getMaxLevel()) {
-                    Network.sendToServer(new FlameUpgradePacket(stack));
-                    be.resetFlameUpgradeData();
-
-                    return InteractionResult.SUCCESS;
-                }
-            } else {
-                return InteractionResult.FAIL;
-            }
+            if (be != null && be.isFinished() && be.getTimeToUpgrade() > 0 && !StatueHandler.isUpgrade(stack, be.getGod()) && !level.isClientSide)
+                return InteractionResult.SUCCESS;
         }
 
         SunSeliasetEntity sun = new SunSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "light", "radius"), (int) AbilityUtils.getAbilityValue(stack, "light", "cooldown"), stack);
@@ -92,7 +82,7 @@ public class SunSeliaset extends FlameItemSetting {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
     }

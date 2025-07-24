@@ -5,7 +5,6 @@ import com.google.common.collect.UnmodifiableIterator;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -24,15 +23,11 @@ import net.xXinailXx.thirteen_flames.mixin.client.BakedOverrideAccessor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class ZeithTechISTER extends BlockEntityWithoutLevelRenderer {
+public abstract class ItemLevelRenderer extends BlockEntityWithoutLevelRenderer {
     protected final BlockEntityRenderDispatcher blockEntRenderDispatcher = Minecraft.getInstance().getBlockEntityRenderDispatcher();
 
-    protected ZeithTechISTER() {
+    protected ItemLevelRenderer() {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-    }
-
-    protected EntityModelSet getEntityModels() {
-        return Minecraft.getInstance().getEntityModels();
     }
 
     public void renderOverrride(ItemOverrides.BakedOverride override, @NotNull ItemTransforms.@NotNull TransformType transformType, @NotNull PoseStack pose, @NotNull ItemStack stack, @NotNull MultiBufferSource bufferSource, @Nullable RenderType overrideType, int uv2, int overlay) {

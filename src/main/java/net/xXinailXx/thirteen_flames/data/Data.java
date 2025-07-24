@@ -29,15 +29,12 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
 import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
 import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.utils.MessageUtil;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.init.EffectRegistry;
-import net.xXinailXx.thirteen_flames.network.packet.GetStatueBEPacket;
 import net.xXinailXx.thirteen_flames.network.packet.SetSkillPointPacket;
 import net.xXinailXx.thirteen_flames.network.packet.capability.*;
 import net.xXinailXx.thirteen_flames.utils.Gods;
@@ -51,8 +48,6 @@ import java.util.*;
 
 public class Data implements IData {
     public static class StatueBuilderData {
-        public static StatueBE STATUE_BE;
-
         @Nullable
         public static ShcemeBuilder getShceme(UUID uuid) {
             CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
@@ -105,119 +100,16 @@ public class Data implements IData {
             return ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data").contains(uuid.toString());
         }
 
-        @Nullable
-        public static StatueBuilder getStatue(BlockPos pos) {
-            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_builder_data");
-
-            if (!tag.contains(String.valueOf(pos.asLong()))) {
-                for (String key : tag.getAllKeys()) {
-                    StatueBuilder builder = getStatue(BlockPos.of(Long.parseLong(key)));
-
-                    if (builder.posList().contains(pos))
-                        return builder;
-                }
-
-                return null;
-            }
-
-            ListTag listTag = tag.getList(String.valueOf(pos.asLong()), StringTag.valueOf("").getId());
-            List<BlockPos> posList = new ArrayList<>();
-
-            for (int i = 0; i < listTag.size(); i++)
-                posList.add(BlockPos.of(Long.parseLong(listTag.getString(i))));
-
-            return new StatueBuilder(posList, pos);
-        }
-
-        public static void addStatue(StatueBuilder statues) {
-            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_builder_data");
-            ListTag listTag = new ListTag();
-
-            for (BlockPos pos : statues.posList())
-                listTag.add(StringTag.valueOf(String.valueOf(pos.asLong())));
-
-            tag.put(String.valueOf(statues.mainPos().asLong()), listTag);
-
-            ServerCapManager.addServerData("tf_statue_builder_data", tag);
-        }
-
-        public static void removeStatue(BlockPos pos) {
-            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_builder_data");
-
-            if (!tag.contains(String.valueOf(pos.asLong())))
-                return;
-
-            tag.remove(String.valueOf(getStatue(pos).mainPos().asLong()));
-            ServerCapManager.addServerData("tf_statue_builder_data", tag);
-        }
-
-        public static boolean containsStatue(StatueBE entity) {
-            return containsStatue(entity.getBlockPos());
-        }
-
-        public static boolean containsStatue(BlockPos pos) {
-            StatueBuilder builder = getStatue(pos);
-
-            if (builder == null)
-                return false;
-
-            for (String key : ServerCapManager.getOrCreateData("tf_statue_builder_data").getAllKeys())
-                if (BlockPos.of(Long.parseLong(key)).equals(builder.mainPos()))
-                    return true;
-
-            return false;
-        }
-
-        @Nullable
-        public static StatueBE getStatueBE(StatueBuilder builder) {
-            ListTag tag = new ListTag();
-
-            if (ServerCapManager.getServerData("tf_statue_block_entities_data") == null)
-                ServerCapManager.addServerData("tf_statue_block_entities_data", new ListTag());
-            else
-                tag = (ListTag) ServerCapManager.getServerData("tf_statue_block_entities_data");
-
-            if (!tag.contains(StringTag.valueOf(String.valueOf(builder.mainPos().asLong()))))
-                return null;
-
-            Network.sendToServer(new GetStatueBEPacket(builder.mainPos()));
-
-            return STATUE_BE;
-        }
-
-        public static void addStatueBE(StatueBuilder builder) {
-            ListTag tag = new ListTag();
-
-            if (ServerCapManager.getServerData("tf_statue_block_entities_data") == null)
-                ServerCapManager.addServerData("tf_statue_block_entities_data", new ListTag());
-            else
-                tag = (ListTag) ServerCapManager.getServerData("tf_statue_block_entities_data");
-
-            tag.add(StringTag.valueOf(String.valueOf(builder.mainPos().asLong())));
-
-            ServerCapManager.addServerData("tf_statue_block_entities_data", tag);
-        }
-
-        public static boolean containsStatueBE(StatueBuilder builder) {
-            ListTag tag = new ListTag();
-
-            if (ServerCapManager.getServerData("tf_statue_block_entities_data") == null)
-                ServerCapManager.addServerData("tf_statue_block_entities_data", new ListTag());
-            else
-                tag = (ListTag) ServerCapManager.getServerData("tf_statue_block_entities_data");
-
-            return tag.contains(StringTag.valueOf(String.valueOf(builder.mainPos().asLong())));
-        }
-
         public record ShcemeBuilder(List<BlockPos> posList, BlockPos mainPos, Gods god) {}
-
-        public record StatueBuilder(List<BlockPos> posList, BlockPos mainPos) {}
     }
 
     public static class AbilitiesData {
         public static CompoundTag getAbilitiesData(Player player) {
+            if (player == null)
+                return new CompoundTag();
+
             CompoundTag abilitiesData = new CompoundTag();
-            CompoundTag data = PlayerCapManager.getPlayerData(player);
+            CompoundTag data = player.getPersistentData();
 
             if (data.contains("tf_abilities_data"))
                 abilitiesData = data.getCompound("tf_abilities_data");
@@ -226,7 +118,10 @@ public class Data implements IData {
         }
 
         public static void setAbilitiesData(Player player, CompoundTag tag) {
-            PlayerCapManager.getPlayerData(player).put("tf_abilities_data", tag);
+            if (player == null)
+                return;
+
+            player.getPersistentData().put("tf_abilities_data", tag);
 
             if (!player.level.isClientSide())
                 Network.sendTo(new AbilitiesSyncPacket(tag), player);
@@ -333,7 +228,7 @@ public class Data implements IData {
         public static class Utils implements IEffectData {
             public static EffectData getEffectData(Player player) {
                 EffectData fake = new EffectData();
-                CompoundTag data = PlayerCapManager.getPlayerData(player);
+                CompoundTag data = player.getPersistentData();
 
                 if (data.contains("tf_effect_data"))
                     fake.deserializeNBT(data.getCompound("tf_effect_data"));
@@ -343,7 +238,7 @@ public class Data implements IData {
 
             public static void setEffectData(Player player, EffectData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getPlayerData(player).put("tf_effect_data", nbt);
+                player.getPersistentData().put("tf_effect_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new EffectSyncPacket(nbt), player);
@@ -470,7 +365,7 @@ public class Data implements IData {
                     player = Minecraft.getInstance().player;
 
                 GuiLevelingData fake = new GuiLevelingData();
-                CompoundTag data = PlayerCapManager.getPlayerData(player);
+                CompoundTag data = player.getPersistentData();
 
                 if (data.contains("tf_gui_data"))
                     fake.deserializeNBT(data.getCompound("tf_gui_data"));
@@ -480,7 +375,7 @@ public class Data implements IData {
 
             public static void setGuiData(Player player, GuiLevelingData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getPlayerData(player).put("tf_gui_data", nbt);
+                player.getPersistentData().put("tf_gui_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new GuiSyncPacket(nbt), player);
@@ -596,7 +491,7 @@ public class Data implements IData {
         public static class Utils implements IXpScarabsData {
             public static XpScarabsData getXpScarabsData(Player player) {
                 XpScarabsData fake = new XpScarabsData();
-                CompoundTag data = PlayerCapManager.getPlayerData(player);
+                CompoundTag data = player.getPersistentData();
 
                 if (data.contains("tf_xp_scarabs_data"))
                     fake.deserializeNBT(data.getCompound("tf_xp_scarabs_data"));
@@ -606,7 +501,7 @@ public class Data implements IData {
 
             public static void setXpScarabsData(Player player, XpScarabsData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getPlayerData(player).put("tf_xp_scarabs_data", nbt);
+                player.getPersistentData().put("tf_xp_scarabs_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new XpScarabsSyncPacket(nbt), player);
@@ -701,7 +596,7 @@ public class Data implements IData {
         public static class Utils implements IScarabsData {
             public static ScarabsData getScarabsData(Player player) {
                 ScarabsData fake = new ScarabsData();
-                CompoundTag data = PlayerCapManager.getPlayerData(player);
+                CompoundTag data = player.getPersistentData();
 
                 if (data.contains("tf_scarabs_data"))
                     fake.deserializeNBT(data.getCompound("tf_scarabs_data"));
@@ -711,7 +606,7 @@ public class Data implements IData {
 
             public static void setScarabsData(Player player, ScarabsData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getPlayerData(player).put("tf_scarabs_data", nbt);
+                player.getPersistentData().put("tf_scarabs_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new ScarabsSyncPacket(nbt), player);

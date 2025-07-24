@@ -24,6 +24,10 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
+import net.xXinailXx.thirteen_flames.block.StatueHandler;
+import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
+import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.ShockwaveEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.PickaxeItemTF;
@@ -53,14 +57,24 @@ public class HammerMontu extends PickaxeItemTF {
 
     public InteractionResult useOn(UseOnContext use) {
         Player player = use.getPlayer();
+        BlockPos pos = use.getClickedPos().above();
+        Level level = use.getLevel();
+        BlockState state = level.getBlockState(pos);
         ItemStack stack = use.getItemInHand();
 
-        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
-            return super.useOn(use);
+        if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
+            return InteractionResult.SUCCESS;
+
+        if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
+            StatueBE be = (StatueBE) (state.getBlock() instanceof StatueHandler ? StatueData.getStatueBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos));
+
+            StatueHandler.upgrade(be, level, stack, use.getPlayer(), use.getHand());
+
+            if (be != null && be.isFinished() && be.getTimeToUpgrade() > 0 && !StatueHandler.isUpgrade(stack, be.getGod()) && !level.isClientSide)
+                return InteractionResult.SUCCESS;
+        }
 
         if (!AbilityUtils.isAbilityOnCooldown(stack, "ejection")) {
-            Level level = player.getCommandSenderWorld();
-
             ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(stack, "ejection", "radius"), 0);
             shockwave.setOwner(player);
             shockwave.setPos(use.getClickedPos().getX(), use.getClickedPos().getY(), use.getClickedPos().getZ());
@@ -84,7 +98,7 @@ public class HammerMontu extends PickaxeItemTF {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
     }

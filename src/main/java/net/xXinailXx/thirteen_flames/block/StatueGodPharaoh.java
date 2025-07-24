@@ -13,20 +13,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
+import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.client.gui.god_pharaoh.GodPharaohScreenMining;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.network.packet.AddStatueBuilderDataPacket;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.Nullable;
-import org.zeith.hammerlib.net.Network;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Mod.EventBusSubscriber
 public class StatueGodPharaoh extends CustomStatueUtils {
     public StatueGodPharaoh() {
         super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get(), Block.box(0, 0, 0, 80, 112, 80).move(-2, 0, -2));
@@ -42,19 +46,25 @@ public class StatueGodPharaoh extends CustomStatueUtils {
             level.setBlock(pos1, structureBlock.defaultBlockState(), 11);
         }
 
-        Network.sendToServer(new AddStatueBuilderDataPacket(pos, Gods.GOD_PHARAOH));
+        StatueData.addStatue(new StatueData.StatueBuilder(getBlockPoses(pos, false), pos));
     }
 
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
         super.destroy(accessor, pos, state);
 
-        Data.StatueBuilderData.removeStatue(pos);
+        for (BlockPos pos1 : getBlockPoses(pos, false))
+            accessor.destroyBlock(pos1, false);
+
+        StatueData.removeStatue(pos);
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
         super.playerDestroy(level, player, pos, state, entity, stack);
 
-        Data.StatueBuilderData.removeStatue(pos);
+        for (BlockPos pos1 : getBlockPoses(pos, false))
+            level.destroyBlock(pos1, false);
+
+        StatueData.removeStatue(pos);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -81,5 +91,34 @@ public class StatueGodPharaoh extends CustomStatueUtils {
         }
 
         return posList;
+    }
+
+    @SubscribeEvent
+    public static void openMenu(PlayerInteractEvent.RightClickBlock event) {
+        Player player = event.getEntity();
+
+        if (player == null)
+            return;
+
+        Level level = event.getLevel();
+        BlockState state = level.getBlockState(event.getPos());
+
+        if (state.getBlock() instanceof StatueGodPharaoh) {
+            if (level.isClientSide)
+                openPharaohScreen();
+        } else if (state.getBlock() instanceof StatueStructureBlock) {
+            StatueData.StatueBuilder builder = StatueData.getStatue(event.getPos());
+
+            if (builder == null)
+                return;
+
+            StatueBE be = (StatueBE) StatueData.getStatueBE(builder.mainPos());
+
+            if (be == null || !be.isFinished() || !be.getGod().equals(Gods.GOD_PHARAOH))
+                return;
+
+            if (level.isClientSide)
+                openPharaohScreen();
+        }
     }
 }

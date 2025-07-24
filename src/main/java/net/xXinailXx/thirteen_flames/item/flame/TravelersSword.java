@@ -121,7 +121,7 @@ public class TravelersSword extends SwordItemTF {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
 
             public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                return (BlockEntityWithoutLevelRenderer)this.renderer.get();
+                return this.renderer.get();
             }
         });
     }
@@ -139,9 +139,6 @@ public class TravelersSword extends SwordItemTF {
 
         ItemStack stack = player.getMainHandItem();
 
-        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
-            return;
-
         double clumbHeight = AbilityUtils.getAbilityValue(stack, "wide_step", "climbing_height");
         AttributeInstance stepHeight = player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());
         AttributeModifier stepHeightBonus = new AttributeModifier(UUIDManager.getOrCreate("tf_travel_sword_step_height"), ThirteenFlames.MODID + ":ts_step_height_bonus", clumbHeight, AttributeModifier.Operation.ADDITION);
@@ -151,11 +148,13 @@ public class TravelersSword extends SwordItemTF {
         AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (stack.is(ItemRegistry.TRAVELERS_SWORD.get())) {
-            if (!movementSpeed.hasModifier(speedBonus))
-                movementSpeed.addTransientModifier(speedBonus);
+            if (ResearchUtils.isItemResearched(player, stack.getItem())) {
+                if (! movementSpeed.hasModifier(speedBonus))
+                    movementSpeed.addTransientModifier(speedBonus);
 
-            if (!stepHeight.hasModifier(stepHeightBonus))
-                stepHeight.addTransientModifier(stepHeightBonus);
+                if (! stepHeight.hasModifier(stepHeightBonus))
+                    stepHeight.addTransientModifier(stepHeightBonus);
+            }
         } else {
             stepHeight.removeModifier(stepHeightBonus);
             movementSpeed.removeModifier(speedBonus);

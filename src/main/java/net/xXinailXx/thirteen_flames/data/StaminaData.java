@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
 import net.xXinailXx.thirteen_flames.network.packet.capability.StaminaSyncPacket;
 import org.zeith.hammerlib.api.io.IAutoNBTSerializable;
 import org.zeith.hammerlib.api.io.NBTSerializable;
@@ -129,9 +129,8 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public void addStamina(Player player, int stamina) {
             if (stamina < 0) {
-                if (abilitiesData.isActiveAbility(player, "second_wind") && player.getHealth() < (player.getMaxHealth() / 2)) {
+                if (abilitiesData.isActiveAbility(player, "second_wind") && player.getHealth() < (player.getMaxHealth() / 2))
                     return;
-                }
 
                 setRegenCooldown(player, 5);
             }
@@ -140,11 +139,10 @@ public class StaminaData implements IAutoNBTSerializable {
         }
 
         public void addStaminaReqAbil(Player player, int stamina) {
-            if (abilitiesData.isActiveAbility(player, "stamina_mantra")) {
+            if (abilitiesData.isActiveAbility(player, "stamina_mantra"))
                 addStamina(player, stamina * abilitiesData.getLevelAbility(player, "stamina_mantra"));
-            } else {
+            else
                 addStamina(player, stamina);
-            }
         }
 
         public void addRegenCooldown(Player player, int cooldown) {
@@ -160,12 +158,12 @@ public class StaminaData implements IAutoNBTSerializable {
     public static class Actions {
         private static final IData.IAbilitiesData abilitiesData = new Data.AbilitiesData.Utils();
         private static final IStaminaData staminaData = new Utils();
-        private static Vec3 lastPos;
-        private static int posDiffs;
+        private static Vec3 lastPos = Vec3.ZERO;
+        private static int posDiffs = 0;
 
         @SubscribeEvent
         public static void attackEntity(LivingAttackEvent event) {
-            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.getSource().getEntity() instanceof Player player) {
@@ -183,7 +181,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void breakBlock(BlockEvent.BreakEvent event) {
-            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             Player player = event.getPlayer();
@@ -201,7 +199,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void setBreakSpeed(PlayerEvent.BreakSpeed event) {
-            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             Player player = event.getEntity();
@@ -217,7 +215,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerJump(LivingEvent.LivingJumpEvent event) {
-            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.getEntity() instanceof Player player)
@@ -226,7 +224,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick1(TickEvent.PlayerTickEvent event) {
-            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.SERVER) {
@@ -280,7 +278,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick2(TickEvent.PlayerTickEvent event) {
-            if (!ThirteenFlamesConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.phase == TickEvent.Phase.END) {
@@ -314,11 +312,6 @@ public class StaminaData implements IAutoNBTSerializable {
                     }
                 }
             }
-        }
-
-        static {
-            lastPos = Vec3.ZERO;
-            posDiffs = 0;
         }
     }
 }

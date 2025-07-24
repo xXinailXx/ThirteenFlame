@@ -15,7 +15,7 @@ import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import org.jetbrains.annotations.NotNull;
 
-public class MoonBowRenderer extends ZeithTechISTER {
+public class MoonBowRenderer extends ItemLevelRenderer {
     public void renderByItem(ItemStack pStack, ItemTransforms.TransformType pTransformType, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight, int pPackedOverlay) {
         this.renderLanternOverrides(pStack, pTransformType, poseStack, pBuffer, pPackedLight, pPackedOverlay);
     }

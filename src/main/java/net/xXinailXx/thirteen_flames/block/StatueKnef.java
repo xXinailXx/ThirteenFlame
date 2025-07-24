@@ -14,11 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class StatueKnef extends StatueHandler {
     public StatueKnef() {
-        super(BlockRegistry.STATUE_KNEF_STRUCTURE.get(), Gods.KNEF, new GeoItemRenderer(new StatueKnefModel()) {
-            public ResourceLocation getTextureLocation(Object animatable) {
-                return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_knef.png");
-            }
-        });
+        super(BlockRegistry.STATUE_KNEF_STRUCTURE.get(), Gods.KNEF);
     }
 
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

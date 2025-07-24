@@ -14,11 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class StatueSelyaUnfinished extends StatueHandler {
     public StatueSelyaUnfinished() {
-        super(BlockRegistry.STATUE_SELYA_STRUCTURE.get(), Gods.SELYA, new GeoItemRenderer(new StatueSelyaModel()) {
-            public ResourceLocation getTextureLocation(Object animatable) {
-                return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_selya.png");
-            }
-        });
+        super(BlockRegistry.STATUE_SELYA_STRUCTURE.get(), Gods.SELYA);
     }
 
     @Nullable

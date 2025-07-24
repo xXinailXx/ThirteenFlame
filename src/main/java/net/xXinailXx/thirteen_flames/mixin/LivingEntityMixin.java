@@ -5,7 +5,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -30,14 +29,13 @@ import java.util.Objects;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
-    @Shadow public abstract ItemStack getItemInHand(InteractionHand p_21121_);
     @Shadow public abstract boolean isUsingItem();
     @Shadow protected abstract void updatingUsingItem();
     @Shadow @Nullable private DamageSource lastDamageSource;
     @Shadow private long lastDamageStamp;
-    @Shadow public abstract double getAttributeValue(Attribute p_21134_);
     @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot p_21127_);
     @Shadow public abstract AttributeMap getAttributes();
+    @Shadow public abstract ItemStack getItemInHand(InteractionHand p_21121_);
     @Unique private IData.IAbilitiesData data = new Data.AbilitiesData.Utils();
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;updatingUsingItem()V"))
@@ -72,7 +70,7 @@ public abstract class LivingEntityMixin {
             return EquipmentSlot.HEAD;
     }
 
-    @Inject(method = "hurt", at = @At("HEAD"))
+    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true, remap = false)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (Objects.equals(source, MoonBow.SUCC)) {
             this.lastDamageSource = MoonBow.SUCC;
@@ -89,7 +87,7 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @Inject(method = "getHurtSound", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getHurtSound", at = @At("HEAD"), cancellable = true, remap = false)
     public void getHurtSound(DamageSource source, CallbackInfoReturnable<SoundSource> cir) {
         if (Objects.equals(source, MoonBow.SUCC)) {
             cir.setReturnValue(null);
@@ -97,7 +95,7 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @Inject(method = "checkTotemDeathProtection", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "checkTotemDeathProtection", at = @At("HEAD"), cancellable = true, remap = false)
     private void checkTotemDeathProtection(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         for(InteractionHand hand : InteractionHand.values()) {
             ItemStack stack = this.getItemInHand(hand);
@@ -109,7 +107,7 @@ public abstract class LivingEntityMixin {
         }
     }
 
-    @Inject(method = "collectEquipmentChanges", at = @At(value = "RETURN"))
+    @Inject(method = "collectEquipmentChanges", at = @At(value = "RETURN"), remap = false)
     private void collectEquipmentChanges(CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
         for(EquipmentSlot slot : EquipmentSlot.values()) {
             if (!slot.getType().equals(EquipmentSlot.Type.ARMOR))

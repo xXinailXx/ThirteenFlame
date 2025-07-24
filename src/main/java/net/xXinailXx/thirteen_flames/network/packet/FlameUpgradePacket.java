@@ -1,25 +1,20 @@
 package net.xXinailXx.thirteen_flames.network.packet;
 
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.xXinailXx.enderdragonlib.client.particle.*;
-import net.xXinailXx.thirteen_flames.block.StatueHandler;
-import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
-import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
-import net.xXinailXx.thirteen_flames.data.Data;
-import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.zeith.hammerlib.net.IPacket;
+import org.zeith.hammerlib.net.MainThreaded;
 import org.zeith.hammerlib.net.PacketContext;
 
 import java.awt.*;
 
+@MainThreaded
 public class FlameUpgradePacket implements IPacket {
     private ItemStack stack;
 

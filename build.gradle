@@ -118,7 +118,7 @@ dependencies {
         annotationProcessor "org.spongepowered:mixin:0.8.4:processor"
     }
 
-    minecraft 'net.minecraftforge:forge:1.19.2-43.3.0'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.5.0'
 
     implementation 'org.jetbrains:annotations:20.1.0'
 
@@ -155,7 +155,9 @@ dependencies {
                 }
             }
         }
-    } else file("libs").mkdir()
+    } else {
+        file("libs").mkdir()
+    }
 }
 
 jar {
@@ -164,7 +166,7 @@ jar {
                 "MixinConfigs"            : "thirteen_flames.mixins.json",
                 "Specification-Title"     : "thirteen_flames",
                 "Specification-Vendor"    : "xXinailXx",
-                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Specification-Version"   : "1",
                 "Implementation-Title"    : "thirteen_flames",
                 "Implementation-Version"  : project.version,
                 "Implementation-Vendor"   : "xXinailXx",

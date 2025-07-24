@@ -23,7 +23,7 @@ public class LivingFleshEntityRenderer extends GeoEntityRenderer<LivingFleshEnti
     }
 
     public RenderType getRenderType(LivingFleshEntity animatable, float partialTick, PoseStack poseStack, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, int packedLight, ResourceLocation texture) {
-        poseStack.scale(animatable.getSize() / 10 * 0.25F, animatable.getSize() / 10 * 0.25F, animatable.getSize() / 10 * 0.25F);
+        poseStack.scale(0.25F + animatable.getSize() * 0.01F, 0.1F + animatable.getSize() * 0.01F, 0.1F + animatable.getSize() * 0.01F);
 
         return super.getRenderType(animatable, partialTick, poseStack, bufferSource, buffer, packedLight, texture);
     }

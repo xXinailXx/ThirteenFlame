@@ -14,11 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class StatueRonos extends StatueHandler {
     public StatueRonos() {
-        super(BlockRegistry.STATUE_RONOS_STRUCTURE.get(), Gods.RONOS, new GeoItemRenderer(new StatueRonosModel()) {
-            public ResourceLocation getTextureLocation(Object animatable) {
-                return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_ronos.png");
-            }
-        });
+        super(BlockRegistry.STATUE_RONOS_STRUCTURE.get(), Gods.RONOS);
     }
 
     @Nullable

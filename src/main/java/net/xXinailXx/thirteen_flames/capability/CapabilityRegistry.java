@@ -27,6 +27,9 @@ public class CapabilityRegistry {
     public static void playerLogged(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
 
+        if (player == null)
+            return;
+
         Network.sendTo(new StaminaSyncPacket(StaminaData.Utils.getStaminaData(player).serializeNBT()), player);
         Network.sendTo(new AbilitiesSyncPacket(Data.AbilitiesData.getAbilitiesData(player)), player);
         Network.sendTo(new EffectSyncPacket(Data.EffectData.Utils.getEffectData(player).serializeNBT()), player);

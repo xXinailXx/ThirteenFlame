@@ -10,7 +10,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.xXinailXx.thirteen_flames.client.gui.scroll.ScrollScreen;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
 import net.xXinailXx.thirteen_flames.init.*;
 import software.bernie.geckolib3.GeckoLib;
 
@@ -49,7 +49,7 @@ public class ThirteenFlames {
         GeckoLib.initialize();
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ThirteenFlamesConfig.SPEC, "thirteen_flames-common.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ThirteenFlamesCommonConfig.SPEC, "thirteen_flames-common.toml");
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {

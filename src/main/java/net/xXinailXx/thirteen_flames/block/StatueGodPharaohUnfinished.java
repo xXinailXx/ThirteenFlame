@@ -11,13 +11,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
-import net.xXinailXx.thirteen_flames.data.Data;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
 import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
-import net.xXinailXx.thirteen_flames.network.packet.AddStatueBuilderDataPacket;
-import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.Nullable;
-import org.zeith.hammerlib.net.Network;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,19 +34,25 @@ public class StatueGodPharaohUnfinished extends CustomStatueUtils {
             level.setBlock(pos1, structureBlock.defaultBlockState(), 11);
         }
 
-        Network.sendToServer(new AddStatueBuilderDataPacket(pos, Gods.GOD_PHARAOH));
+        StatueData.addStatue(new StatueData.StatueBuilder(getBlockPoses(pos, false), pos));
     }
 
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
         super.destroy(accessor, pos, state);
 
-        Data.StatueBuilderData.removeStatue(pos);
+        for (BlockPos pos1 : getBlockPoses(pos, false))
+            accessor.destroyBlock(pos1, false);
+
+        StatueData.removeStatue(pos);
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
         super.playerDestroy(level, player, pos, state, entity, stack);
 
-        Data.StatueBuilderData.removeStatue(pos);
+        for (BlockPos pos1 : getBlockPoses(pos, false))
+            level.destroyBlock(pos1, false);
+
+        StatueData.removeStatue(pos);
     }
 
     @Nullable

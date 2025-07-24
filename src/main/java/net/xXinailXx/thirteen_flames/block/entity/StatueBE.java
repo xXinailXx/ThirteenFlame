@@ -7,25 +7,22 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
-import net.xXinailXx.enderdragonlib.interfaces.ITickBlockEntity;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesConfig;
-import net.xXinailXx.thirteen_flames.data.Data;
+import net.xXinailXx.enderdragonlib.utils.statues.StatueBlockEntity;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
 import net.xXinailXx.thirteen_flames.effect.StatueEffect;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
@@ -43,16 +40,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEntity {
-    @Getter
+@Getter
+public class StatueBE extends StatueBlockEntity implements IAnimatable {
     private AnimationFactory factory = new AnimationFactory(this);
     @Setter
-    @Getter
-    private int timeToUpgrade = ThirteenFlamesConfig.TIME_TO_FLAME_UPGRADE.get();
-    @Getter
+    private int timeToUpgrade = ThirteenFlamesCommonConfig.TIME_TO_FLAME_UPGRADE.get();
     private final Gods god;
-    protected int tickCount = 0;
-    @Getter
     private final boolean finished;
 
     public StatueBE(BlockEntityType<?> type, BlockPos pos, BlockState state, Gods god, boolean finished) {
@@ -64,35 +57,6 @@ public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEnti
     public void tick() {
         if (this.level == null || this.level.isClientSide)
             return;
-
-        if (this.tickCount % 5 == 0 || this.tickCount == 0) {
-            Data.StatueBuilderData.StatueBuilder builder = null;
-
-            if (!Data.StatueBuilderData.containsStatue(this)) {
-                Iterable<BlockPos> iterable;
-
-                if (getGod().equals(Gods.GOD_PHARAOH))
-                    iterable = BlockPos.betweenClosed(this.worldPosition.offset(- 2, 0, - 2), this.worldPosition.offset(2, 6, 2));
-                else
-                    iterable = BlockPos.betweenClosed(this.worldPosition.offset(- 1, 0, - 1), this.worldPosition.offset(1, 4, 1));
-
-                List<BlockPos> posList = new ArrayList<>();
-
-                for (BlockPos pos : iterable)
-                    posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
-
-                builder = new Data.StatueBuilderData.StatueBuilder(posList, this.worldPosition);
-                Data.StatueBuilderData.addStatue(builder);
-            }
-
-            if (builder != null && !Data.StatueBuilderData.containsStatueBE(builder)) {
-                Data.StatueBuilderData.addStatueBE(builder);
-            } else if (builder == null) {
-                builder = Data.StatueBuilderData.getStatue(this.worldPosition);
-
-                Data.StatueBuilderData.addStatueBE(builder);
-            }
-        }
 
         RandomSource random = this.level.getRandom();
         Color color = null;
@@ -233,7 +197,7 @@ public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEnti
         if (this.timeToUpgrade > 0)
             this.timeToUpgrade--;
 
-        this.tickCount++;
+        super.tick();
 
         setChanged();
     }
@@ -247,36 +211,16 @@ public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEnti
 
     protected void saveAdditional(CompoundTag tag) {
         super.saveAdditional(tag);
-        tag.putInt("tick_count", this.tickCount);
         tag.putInt("time_to_upgrade", this.timeToUpgrade);
-    }
-
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-
-        this.saveAdditional(tag);
-
-        return tag;
-    }
-
-    public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
-    }
-
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-
-        this.load(pkt.getTag());
     }
 
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.tickCount = tag.getInt("tick_count");
         this.timeToUpgrade = tag.getInt("time_to_upgrade");
     }
 
     public void resetFlameUpgradeData() {
-        this.timeToUpgrade = ThirteenFlamesConfig.TIME_TO_FLAME_UPGRADE.get();
+        this.timeToUpgrade = ThirteenFlamesCommonConfig.TIME_TO_FLAME_UPGRADE.get();
     }
 
     public void registerControllers(AnimationData data) {
@@ -286,5 +230,4 @@ public class StatueBE extends BlockEntity implements IAnimatable, ITickBlockEnti
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         return PlayState.CONTINUE;
     }
-
 }

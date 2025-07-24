@@ -155,7 +155,7 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
 
         ItemEntity itemEntity = (ItemEntity) event.getEntityHitResult().getEntity();
 
-        if (itemEntity == null && !player.getLevel().isClientSide)
+        if (!player.getLevel().isClientSide)
             return;
 
         if (player.getMainHandItem().is(ItemRegistry.AURITEH_NUGGET.get())) {

@@ -14,11 +14,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 
 public class StatueMontu extends StatueHandler {
     public StatueMontu() {
-        super(BlockRegistry.STATUE_MONTU_STRUCTURE.get(), Gods.MONTU, new GeoItemRenderer(new StatueMontuModel()) {
-            public ResourceLocation getTextureLocation(Object animatable) {
-                return new ResourceLocation(ThirteenFlames.MODID, "textures/block/statue_montu.png");
-            }
-        });
+        super(BlockRegistry.STATUE_MONTU_STRUCTURE.get(), Gods.MONTU);
     }
 
     @Nullable
