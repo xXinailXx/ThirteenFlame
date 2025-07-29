@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "net.xXinailXx.thirteen_flames.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_8",
   "refmap": "thirteen_flames.refmap.json",
   "mixins": [
     "AbstractArrowMixin",
@@ -38,5 +38,5 @@
     "client.PassiveSkillTreeMixin",
     "client.SkillButtomMixin"
   ],
-  "minVersion": "0.7"
+  "minVersion": "0.8"
 }

@@ -35,7 +35,7 @@ public class LivingEntityMixin {
     @Shadow private long lastDamageStamp;
     @Shadow protected ItemStack useItem;
     @Shadow protected int useItemRemaining;
-    @Shadow @Nullable private DamageSource lastDamageSource;
+    @Shadow private DamageSource lastDamageSource;
     @Unique private IData.IAbilitiesData data = new Data.AbilitiesData.Utils();
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;updateSwimAmount()V"), remap = false)
