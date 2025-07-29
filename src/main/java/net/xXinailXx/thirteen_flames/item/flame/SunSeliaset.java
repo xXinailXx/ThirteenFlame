@@ -19,22 +19,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.capability.managers.CompoundManager;
-import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
-import net.xXinailXx.thirteen_flames.block.StatueHandler;
-import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
-import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.SunSeliasetEntity;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -52,22 +45,12 @@ public class SunSeliaset extends FlameItemSetting {
     public InteractionResult useOn(UseOnContext use) {
         BlockPos pos = use.getClickedPos().above();
         Level level = use.getLevel();
-        BlockState state = level.getBlockState(pos);
         ItemStack stack = use.getItemInHand();
 
         if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
             return InteractionResult.SUCCESS;
 
-        if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
-            StatueBE be = (StatueBE) (state.getBlock() instanceof StatueHandler ? StatueData.getStatueBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos));
-
-            StatueHandler.upgrade(be, level, stack, use.getPlayer(), use.getHand());
-
-            if (be != null && be.isFinished() && be.getTimeToUpgrade() > 0 && !StatueHandler.isUpgrade(stack, be.getGod()) && !level.isClientSide)
-                return InteractionResult.SUCCESS;
-        }
-
-        SunSeliasetEntity sun = new SunSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "light", "radius"), (int) AbilityUtils.getAbilityValue(stack, "light", "cooldown"), stack);
+        SunSeliasetEntity sun = new SunSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "light", "radius"), (int) AbilityUtils.getAbilityValue(stack, "light", "cooldown"));
         sun.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         level.addFreshEntity(sun);
 
@@ -75,6 +58,15 @@ public class SunSeliaset extends FlameItemSetting {
         use.getPlayer().setItemInHand(use.getHand(), Items.AIR.getDefaultInstance());
 
         return InteractionResult.SUCCESS;
+    }
+
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x382c00)
+                .backgroundBottom(0x1a1400)
+                .borderTop(0xfff0ba)
+                .borderBottom(0xffe99f)
+                .build();
     }
 
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -85,10 +77,6 @@ public class SunSeliaset extends FlameItemSetting {
                 return this.renderer.get();
             }
         });
-    }
-
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0, 0));
     }
 
     @SubscribeEvent

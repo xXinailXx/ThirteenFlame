@@ -31,16 +31,20 @@ public class ClientModEvents {
             event.enqueueWork(() -> {
                 ItemProperties.register(ItemRegistry.MOON_BOW.get(), new ResourceLocation(ThirteenFlames.MODID, "pull"), (stack, world, living, a) -> {
                     if (living != null && living.isUsingItem())
-                        return living.getUseItem() != stack ? 0.0F : (float) (stack.getUseDuration() - living.getUseItemRemainingTicks()) / 20.0F;
+                        return living.getUseItem() != stack ? 0F : (float) (stack.getUseDuration() - living.getUseItemRemainingTicks()) / 20F;
                     else
-                        return 0.0F;
+                        return 0F;
                 });
                 ItemProperties.register(ItemRegistry.BLACK_ROSE.get(), new ResourceLocation(ThirteenFlames.MODID, "fire_type"),
                         (stack, world, living, a) -> Math.min(8, NBTUtils.getInt(stack, "fire_type", 0)));
                 ItemProperties.register(ItemRegistry.SCROLL_HET.get(), new ResourceLocation(ThirteenFlames.MODID, "type"),
                         (stack, world, living, a) -> Math.min(7, NBTUtils.getInt(stack, "type", 0)));
-                ItemProperties.register(ItemRegistry.SHIELD_RONOSA.get(), new ResourceLocation(ThirteenFlames.MODID, "use"),
-                        (stack, world, living, a) -> Math.min(1, NBTUtils.getInt(stack, "use", 0)));
+                ItemProperties.register(ItemRegistry.SHIELD_RONOSA.get(), new ResourceLocation(ThirteenFlames.MODID, "use"), (stack, world, living, a) -> {
+                    if (living != null && living.isUsingItem())
+                        return living.getUseItem() != stack ? 0 : 1;
+                    else
+                        return 0;
+                });
             });
 
             EntityRenderers.register(EntityRegistry.LIVING_FLESH.get(), LivingFleshEntityRenderer::new);

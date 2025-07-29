@@ -21,7 +21,6 @@ public class OreBlockSimulationRenderer extends EntityRenderer<OreBlockSimulatio
         super(pContext);
     }
 
-    @Override
     public void render(OreBlockSimulationEntity pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         BlockState blockstate = pEntity.getBlockState();
 
@@ -49,7 +48,6 @@ public class OreBlockSimulationRenderer extends EntityRenderer<OreBlockSimulatio
         }
     }
 
-    @Override
     public ResourceLocation getTextureLocation(OreBlockSimulationEntity pEntity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }

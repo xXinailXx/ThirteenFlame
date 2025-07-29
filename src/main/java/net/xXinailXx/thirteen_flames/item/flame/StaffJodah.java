@@ -26,10 +26,10 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.enderdragonlib.utils.AABBUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
@@ -38,8 +38,6 @@ import net.xXinailXx.thirteen_flames.entity.SoulEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 import org.zeith.hammerlib.net.Network;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -92,8 +90,8 @@ public class StaffJodah extends SwordItemTF {
                 LevelingUtils.addExperience(stack, 1);
             }
 
-            player.getCooldowns().addCooldown(stack.getItem(), (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "durability")));
-            AbilityUtils.addAbilityCooldown(stack, "backlight", (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "durability")));
+            player.getCooldowns().addCooldown(stack.getItem(), (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "cooldown")));
+            AbilityUtils.addAbilityCooldown(stack, "backlight", (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "cooldown")));
         }
 
         return super.use(level, player, hand);
@@ -127,6 +125,15 @@ public class StaffJodah extends SwordItemTF {
         return builder.build();
     }
 
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x230529)
+                .backgroundBottom(0x1b051f)
+                .borderTop(0x98dff1)
+                .borderBottom(0x1c5f80)
+                .build();
+    }
+
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
@@ -135,9 +142,5 @@ public class StaffJodah extends SwordItemTF {
                 return this.renderer.get();
             }
         });
-    }
-
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 1, 0));
     }
 }

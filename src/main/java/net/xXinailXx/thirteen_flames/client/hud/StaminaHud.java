@@ -26,9 +26,8 @@ public class StaminaHud {
         LocalPlayer player = MC.player;
 
         if (player != null && !player.isCreative() && !player.isSpectator()) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
-
 
             RandomSource random = player.getRandom();
             IStaminaData staminaData = new StaminaData.Utils();

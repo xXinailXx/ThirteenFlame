@@ -38,7 +38,7 @@ public class NileTide extends AbstarctAbilityWidgets {
             FishingHook hook = event.getHookEntity();
             Player player = hook.getPlayerOwner();
             Level level = hook.getLevel();
-            ItemStack stack = null;
+            ItemStack stack;
 
             if (!level.isClientSide) {
                 if (player.getMainHandItem().canPerformAction(net.minecraftforge.common.ToolActions.FISHING_ROD_CAST))

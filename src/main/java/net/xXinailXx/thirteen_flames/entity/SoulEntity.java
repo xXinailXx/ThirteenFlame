@@ -52,10 +52,9 @@ public class SoulEntity extends ThrowableProjectile {
         if (!entity.is(this.getOwner()))
             return;
 
-        if (!(entity instanceof LivingEntity))
+        if (!(entity instanceof LivingEntity living))
             return;
 
-        LivingEntity living = (LivingEntity) entity;
         living.heal(this.heal);
         this.discard();
     }

@@ -7,7 +7,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
@@ -33,7 +32,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
         super(pEntityType, pLevel);
     }
 
-    public ShockwaveEntity(Level level, int radius, float damage) {
+    public ShockwaveEntity(Level level, int radius) {
         super(EntityRegistry.SHOCKWAVE.get(), level);
 
         this.radius = radius;
@@ -55,7 +54,6 @@ public class ShockwaveEntity extends ThrowableProjectile {
         }
 
         if (!poses.isEmpty()) {
-            Entity owner = getOwner();
             Vec3 centerVec = new Vec3(center.getX(), center.getY(), center.getZ());
             List<BlockPos> closest = poses.stream().filter(p -> new Vec3(p.getX(), p.getY(), p.getZ()).distanceTo(centerVec) <= step).toList();
 
@@ -82,7 +80,9 @@ public class ShockwaveEntity extends ThrowableProjectile {
                                 break;
 
                             entity = new BlockSimulationEntity(level, state);
+
                             entity.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
+
                             break;
                         } else {
                             extraY++;
@@ -98,6 +98,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
                                 break;
 
                             entity = new BlockSimulationEntity(level, state);
+
                             entity.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5);
 
                             break;

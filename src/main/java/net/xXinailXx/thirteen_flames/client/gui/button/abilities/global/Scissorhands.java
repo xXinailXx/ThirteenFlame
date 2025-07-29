@@ -57,10 +57,9 @@ public class Scissorhands extends AbstarctAbilityWidgets {
 
                     drops.forEach(d -> {
                         net.minecraft.world.entity.item.ItemEntity ent = entity.spawnAtLocation(d, 1.0F);
-                        ent.setDeltaMovement(ent.getDeltaMovement().add((double)((rand.nextFloat() - rand.nextFloat()) * 0.1F), (double)(rand.nextFloat() * 0.05F), (double)((rand.nextFloat() - rand.nextFloat()) * 0.1F)));
+                        ent.setDeltaMovement(ent.getDeltaMovement().add((rand.nextFloat() - rand.nextFloat()) * 0.1F, rand.nextFloat() * 0.05F, (rand.nextFloat() - rand.nextFloat()) * 0.1F));
                     });
                 }
-                return;
             }
         }
     }
@@ -106,7 +105,7 @@ public class Scissorhands extends AbstarctAbilityWidgets {
                 if (isShearsMinesBlock(state))
                     stack = stack.getItem().getDefaultInstance();
 
-                if (state != null) {
+                if (stack != null) {
                     ItemEntity itemEntity = new ItemEntity(level, event.getPos().getX(), event.getPos().getY(), event.getPos().getZ(), stack);
                     level.addFreshEntity(itemEntity);
                 }

@@ -14,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
@@ -24,7 +23,6 @@ import net.xXinailXx.thirteen_flames.client.gui.button.gui.*;
 import net.xXinailXx.thirteen_flames.data.Data;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
@@ -99,10 +97,10 @@ public abstract class AbstractGuiPharaoh extends Screen {
         blit(poseStack, x + 301, y + 104, 163, 373, 30, 24, texWidth, texHeight);
         blit(poseStack, x + 301, y + 61, 194, 372, 30, 30, texWidth, texHeight);
 
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabSilver(MC.player)), x + 317 - this.font.width(String.valueOf(scarabsData.getScarabSilver(MC.player))) / 2, y + 215, 0x673E09);
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabGold(MC.player)), x + 317 - this.font.width(String.valueOf(scarabsData.getScarabGold(MC.player))) / 2, y + 174, 0x673E09);
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabAuriteh(MC.player)), x + 317 - this.font.width(String.valueOf(scarabsData.getScarabAuriteh(MC.player))) / 2, y + 132, 0x673E09);
-        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabLazotep(MC.player)), x + 317 - this.font.width(String.valueOf(scarabsData.getScarabLazotep(MC.player))) / 2, y + 92, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabSilver(MC.player)), x + 317 - (float) this.font.width(String.valueOf(scarabsData.getScarabSilver(MC.player))) / 2, y + 215, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabGold(MC.player)), x + 317 - (float) this.font.width(String.valueOf(scarabsData.getScarabGold(MC.player))) / 2, y + 174, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabAuriteh(MC.player)), x + 317 - (float) this.font.width(String.valueOf(scarabsData.getScarabAuriteh(MC.player))) / 2, y + 132, 0x673E09);
+        this.MC.font.draw(poseStack, String.valueOf(scarabsData.getScarabLazotep(MC.player)), x + 317 - (float) this.font.width(String.valueOf(scarabsData.getScarabLazotep(MC.player))) / 2, y + 92, 0x673E09);
 
         if (effectData.isCurseKnef(MC.player)) {
             poseStack.pushPose();
@@ -172,9 +170,7 @@ public abstract class AbstractGuiPharaoh extends Screen {
                     bonusInfo.add(bonus.append(Component.translatable("gui.thirteen_flames.bonus_craft").append(guiLeveling.getCraftLevel(MC.player) + "%.")));
                     bonusInfo.add(Component.literal(" "));
                 }
-                case FIGHT -> {
-                    bonusInfo.add(bonus.append(Component.translatable("gui.thirteen_flames.bonus_fight_1").append(guiLeveling.getFightLevel(MC.player) + "%.\n        §l◆§r").append(Component.translatable("gui.thirteen_flames.bonus_fight_2")).append(Math.round((float) guiLeveling.getFightLevel(MC.player) / 10) + "%.")));
-                }
+                case FIGHT -> bonusInfo.add(bonus.append(Component.translatable("gui.thirteen_flames.bonus_fight_1").append(guiLeveling.getFightLevel(MC.player) + "%.\n        §l◆§r").append(Component.translatable("gui.thirteen_flames.bonus_fight_2")).append(Math.round((float) guiLeveling.getFightLevel(MC.player) / 10) + "%.")));
                 case HEALTH -> {
                     bonusInfo.add(bonus.append(Component.translatable("gui.thirteen_flames.bonus_health").append(guiLeveling.getHealthLevel(MC.player) + "%.")));
                     bonusInfo.add(Component.literal(" "));
@@ -222,7 +218,6 @@ public abstract class AbstractGuiPharaoh extends Screen {
         List<FormattedCharSequence> tooltip = Lists.newArrayList();
 
         int renderX = 0;
-        int renderY = 0;
 
         for (MutableComponent entry : bonusInfo) {
             int entryWidth = (MC.font.width(entry)) / 2;
@@ -264,22 +259,18 @@ public abstract class AbstractGuiPharaoh extends Screen {
 
             poseStack.scale(1.5F, 1.5F, 1.5F);
 
-            this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.xp"), x * 0.666F + 30 - this.font.width(Component.translatable("gui.thirteen_flames.xp")) / 2, y * 0.666F + 171, 0x673E09);
+            this.MC.font.draw(poseStack, Component.translatable("gui.thirteen_flames.xp"), x * 0.666F + 30 - (float) this.font.width(Component.translatable("gui.thirteen_flames.xp")) / 2, y * 0.666F + 171, 0x673E09);
             this.MC.font.draw(poseStack, Component.literal("__"), x * 0.666F + 25, y * 0.666F + 175, 0x673E09);
-            this.MC.font.draw(poseStack, String.valueOf(MC.player.totalExperience), x * 0.666F + 32 - this.font.width(String.valueOf(MC.player.totalExperience)) / 2, y * 0.666F + 186, 0x673E09);
+            this.MC.font.draw(poseStack, String.valueOf(MC.player.totalExperience), x * 0.666F + 32 - (float) this.font.width(String.valueOf(MC.player.totalExperience)) / 2, y * 0.666F + 186, 0x673E09);
 
             poseStack.popPose();
         }
 
         super.render(poseStack, pMouseX, pMouseY, pPartialTick);
-        Iterator var33 = this.children().iterator();
 
-        while (var33.hasNext()) {
-            GuiEventListener listener = (GuiEventListener) var33.next();
-            if (listener instanceof AbstractButton) {
-                AbstractButton button = (AbstractButton) listener;
-                if (button.isHoveredOrFocused() && button instanceof IHoverableWidget) {
-                    IHoverableWidget widget = (IHoverableWidget) button;
+        for (GuiEventListener listener : this.children()) {
+            if (listener instanceof AbstractButton button) {
+                if (button.isHoveredOrFocused() && button instanceof IHoverableWidget widget) {
                     widget.onHovered(poseStack, pMouseX, pMouseY);
                 }
             }

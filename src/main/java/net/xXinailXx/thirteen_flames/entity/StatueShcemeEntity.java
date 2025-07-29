@@ -42,7 +42,7 @@ public class StatueShcemeEntity extends Projectile {
     public void tick() {
         super.tick();
 
-        if (this.tickCount % 40 == 0 || this.tickCount == 0) {
+        if (this.tickCount % 40 == 0) {
             if (this.level.isClientSide)
                 return;
 
@@ -59,15 +59,11 @@ public class StatueShcemeEntity extends Projectile {
 
             int count = 0;
             int maxCount = switch (getGod()) {
-                case KNEF -> 45;
-                case SELYA -> 45;
-                case MONTU -> 45;
-                case RONOS -> 45;
-                case HET -> 45;
+                case KNEF, SELYA, MONTU, RONOS, HET -> 45;
                 case GOD_PHARAOH -> 175;
             };
 
-            Iterable<BlockPos> iterable = null;
+            Iterable<BlockPos> iterable;
 
             if (getGod().equals(Gods.GOD_PHARAOH))
                 iterable = BlockPos.betweenClosed(new BlockPos(Vec3.atCenterOf(this.blockPosition())).offset(-2, 0, -2), new BlockPos(Vec3.atCenterOf(this.blockPosition())).offset(2, 6, 2));
@@ -83,7 +79,7 @@ public class StatueShcemeEntity extends Projectile {
                     continue;
                 }
 
-                ParticleOptions options = null;
+                ParticleOptions options;
 
                 if (getGod().equals(Gods.KNEF))
                     options = ParticleUtils.createKnefParticle(color, 0.05F, 40, 0);
@@ -98,7 +94,7 @@ public class StatueShcemeEntity extends Projectile {
                     Data.StatueBuilderData.addShceme(this.getUUID(), new Data.StatueBuilderData.ShcemeBuilder(buildPosList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod()));
 
                 setBuilded(true);
-            } else if (count != maxCount) {
+            } else if (count < maxCount) {
                 Data.StatueBuilderData.removeShceme(this.getUUID());
                 setBuilded(false);
             }

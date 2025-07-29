@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.LivingFleshEntity;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
@@ -81,8 +82,14 @@ public class BlackRose extends FlameItemSetting {
         });
     }
 
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
+
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x311827)
+                .backgroundBottom(0x0b0708)
+                .borderTop(0x952b5a)
+                .borderBottom(0x5e2043)
+                .build();
     }
 
     @SubscribeEvent
@@ -106,7 +113,7 @@ public class BlackRose extends FlameItemSetting {
                 if (!net.xXinailXx.enderdragonlib.utils.MathUtils.isRandom(player.getLevel(), (int) AbilityUtils.getAbilityValue(stack, "flesh", "revival")))
                     return;
 
-                LivingFleshEntity entity = new LivingFleshEntity(player.getLevel(), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "size"), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "separation"), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "piece"), stack);
+                LivingFleshEntity entity = new LivingFleshEntity(player.getLevel(), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "size"), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "separation"), (int) AbilityUtils.getAbilityValue(stack, "stillbirth", "piece"));
                 entity.setPos(event.getEntity().position());
                 player.getLevel().addFreshEntity(entity);
 

@@ -10,14 +10,12 @@ import it.hurts.sskirillss.relics.client.screen.utils.ScreenUtils;
 import it.hurts.sskirillss.relics.items.relics.base.RelicItem;
 import it.hurts.sskirillss.relics.items.relics.base.data.base.RelicData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
@@ -32,7 +30,6 @@ import java.util.List;
 public class AddPointFireItem extends AbstractDescriptionWidget implements IHoverableWidget {
     public static final ResourceLocation ADD_POINT_FIRE = new ResourceLocation(ThirteenFlames.MODID, "textures/gui/add_point_fire.png");
     private static final IData.IScarabsData scarabsData = new Data.ScarabsData.Utils();
-    private final Player player = MC.player;
     private final ItemStack stack;
     private final BlockPos pos;
 
@@ -70,7 +67,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
 
         poseStack.scale(1.2F, 1.2F, 1.2F);
 
-        drawString(poseStack, MC.font, String.valueOf(50), (int) (this.x * 0.833F + 55 - MC.font.width(String.valueOf(50)) / 2), (int) (this.y * 0.833F + 8), 16777215);
+        drawString(poseStack, MC.font, String.valueOf(50), (int) (this.x * 0.833F + 55 - (float) MC.font.width(String.valueOf(50)) / 2), (int) (this.y * 0.833F + 8), 16777215);
 
         poseStack.scale(1.0F, 1.0F, 1.0F);
         poseStack.popPose();
@@ -87,7 +84,7 @@ public class AddPointFireItem extends AbstractDescriptionWidget implements IHove
             int scarabsSilver = scarabsData.getScarabSilver(MC.player);
             int levelRelic = LevelingUtils.getLevel(this.stack);
             int maxLevelRelic = relicData.levelingData.getMaxLevel();
-            boolean isMaxLevelRelic = levelRelic >= maxLevelRelic ? true : false;
+            boolean isMaxLevelRelic = levelRelic >= maxLevelRelic;
             List<MutableComponent> entries = Lists.newArrayList(new MutableComponent[]{});
 
             if (!(isMaxLevelRelic))

@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -58,7 +57,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
             this.shotPos = this.getPosition(1);
 
         for(int i = 0; i < this.rays.size(); ++i) {
-            double a = 360 / this.rays.size() * i - this.tickCount * 20;
+            double a = 360D / this.rays.size() * i - this.tickCount * 20;
             double radius = this.rad + Math.sin(Math.toRadians(this.tickCount * 20) - 90) * 0.04;
 
             if (i % 2 == 0)
@@ -68,11 +67,10 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
             Vec3 z = motion.normalize().cross(x).normalize().scale(radius);
             Vec3 pos = this.getPosition(1.0F).add(x.scale(Math.cos(Math.toRadians(a)))).add(z.scale(Math.sin(Math.toRadians(a))));
 
-            if (i % 2 == 0) {
+            if (i % 2 == 0)
                 pos = pos.add(motion.scale(-0.3));
-            }
 
-            ((MoonProjectileSpecialEntity)this.rays.get(i)).setPos(pos);
+            this.rays.get(i).setPos(pos);
         }
 
         this.pos1 = this.position().add(new Vec3(MathUtils.randomFloat(this.random) * 0.15, MathUtils.randomFloat(this.random) * 0.15, MathUtils.randomFloat(this.random) * 0.15));
@@ -82,6 +80,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
 
         if (this.tickCount % 2 == 0 && !this.level.isClientSide) {
             ParticleActions.spawnParticleLine(this.level, new CircleTintData(new Color(0, 34, 255), 0.3F, 40, 0.91F, false), this.prevPos3 == null ? this.shotPos : this.prevPos3, this.pos3, 25, 0);
+
             this.prevPos1 = this.pos1;
             this.prevPos2 = this.pos2;
             this.prevPos3 = this.pos3;
@@ -93,8 +92,11 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
                 for(int i = 0; i < 120; ++i) {
                     Vec3 direction = new Vec3(1, 0, 0);
                     direction = direction.yRot((float)Math.toRadians(this.random.nextFloat() * 360)).scale(this.random.nextFloat() * 0.8F);
+
                     ParticleActions.spawnDirectedParticle(this.level, new CircleTintData(new Color(0, 15, 49), 4.2F, 80, 0.95F, false), this.getX(), this.getY(), this.getZ(), direction.x, MathUtils.randomFloat(this.random) * 0.1, direction.z);
+
                     direction = direction.yRot((float)Math.toRadians(this.random.nextFloat() * 360)).normalize().scale(this.random.nextFloat() * 0.8F);
+
                     ParticleActions.spawnDirectedParticle(this.level, new CircleTintData(new Color(28, 0, 27), 4.2F, 80, 0.95F, false), this.getX(), this.getY(), this.getZ(), direction.x, MathUtils.randomFloat(this.random) * 0.1, direction.z);
                 }
             }
@@ -102,8 +104,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
             if (this.getBow().is(ItemRegistry.MOON_BOW.get())) {
                 Entity owner = this.getOwner();
 
-                if (owner instanceof Player) {
-                    Player player = (Player)owner;
+                if (owner instanceof Player player) {
                     MoonStormEntity storm = new MoonStormEntity(EntityRegistry.MOON_STORM.get(), this.getLevel());
                     storm.setPos(this.getPosition(1.0F));
                     storm.setRadius((float) AbilityUtils.getAbilityValue(this.getBow(), "storm", "radius"));
@@ -116,7 +117,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
                     this.getLevel().addFreshEntity(storm);
 
                     if (!this.getLevel().isClientSide())
-                        this.getLevel().playSound(null, this.getOwner(), AbilityUtils.getAbilityValue(this.getBow(), "storm", "radius") > 5 ? (SoundEvent) SoundRegistry.MOON_BOW_STORM.get() : (SoundEvent) SoundRegistry.MOON_BOW_STORM_SHORT.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.6F + 1.0F, this.random.nextFloat() * 0.2F + 0.8F);
+                        this.getLevel().playSound(null, this.getOwner(), AbilityUtils.getAbilityValue(this.getBow(), "storm", "radius") > 5 ? SoundRegistry.MOON_BOW_STORM.get() : SoundRegistry.MOON_BOW_STORM_SHORT.get(), SoundSource.PLAYERS, this.random.nextFloat() * 0.6F + 1.0F, this.random.nextFloat() * 0.2F + 0.8F);
                 }
             }
 
@@ -182,7 +183,7 @@ public class MoonStormcallerEntity extends ThrowableProjectile {
     }
 
     public ItemStack getBow() {
-        return (ItemStack)this.getEntityData().get(BOW);
+        return this.getEntityData().get(BOW);
     }
 
     public MoonStormcallerEntity setRays(List<MoonProjectileSpecialEntity> rays) {

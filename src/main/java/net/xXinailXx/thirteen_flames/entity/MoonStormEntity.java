@@ -3,6 +3,8 @@ package net.xXinailXx.thirteen_flames.entity;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.utils.MathUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -39,6 +41,8 @@ public class MoonStormEntity extends Projectile {
     private static final EntityDataAccessor<Float> DAMAGE = SynchedEntityData.defineId(MoonStormEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> HEAL = SynchedEntityData.defineId(MoonStormEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> FREQ = SynchedEntityData.defineId(MoonStormEntity.class, EntityDataSerializers.INT);
+    @Getter
+    @Setter
     private ItemStack bow;
     private double r;
     double a;
@@ -62,8 +66,8 @@ public class MoonStormEntity extends Projectile {
     public void tick() {
         super.tick();
 
-        if (!this.level.isClientSide() && !this.taskQueue.isEmpty() && ((MoonStormEntity.DelayedRunnable)this.taskQueue.getFirst()).startedAt + ((MoonStormEntity.DelayedRunnable)this.taskQueue.getFirst()).delay <= this.tickCount)
-            ((MoonStormEntity.DelayedRunnable)this.taskQueue.pop()).runnable.run();
+        if (!this.level.isClientSide() && !this.taskQueue.isEmpty() && this.taskQueue.getFirst().startedAt + this.taskQueue.getFirst().delay <= this.tickCount)
+            this.taskQueue.pop().runnable.run();
 
         this.radius = this.getRadius();
         int lifetime = this.getLifeTime();
@@ -77,6 +81,7 @@ public class MoonStormEntity extends Projectile {
             direction = direction.yRot((float)Math.toRadians(this.random.nextFloat() * 360)).scale(MathUtils.randomFloat(this.random));
             double x = MathUtils.randomFloat(this.random) * this.r;
             double z = MathUtils.randomFloat(this.random) * Math.sqrt(this.r * this.r - x * x);
+
             this.getLevel().addParticle(new CircleTintData(this.colors[this.random.nextInt(this.colors.length)], (float)(1 + this.r / 2), 80, 0.96F, false), true, this.getX() + x, this.getY() + (double)MathUtils.randomFloat(this.random) * this.r / 10, this.getZ() + z, direction.x * 0.46, direction.y * 0.1, direction.z * 0.46);
         }
 
@@ -106,7 +111,7 @@ public class MoonStormEntity extends Projectile {
                 Vec3 pos = this.getPosition(1).add(MathUtils.randomFloat(this.random) * this.radius, -1, MathUtils.randomFloat(this.random) * this.radius);
 
                 if (this.random.nextFloat() < 0.2 && !targets.isEmpty()) {
-                    LivingEntity target = (LivingEntity)targets.get(this.random.nextInt(targets.size()));
+                    LivingEntity target = targets.get(this.random.nextInt(targets.size()));
                     pos = target.getPosition(1).add(0, this.getY() - target.getY() - 1, 0);
                 }
 
@@ -117,8 +122,10 @@ public class MoonStormEntity extends Projectile {
                 drop.setHeal(this.getHeal());
                 drop.setDamage(this.getDamage());
                 this.getLevel().addFreshEntity(drop);
+
                 ParticleActions.spawnParticleEntity(new CircleTintData(new Color(0, 128, 255), 0.2F, 15, 0.83F, false), drop, 15, 0.1);
-                HitResult result = this.level.clip(new ClipContext(pos, pos.add(0, -160.0F, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
+
+                HitResult result = this.level.clip(new ClipContext(pos, pos.add(0, -160, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this));
                 Vec3 vec3;
 
                 if (result.getType() == HitResult.Type.BLOCK)
@@ -135,7 +142,7 @@ public class MoonStormEntity extends Projectile {
                 Vec3 finalEndpos;
 
                 if (!targets.isEmpty()) {
-                    LivingEntity target = (LivingEntity)targets.get(this.random.nextInt(targets.size()));
+                    LivingEntity target = targets.get(this.random.nextInt(targets.size()));
                     pos = target.getPosition(1).add(0, this.getY() - target.getY(), 0);
                     finalEndpos = target.getPosition(1);
                 } else {
@@ -149,22 +156,24 @@ public class MoonStormEntity extends Projectile {
 
                 if (!this.level.isClientSide()) {
                     Vec3 finalPos = pos;
-                    this.taskQueue.add(new MoonStormEntity.DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 8, 0.45, 0.55F, new Color(187, 145, 255), 14), this.tickCount, 1));
-                    this.taskQueue.add(new MoonStormEntity.DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 20, 0.55, 0.4F, new Color(127, 117, 255), 13), this.tickCount, 2));
-                    this.taskQueue.add(new MoonStormEntity.DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 20, 0.55, 0.35F, new Color(154, 96, 255), 13), this.tickCount, 3));
-                    this.taskQueue.add(new MoonStormEntity.DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 16, 0.55, 0.3F, new Color(128, 86, 255), 14), this.tickCount, 4));
+
+                    this.taskQueue.add(new DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 8, 0.45, 0.55F, new Color(187, 145, 255), 14), this.tickCount, 1));
+                    this.taskQueue.add(new DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 20, 0.55, 0.4F, new Color(127, 117, 255), 13), this.tickCount, 2));
+                    this.taskQueue.add(new DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 20, 0.55, 0.35F, new Color(154, 96, 255), 13), this.tickCount, 3));
+                    this.taskQueue.add(new DelayedRunnable(() -> this.drawThinLightning(this.getLevel(), finalPos, finalEndpos, 16, 0.55, 0.3F, new Color(128, 86, 255), 14), this.tickCount, 4));
+
                     float vol = (float)(20 / (this.getOwner() != null ? this.getOwner().distanceToSqr(finalEndpos) : 20));
 
                     if (this.getOwner() == null) {
-                        this.getLevel().playSound((Player)null, finalEndpos.x, finalEndpos.y, finalEndpos.z, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.2F + 0.3F);
-                        this.getLevel().playSound((Player)null, finalEndpos.x, finalEndpos.y, finalEndpos.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.3F + 1.5F);
+                        this.getLevel().playSound(null, finalEndpos.x, finalEndpos.y, finalEndpos.z, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.2F + 0.3F);
+                        this.getLevel().playSound(null, finalEndpos.x, finalEndpos.y, finalEndpos.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.3F + 1.5F);
                     } else {
-                        this.getLevel().playSound((Player)null, this.getOwner(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.2F + 0.3F);
-                        this.getLevel().playSound((Player)null, this.getOwner(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.3F + 1.5F);
+                        this.getLevel().playSound(null, this.getOwner(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.2F + 0.3F);
+                        this.getLevel().playSound(null, this.getOwner(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, vol, this.random.nextFloat() * 0.3F + 1.5F);
                     }
 
-                    for(LivingEntity e : this.getLevel().getEntitiesOfClass(LivingEntity.class, (new AABB(finalEndpos, finalEndpos)).inflate(2.2, (double)4.0F, 2.2), (entity) -> !entity.equals(this.getOwner()) && !(entity instanceof LocalPlayer)))
-                        e.hurt(DamageSource.thrown(this, this.getOwner()), this.getDamage() * 5.0F);
+                    for(LivingEntity e : this.getLevel().getEntitiesOfClass(LivingEntity.class, (new AABB(finalEndpos, finalEndpos)).inflate(2.2, 4, 2.2), (entity) -> !entity.equals(this.getOwner()) && !(entity instanceof LocalPlayer)))
+                        e.hurt(DamageSource.thrown(this, this.getOwner()), this.getDamage() * 5);
                 }
             }
         }
@@ -185,7 +194,7 @@ public class MoonStormEntity extends Projectile {
             if (i == segments - 1)
                 pos = end;
 
-            ParticleActions.spawnParticleLine(level, new CircleTintData(color, d, 30, 0.89F, false), prevPos, pos, (int)Math.round(-length * particleCount * (0.2 + i * i / (segments - 1) / (segments - 1)) * 0.8), 0);
+            ParticleActions.spawnParticleLine(level, new CircleTintData(color, d, 30, 0.89F, false), prevPos, pos, (int)Math.round(-length * particleCount * (0.2 + (double) (i * i) / (segments - 1) / (segments - 1)) * 0.8), 0);
             prevPos = pos;
         }
 
@@ -213,7 +222,7 @@ public class MoonStormEntity extends Projectile {
             if (i == segments - 1)
                 pos = end;
 
-            ParticleActions.spawnParticleLine(level, new CircleTintData(color, d, 50, 0.9F, false), prevPos, pos, (int)Math.round(length * (double)8.0F), 0);
+            ParticleActions.spawnParticleLine(level, new CircleTintData(color, d, 50, 0.9F, false), prevPos, pos, (int)Math.round(length * (double)8), 0);
             prevPos = pos;
         }
 
@@ -224,14 +233,17 @@ public class MoonStormEntity extends Projectile {
     }
 
     public void drawFrame() {
-        this.a = (double)30.0F;
+        this.a = 30;
 
         for(int i = 0; i < 80; ++i) {
             if (i + 40 <= this.tickCount) {
                 Vec3 pos = this.getPosition(1).subtract(new Vec3(0, 0, -2)).add((new Vec3((this.radius + 7), 0, 0)).yRot((float)Math.toRadians(this.a)));
-                this.level.addParticle(new CircleTintData(new Color(0, 21, 255), (float)(this.radius / 20) * (1 - (float)((i - 40) * (i - 40)) / 1600) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 2 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 21, 255), (this.radius / 20) * (1 - (float)((i - 40) * (i - 40)) / 1600) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 2 - (this.radius / 6), pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).subtract(new Vec3(0, 0, 2)).add((new Vec3((this.radius + 7), 0, 0)).yRot((float)Math.toRadians(-this.a)));
-                this.level.addParticle(new CircleTintData(new Color(0, 21, 255), (float)(this.radius / 20) * (1 - (float)((i - 40) * (i - 40)) / 1600) + 0.1F, 2, 0.98F, false), true, pos.x(), pos.y() - 2 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 21, 255), (this.radius / 20) * (1 - (float)((i - 40) * (i - 40)) / 1600) + 0.1F, 2, 0.98F, false), true, pos.x(), pos.y() - 2 - (this.radius / 6), pos.z(), 0, 0, 0);
                 ++this.a;
             }
         }
@@ -243,7 +255,9 @@ public class MoonStormEntity extends Projectile {
         for(int i = 0; i < 90; ++i) {
             if (i + 120 <= this.tickCount * 2) {
                 Vec3 pos = this.getPosition(1).add(new Vec3((-this.radius) * 1.6 + this.a, 0, 0));
-                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (float)(this.radius / 20) * (1 - (float) ((i - 45) * (i - 45)) / 2025) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (this.radius / 20) * (1 - (float) ((i - 45) * (i - 45)) / 2025) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z(), 0, 0, 0);
+
                 this.a += this.radius * 1.6 / 45;
             }
         }
@@ -255,10 +269,13 @@ public class MoonStormEntity extends Projectile {
         for(int i = 0; i < 40; ++i) {
             if (i + 70 <= this.tickCount) {
                 Vec3 pos = this.getPosition(1).add(new Vec3(0.2, 0, 0)).add((new Vec3(this.radius / 2, 0, 0)).yRot((float)Math.toRadians(this.a)));
-                this.level.addParticle(new CircleTintData(new Color(0, 172, 201), (float)((this.radius / 20) * ((float) ((i - 80) * (i - 80) - 1) / 6400) + 0.05F), 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 172, 201), (this.radius / 20) * ((float) ((i - 80) * (i - 80) - 1) / 6400) + 0.05F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(0.2, 0, 0)).add((new Vec3(this.radius / 2, 0, 0)).yRot((float)Math.toRadians(-this.a)));
-                this.level.addParticle(new CircleTintData(new Color(0, 172, 201), (float)(this.radius / (double)20) * ((float) ((i - 80) * (i - 80) - 1) / 6400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
-                this.a += (double)2;
+
+                this.level.addParticle(new CircleTintData(new Color(0, 172, 201), (float)(this.radius / (double)20) * ((float) ((i - 80) * (i - 80) - 1) / 6400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z(), 0, 0, 0);
+                this.a += 2;
             }
         }
 
@@ -267,22 +284,23 @@ public class MoonStormEntity extends Projectile {
         for(int i = 0; i < 45; ++i) {
             if (i + 70 <= this.tickCount) {
                 Vec3 pos = this.getPosition(1).add((new Vec3((-this.radius) / 1.7, 0, 0)).yRot((float)Math.toRadians(this.b)));
-                this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (float)(this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
+                this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z(), 0, 0, 0);
 
                 if (i >= 43)
-                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (float)(this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x() + 0.05, pos.y() - 1 - (this.radius / 6.0F), pos.z() + 0.1, 0, 0, 0);
+                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x() + 0.05, pos.y() - 1 - (this.radius / 6), pos.z() + 0.1, 0, 0, 0);
 
                 if (i == 44)
-                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (float)(this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z() + 0.3, 0, 0, 0);
+                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z() + 0.3, 0, 0, 0);
 
                 pos = this.getPosition(1).add((new Vec3((-this.radius) / 1.7, 0, 0)).yRot((float)Math.toRadians(-this.b)));
-                this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (float)(this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z(), 0, 0, 0);
 
                 if (i >= 43)
-                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (float)(this.radius / (20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F), 2, 0.99F, false), true, pos.x() + 0.05, pos.y() - 1 - (this.radius / 6.0F), pos.z() - 0.1, 0, 0, 0);
+                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), this.radius / (20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x() + 0.05, pos.y() - 1 - (this.radius / 6), pos.z() - 0.1, 0, 0, 0);
 
                 if (i == 44)
-                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (float)(this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6.0F), pos.z() - 0.3, 0, 0, 0);
+                    this.level.addParticle(new CircleTintData(new Color(0, 159, 185), (this.radius / 20) * ((float)((i - 90) * (i - 90) - 1) / 8100) + 0.1F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - (this.radius / 6), pos.z() - 0.3, 0, 0, 0);
 
                 this.b += 2;
             }
@@ -296,13 +314,20 @@ public class MoonStormEntity extends Projectile {
         for(int i = 0; i < 20; ++i) {
             if (i + 80 <= this.tickCount) {
                 Vec3 pos = this.getPosition(1).add(new Vec3(this.b, 0, this.radius / 3 - this.a));
-                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (float)(this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - this.radius / 6.0F, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.99F, false), true, pos.x(), pos.y() - 1 - this.radius / 6, pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(-this.b, 0, this.radius / 3 - this.a));
-                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (float)(this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - this.radius / 6.0F, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - this.radius / 6, pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(this.b, 0, (double)(-this.radius / 3) + this.a));
-                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (float)(this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - this.radius / 6.0F, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - this.radius / 6, pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(-this.b, 0, (double)(-this.radius / 3) + this.a));
-                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (float)(this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - this.radius / 6.0F, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(0, 81, 255), (this.radius / 40) * (1 - (float)((i - 20) * (i - 20)) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1 - this.radius / 6, pos.z(), 0, 0, 0);
                 this.a += this.radius / 60;
                 this.b += this.radius / 120;
             }
@@ -317,15 +342,22 @@ public class MoonStormEntity extends Projectile {
         for(int i = 0; i < 20; ++i) {
             if (i + 1200 <= this.tickCount * 10) {
                 Vec3 pos = this.getPosition(1).add(new Vec3(this.b, 0, -this.a));
-                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (float)(this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.99F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.99F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(-this.b, 0, -this.a));
-                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (float)(this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(this.b, 0, this.a));
-                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (float)(this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+
+                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+
                 pos = this.getPosition(1).add(new Vec3(-this.b, 0, this.a));
-                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (float)(this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
-                this.a += (double)(this.radius / 60);
-                this.b += (double)(this.radius / 120);
+
+                this.level.addParticle(new CircleTintData(new Color(222, 127, 255), (this.radius / 40) * ((float)((i - 20) * (i - 20) - 1) / 400) + 0.05F, 2, 0.98F, false), true, pos.x(), pos.y() - 1.5F - this.radius / 6, pos.z(), 0, 0, 0);
+                this.a += this.radius / 60;
+                this.b += this.radius / 120;
             }
         }
 
@@ -371,20 +403,12 @@ public class MoonStormEntity extends Projectile {
         return this.getEntityData().get(FREQ);
     }
 
-    public void setBow(ItemStack bow) {
-        this.bow = bow;
-    }
-
-    public ItemStack getBow() {
-        return this.bow;
-    }
-
     protected void defineSynchedData() {
-        this.entityData.define(RADIUS, 5.0F);
+        this.entityData.define(RADIUS, 5F);
         this.entityData.define(FREQ, 5);
         this.entityData.define(LIFETIME, 100);
-        this.entityData.define(DAMAGE, 8.0F);
-        this.entityData.define(HEAL, 1.0F);
+        this.entityData.define(DAMAGE, 8F);
+        this.entityData.define(HEAL, 1F);
     }
 
     protected void readAdditionalSaveData(CompoundTag compound) {
@@ -409,7 +433,7 @@ public class MoonStormEntity extends Projectile {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    private class DelayedRunnable {
+    private static class DelayedRunnable {
         Runnable runnable;
         int startedAt;
         int delay;

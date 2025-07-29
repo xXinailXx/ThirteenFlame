@@ -21,15 +21,12 @@
     "ItemStackMixin",
     "LivingEntityMixin",
     "MobMixin",
-    "MushroomCowMixin",
     "PlayerMixin",
-    "PumpkinBlockMixin",
-    "SheepMixin",
     "ShieldItemMixin",
     "ShovelMixin",
     "SkillTreeKeybindsMixin",
-    "SnowGolemMixin",
-    "TridenItemMixin"
+    "TridenItemMixin",
+    "client.ResearchingTableRendererMixin"
   ],
   "client": [
     "client.AddXpButtonAbilityScreenMixin",

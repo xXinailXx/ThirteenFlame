@@ -99,7 +99,7 @@ public class MarkupItem extends ItemSetting {
         entity.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         entity.setOwner(player);
 
-        Direction direction = null;
+        Direction direction;
 
         switch (player.getDirection()) {
             case NORTH -> direction = Direction.SOUTH;

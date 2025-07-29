@@ -19,22 +19,16 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
-import net.xXinailXx.thirteen_flames.block.StatueHandler;
-import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
-import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.ShockwaveEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.PickaxeItemTF;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -59,23 +53,13 @@ public class HammerMontu extends PickaxeItemTF {
         Player player = use.getPlayer();
         BlockPos pos = use.getClickedPos().above();
         Level level = use.getLevel();
-        BlockState state = level.getBlockState(pos);
         ItemStack stack = use.getItemInHand();
 
         if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
             return InteractionResult.SUCCESS;
 
-        if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
-            StatueBE be = (StatueBE) (state.getBlock() instanceof StatueHandler ? StatueData.getStatueBE(pos) : ((StatueStructureBlock) state.getBlock()).getMainBlockBE(pos));
-
-            StatueHandler.upgrade(be, level, stack, use.getPlayer(), use.getHand());
-
-            if (be != null && be.isFinished() && be.getTimeToUpgrade() > 0 && !StatueHandler.isUpgrade(stack, be.getGod()) && !level.isClientSide)
-                return InteractionResult.SUCCESS;
-        }
-
         if (!AbilityUtils.isAbilityOnCooldown(stack, "ejection")) {
-            ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(stack, "ejection", "radius"), 0);
+            ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(stack, "ejection", "radius"));
             shockwave.setOwner(player);
             shockwave.setPos(use.getClickedPos().getX(), use.getClickedPos().getY(), use.getClickedPos().getZ());
             level.addFreshEntity(shockwave);
@@ -89,8 +73,13 @@ public class HammerMontu extends PickaxeItemTF {
         return super.useOn(use);
     }
 
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x091902)
+                .backgroundBottom(0x061001)
+                .borderTop(0x1ea400)
+                .borderBottom(0x198500)
+                .build();
     }
 
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {

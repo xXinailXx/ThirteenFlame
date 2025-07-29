@@ -10,6 +10,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -29,8 +31,10 @@ import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
 import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
 import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
+import net.xXinailXx.enderdragonlib.client.message.MessageManager;
 import net.xXinailXx.enderdragonlib.client.utils.MessageUtil;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
@@ -109,10 +113,10 @@ public class Data implements IData {
                 return new CompoundTag();
 
             CompoundTag abilitiesData = new CompoundTag();
-            CompoundTag data = player.getPersistentData();
+            CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
 
-            if (data.contains("tf_abilities_data"))
-                abilitiesData = data.getCompound("tf_abilities_data");
+            if (data.contains("abilities_data"))
+                abilitiesData = data.getCompound("abilities_data");
 
             return abilitiesData;
         }
@@ -121,7 +125,7 @@ public class Data implements IData {
             if (player == null)
                 return;
 
-            player.getPersistentData().put("tf_abilities_data", tag);
+            PlayerCapManager.getOrCreateData(player, "tf_data").put("abilities_data", tag);
 
             if (!player.level.isClientSide())
                 Network.sendTo(new AbilitiesSyncPacket(tag), player);
@@ -228,17 +232,17 @@ public class Data implements IData {
         public static class Utils implements IEffectData {
             public static EffectData getEffectData(Player player) {
                 EffectData fake = new EffectData();
-                CompoundTag data = player.getPersistentData();
+                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
 
-                if (data.contains("tf_effect_data"))
-                    fake.deserializeNBT(data.getCompound("tf_effect_data"));
+                if (data.contains("effect_data"))
+                    fake.deserializeNBT(data.getCompound("effect_data"));
 
                 return fake;
             }
 
             public static void setEffectData(Player player, EffectData data) {
                 CompoundTag nbt = data.serializeNBT();
-                player.getPersistentData().put("tf_effect_data", nbt);
+                PlayerCapManager.getOrCreateData(player, "tf_data").put("effect_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new EffectSyncPacket(nbt), player);
@@ -365,17 +369,17 @@ public class Data implements IData {
                     player = Minecraft.getInstance().player;
 
                 GuiLevelingData fake = new GuiLevelingData();
-                CompoundTag data = player.getPersistentData();
+                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
 
-                if (data.contains("tf_gui_data"))
-                    fake.deserializeNBT(data.getCompound("tf_gui_data"));
+                if (data.contains("gui_data"))
+                    fake.deserializeNBT(data.getCompound("gui_data"));
 
                 return fake;
             }
 
             public static void setGuiData(Player player, GuiLevelingData data) {
                 CompoundTag nbt = data.serializeNBT();
-                player.getPersistentData().put("tf_gui_data", nbt);
+                PlayerCapManager.getOrCreateData(player, "tf_data").put("gui_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new GuiSyncPacket(nbt), player);
@@ -491,17 +495,17 @@ public class Data implements IData {
         public static class Utils implements IXpScarabsData {
             public static XpScarabsData getXpScarabsData(Player player) {
                 XpScarabsData fake = new XpScarabsData();
-                CompoundTag data = player.getPersistentData();
+                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
 
-                if (data.contains("tf_xp_scarabs_data"))
-                    fake.deserializeNBT(data.getCompound("tf_xp_scarabs_data"));
+                if (data.contains("xp_scarabs_data"))
+                    fake.deserializeNBT(data.getCompound("xp_scarabs_data"));
 
                 return fake;
             }
 
             public static void setXpScarabsData(Player player, XpScarabsData data) {
                 CompoundTag nbt = data.serializeNBT();
-                player.getPersistentData().put("tf_xp_scarabs_data", nbt);
+                PlayerCapManager.getOrCreateData(player, "tf_data").put("xp_scarabs_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new XpScarabsSyncPacket(nbt), player);
@@ -596,17 +600,17 @@ public class Data implements IData {
         public static class Utils implements IScarabsData {
             public static ScarabsData getScarabsData(Player player) {
                 ScarabsData fake = new ScarabsData();
-                CompoundTag data = player.getPersistentData();
+                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
 
-                if (data.contains("tf_scarabs_data"))
-                    fake.deserializeNBT(data.getCompound("tf_scarabs_data"));
+                if (data.contains("scarabs_data"))
+                    fake.deserializeNBT(data.getCompound("scarabs_data"));
 
                 return fake;
             }
 
             public static void setScarabsData(Player player, ScarabsData data) {
                 CompoundTag nbt = data.serializeNBT();
-                player.getPersistentData().put("tf_scarabs_data", nbt);
+                PlayerCapManager.getOrCreateData(player, "tf_data").put("scarabs_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new ScarabsSyncPacket(nbt), player);
@@ -825,7 +829,7 @@ public class Data implements IData {
                 abilitiesData.setLevelAbility(player, "recovery", 1);
             }
 
-            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getFightLevel(player) * 0.01), AttributeModifier.Operation.ADDITION);
+            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getFightLevel(player) * 0.01), AttributeModifier.Operation.ADDITION);
             AttributeInstance attack_damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
             if (!attack_damage.hasModifier(attack_damage_bonus))
@@ -874,21 +878,29 @@ public class Data implements IData {
             if (xpScarabsData.getXpScarabSilver(player) <= 0) {
                 xpScarabsData.setXpScarabSilver(player, 500 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
                 scarabsData.addScarabSilver(player, 1);
+
+                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_silver_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.silver").getString()));
             }
 
             if (xpScarabsData.getXpScarabGold(player) <= 0) {
                 xpScarabsData.setXpScarabGold(player, 750 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
                 scarabsData.addScarabGold(player, 1);
+
+                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_gold_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.gold").getString()));
             }
 
             if (xpScarabsData.getXpScarabAuriteh(player) <= 0) {
                 xpScarabsData.setXpScarabAuriteh(player, 1000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
                 scarabsData.addScarabAuriteh(player, 1);
+
+                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_lazotep_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.auriteh").getString()));
             }
 
             if (xpScarabsData.getXpScarabLazotep(player) <= 0) {
                 xpScarabsData.setXpScarabLazotep(player, 2000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
                 scarabsData.addScarabLazotep(player, 1);
+
+                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_silver_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.lazotep").getString()));
             }
         }
     }

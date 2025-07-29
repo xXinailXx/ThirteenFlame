@@ -28,7 +28,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,11 +36,11 @@ import net.xXinailXx.enderdragonlib.api.events.client.EntityInteractEvent;
 import net.xXinailXx.enderdragonlib.client.curios.ICurioRenderable;
 import net.xXinailXx.enderdragonlib.client.curios.model.CurioArmsModel;
 import net.xXinailXx.enderdragonlib.client.curios.model.CurioModel;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -129,8 +128,13 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
         return true;
     }
 
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.2, 0));
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x091902)
+                .backgroundBottom(0x061001)
+                .borderTop(0x1ea400)
+                .borderBottom(0x198500)
+                .build();
     }
 
     @SubscribeEvent

@@ -27,22 +27,22 @@ public class MoonBowRenderer extends ItemLevelRenderer {
         ImmutableList<ItemOverrides.BakedOverride> overrides = isterModel.getOverrides().getOverrides();
 
         for(int i = overrides.size() - 1; i >= 0; --i) {
-            ItemOverrides.BakedOverride override = (ItemOverrides.BakedOverride)overrides.get(i);
+            ItemOverrides.BakedOverride override = overrides.get(i);
             int lightmap = 16711935;
             float pull = ItemProperties.getProperty(ItemRegistry.MOON_BOW.get(), new ResourceLocation(ThirteenFlames.MODID, "pull")).call(stack, mc.level, mc.player, 0);
 
             if ((double)pull < 0.1) {
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(7), transformType, pose, stack, bufferSource, null, uv2, overlay);
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(6), transformType, pose, stack, bufferSource, null, lightmap, overlay);
+                this.renderOverrride(overrides.get(7), transformType, pose, stack, bufferSource, null, uv2, overlay);
+                this.renderOverrride(overrides.get(6), transformType, pose, stack, bufferSource, null, lightmap, overlay);
             } else if ((double)pull < 0.65) {
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(5), transformType, pose, stack, bufferSource, null, uv2, overlay);
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(4), transformType, pose, stack, bufferSource, null, lightmap, overlay);
+                this.renderOverrride(overrides.get(5), transformType, pose, stack, bufferSource, null, uv2, overlay);
+                this.renderOverrride(overrides.get(4), transformType, pose, stack, bufferSource, null, lightmap, overlay);
             } else if ((double)pull < 0.9) {
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(3), transformType, pose, stack, bufferSource, null, uv2, overlay);
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(2), transformType, pose, stack, bufferSource, null, lightmap, overlay);
+                this.renderOverrride(overrides.get(3), transformType, pose, stack, bufferSource, null, uv2, overlay);
+                this.renderOverrride(overrides.get(2), transformType, pose, stack, bufferSource, null, lightmap, overlay);
             } else {
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(1), transformType, pose, stack, bufferSource, null, uv2, overlay);
-                this.renderOverrride((ItemOverrides.BakedOverride)overrides.get(0), transformType, pose, stack, bufferSource, null, lightmap, overlay);
+                this.renderOverrride(overrides.get(1), transformType, pose, stack, bufferSource, null, uv2, overlay);
+                this.renderOverrride(overrides.get(0), transformType, pose, stack, bufferSource, null, lightmap, overlay);
             }
         }
     }

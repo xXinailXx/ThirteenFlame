@@ -20,19 +20,17 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollItemUpdatePacket;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.zeith.hammerlib.net.Network;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -60,6 +58,14 @@ public class ScrollHet extends FlameItemSetting {
         return super.use(level, player, hand);
     }
 
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x261407)
+                .borderTop(0xf3d4a8)
+                .borderBottom(0xdabe96)
+                .build();
+    }
+
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
@@ -68,10 +74,6 @@ public class ScrollHet extends FlameItemSetting {
                 return this.renderer.get();
             }
         });
-    }
-
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.25, 0));
     }
 
     @SubscribeEvent

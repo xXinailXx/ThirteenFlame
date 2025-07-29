@@ -49,7 +49,7 @@ public class MoonCarrierEntity extends ThrowableProjectile {
                     pos = pos.subtract(motion.scale(0.3));
             }
 
-            ((MoonProjectileEntity)this.rays.get(i)).setPos(pos);
+            this.rays.get(i).setPos(pos);
         }
 
         if (!this.getLevel().isClientSide()) {
@@ -65,29 +65,28 @@ public class MoonCarrierEntity extends ThrowableProjectile {
 
                 if (cap == 0) {
                     for(int i = 0; i < this.rays.size(); ++i) {
-                        ((MoonProjectileEntity)this.rays.get(i)).target = (LivingEntity)targets.get(i);
-                        ((MoonProjectileEntity)this.rays.get(i)).setFree(true);
-                    }
+                        this.rays.get(i).target = targets.get(i);
 
-                    this.rays.clear();
-                    this.discard();
+                        this.rays.get(i).setFree(true);
+                    }
                 } else {
                     for(LivingEntity target : targets) {
                         for(int i = 0; i < cap; ++i) {
-                            MoonProjectileEntity proj = (MoonProjectileEntity)this.rays.remove(0);
+                            MoonProjectileEntity proj = this.rays.remove(0);
                             proj.target = target;
+
                             proj.setFree(true);
                         }
                     }
 
                     for(int i = 0; i < this.rays.size(); ++i) {
-                        ((MoonProjectileEntity)this.rays.get(i)).target = (LivingEntity)targets.get(i);
-                        ((MoonProjectileEntity)this.rays.get(i)).setFree(true);
-                    }
+                        this.rays.get(i).target = targets.get(i);
 
-                    this.rays.clear();
-                    this.discard();
+                        this.rays.get(i).setFree(true);
+                    }
                 }
+                this.rays.clear();
+                this.discard();
             }
         }
     }

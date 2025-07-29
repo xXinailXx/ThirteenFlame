@@ -1,14 +1,15 @@
 package net.xXinailXx.thirteen_flames.entity;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
-import net.minecraft.core.BlockPos;
+import lombok.Getter;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,10 +36,9 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Random;
 
+@Getter
 public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow {
     private static final EntityDataAccessor<Integer> WAVES_MAX = SynchedEntityData.defineId(HornSeliasetEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> WAVES = SynchedEntityData.defineId(HornSeliasetEntity.class, EntityDataSerializers.INT);
@@ -48,7 +48,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
     private static final EntityDataAccessor<Float> STUN = SynchedEntityData.defineId(HornSeliasetEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(HornSeliasetEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ADD_EXP = SynchedEntityData.defineId(HornSeliasetEntity.class, EntityDataSerializers.INT);
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
 
     public HornSeliasetEntity(EntityType<? extends Projectile> type, Level level) {
         super(type, level);
@@ -93,24 +93,14 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
                         Network.sendToAll(new SpawnParticlePacket(ParticleTypes.CLOUD, center.x, center.y, center.z, Math.cos(j - i * 0.1) * 0.15, 0, Math.sin(j - i * 0.1) * 0.15));
                 }
 
-                List<BlockPos> poses = new ArrayList<>();
-                BlockPos mainPos = this.blockPosition();
-
-                for (int i = -8; i <= 8; i++) {
-                    float r1 = Mth.sqrt((64 - i * i));
-
-                    for (int j = -(int) r1; j <= r1; j++)
-                        poses.add(mainPos.offset(i, 0, j));
-                }
-
                 for (LivingEntity entity : AABBUtils.getEntities(LivingEntity.class, this, 8)) {
                     if (entity.is(getOwner()))
                         continue;
 
                     Vec3 delta = entity.position().subtract(this.position());
 
-                    ((LivingEntity) entity).knockback(0.5, -delta.x, -delta.z);
-                    ((LivingEntity) entity).addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) (getStun() * 20)));
+                    entity.knockback(0.5, -delta.x, -delta.z);
+                    entity.addEffect(new MobEffectInstance(EffectRegistry.STUN.get(), (int) (getStun() * 20)));
                     setAddExp(getAddExp() + 2);
                 }
 
@@ -212,14 +202,17 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
     }
 
     public GlowData constructGlowData() {
-        GlowData data = GlowData.builder(false);
+        return GlowData.builder()
+                .addBeam(8, new Beam(getPhase() != 1 ? new Color(255, 82, 82) : new Color(114, 255, 82), 1, (stack, partialTicks, number) -> {
+                    Random random = new Random(1488);
 
-        if (getPhase() != 1)
-            data.addBeam(new Beam(new Color(255, 82, 82), 16, 1, 0.75F));
-        else
-            data.addBeam(new Beam(new Color(114, 255, 82), 16, 1, 0.75F));
+                    stack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
+                    stack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
+                    stack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
 
-        return data;
+                    return stack;
+                }))
+                .build();
     }
 
     private <E extends IAnimatable> PlayState predicateIdle(AnimationEvent<E> event) {
@@ -229,11 +222,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
     }
 
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<HornSeliasetEntity>(this, "idle_controller", 0, this::predicateIdle));
-    }
-
-    public AnimationFactory getFactory() {
-        return factory;
+        animationData.addAnimationController(new AnimationController<>(this, "idle_controller", 0, this::predicateIdle));
     }
 
     public void readAdditionalSaveData(CompoundTag compound) {

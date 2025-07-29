@@ -43,6 +43,7 @@ import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.entity.PoisonCloundEntity;
@@ -51,8 +52,6 @@ import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.util.HashSet;
@@ -217,8 +216,13 @@ public class SwordRonosa extends SwordItemTF {
 
     }
 
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.45, 0));
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x200303)
+                .backgroundBottom(0x180202)
+                .borderTop(0x00ff3c)
+                .borderBottom(0x15cc40)
+                .build();
     }
 
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {

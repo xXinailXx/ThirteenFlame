@@ -2,6 +2,8 @@ package net.xXinailXx.thirteen_flames.entity;
 
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -41,6 +43,8 @@ public class MoonProjectileEntity extends ThrowableProjectile {
     public Vec3 prevPos;
     public LivingEntity target;
     public Color color;
+    @Getter
+    @Setter
     private ItemStack bow;
 
     public MoonProjectileEntity(EntityType<? extends MoonProjectileEntity> type, Level world) {
@@ -67,7 +71,7 @@ public class MoonProjectileEntity extends ThrowableProjectile {
                 java.util.List<LivingEntity> targets = new ArrayList(this.getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(7), (entity) -> !entity.equals(this.getOwner()) && !(entity instanceof LocalPlayer) && entity.hasLineOfSight(this)));
 
                 if (!targets.isEmpty())
-                    this.target = (LivingEntity)targets.get(this.random1.nextInt(targets.size()));
+                    this.target = targets.get(this.random1.nextInt(targets.size()));
             }
         }
 
@@ -139,20 +143,12 @@ public class MoonProjectileEntity extends ThrowableProjectile {
         this.discard();
     }
 
-    public void setBow(ItemStack bow) {
-        this.bow = bow;
-    }
-
-    public ItemStack getBow() {
-        return this.bow;
-    }
-
     public void setPowerEnch(int powerEnch) {
         this.getEntityData().set(POWER_ENCH, powerEnch);
     }
 
     public int getPowerEnch() {
-        return (Integer)this.getEntityData().get(POWER_ENCH);
+        return this.getEntityData().get(POWER_ENCH);
     }
 
     public void setBaseDamage(int baseDmg) {
@@ -160,7 +156,7 @@ public class MoonProjectileEntity extends ThrowableProjectile {
     }
 
     public int getBaseDamage() {
-        return (Integer)this.getEntityData().get(BASE_DAMAGE);
+        return this.getEntityData().get(BASE_DAMAGE);
     }
 
     public void setParticleCount(int particles) {
@@ -168,11 +164,11 @@ public class MoonProjectileEntity extends ThrowableProjectile {
     }
 
     public int getParticleCount() {
-        return (Integer)this.getEntityData().get(PARTICLE_COUNT);
+        return this.getEntityData().get(PARTICLE_COUNT);
     }
 
     public boolean isFree() {
-        return (Boolean)this.getEntityData().get(FREE);
+        return this.getEntityData().get(FREE);
     }
 
     public void setFree(boolean free) {

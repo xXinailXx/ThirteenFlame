@@ -42,7 +42,7 @@ import java.util.Map;
 
 @Getter
 public class StatueBE extends StatueBlockEntity implements IAnimatable {
-    private AnimationFactory factory = new AnimationFactory(this);
+    private final AnimationFactory factory = new AnimationFactory(this);
     @Setter
     private int timeToUpgrade = ThirteenFlamesCommonConfig.TIME_TO_FLAME_UPGRADE.get();
     private final Gods god;
@@ -57,6 +57,22 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
     public void tick() {
         if (this.level == null || this.level.isClientSide)
             return;
+
+        if (StatueData.getStatue(this.worldPosition) == null) {
+            Iterable<BlockPos> iterable;
+
+            if (getGod().equals(Gods.GOD_PHARAOH))
+                iterable = BlockPos.betweenClosed(this.worldPosition.offset(-2, 0, -2), this.worldPosition.offset(2, 0, 2));
+            else
+                iterable = BlockPos.betweenClosed(this.worldPosition.offset(-1, 0, -1), this.worldPosition.offset(1, 0, 1));
+
+            List<BlockPos> posList = new ArrayList<>();
+
+            for (BlockPos pos : iterable)
+                posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
+
+            StatueData.addStatue(new StatueData.StatueBuilder(posList, this.worldPosition));
+        }
 
         RandomSource random = this.level.getRandom();
         Color color = null;
@@ -90,8 +106,7 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
             for (BlockPos pos : iterable)
                 posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
 
-            BlockPos pos;
-            pos = posList.get(random.nextInt(posList.size() - 1));
+            BlockPos pos = posList.get(random.nextInt(posList.size() - 1));
 
             Network.sendToAll(new SpawnParticlePacket(options, pos.getX() + 0.1 + random.nextInt(0, 8) * 0.1, pos.getY(), pos.getZ() + 0.1 + random.nextInt(0, 8) * 0.1, 0, random.nextInt(1, 12) * 0.01, 0));
         }
@@ -128,7 +143,7 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
 
                 Map<MobEffect, MobEffectInstance> map = player.getActiveEffectsMap();
 
-                if (map != null && !map.isEmpty()) {
+                if (!map.isEmpty()) {
                     for (MobEffect mobEffect : map.keySet()) {
                         if (mobEffect instanceof StatueEffect eff && eff.getGod().equals(getGod())) {
                             effect = eff;
@@ -177,16 +192,14 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
                                 }
                             };
 
-                            if (cup1 != null && cup3 != null) {
-                                if (this.level.getBlockState(cup1).is(BlockRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlockRegistry.STATUE_CUP.get())) {
-                                    ParticleUtils.spawnCupFire(level, color, cup1);
+                            if (this.level.getBlockState(cup1).is(BlockRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlockRegistry.STATUE_CUP.get())) {
+                                ParticleUtils.spawnCupFire(level, color, cup1);
 
-                                    if (amplifier >= 2)
-                                        ParticleUtils.spawnCupFire(level, color, pos);
+                                if (amplifier >= 2)
+                                    ParticleUtils.spawnCupFire(level, color, pos);
 
-                                    if (amplifier >= 3)
-                                        ParticleUtils.spawnCupFire(level, color, cup3);
-                                }
+                                if (amplifier >= 3)
+                                    ParticleUtils.spawnCupFire(level, color, cup3);
                             }
                         }
                     }

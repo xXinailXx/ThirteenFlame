@@ -21,7 +21,7 @@ import java.util.List;
 
 public class StatueGodPharaohUnfinished extends CustomStatueUtils {
     public StatueGodPharaohUnfinished() {
-        super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlockRegistry.STATUE_GOD_PHARAOH_STRUCTURE.get(), Block.box(0, 0, 0, 80, 112, 80).move(-2, 0, -2));
+        super(Properties.of(Material.METAL).strength(1).noOcclusion().noLootTable(), BlockRegistry.STATUE_GOD_PHARAOH_UNFINISHED_STRUCTURE.get(), Block.box(0, 0, 0, 80, 112, 80).move(-2, 0, -2));
     }
 
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity entity, ItemStack stack) {
@@ -56,7 +56,6 @@ public class StatueGodPharaohUnfinished extends CustomStatueUtils {
     }
 
     @Nullable
-    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return BlockEntityRegistry.STATUE_GOD_PHARAOH_UNFINISHED.get().create(pos, state);
     }

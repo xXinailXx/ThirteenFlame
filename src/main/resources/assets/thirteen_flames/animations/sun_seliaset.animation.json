@@ -11,11 +11,11 @@
 				"bone": {
 					"rotation": {
 						"0.0": {
-							"vector": [-360, 0, 360],
+							"vector": [360, 0, -360],
 							"easing": "linear"
 						},
 						"5.0": {
-							"vector": [360, 0, -360],
+							"vector": [-360, 0, 360],
 							"easing": "linear"
 						}
 					}

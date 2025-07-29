@@ -22,16 +22,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -61,19 +59,20 @@ public class ShieldRonosa extends FlameItemSetting {
             return InteractionResultHolder.success(stack);
 
         player.startUsingItem(hand);
-        NBTUtils.setInt(stack, "use", 1);
-
         return InteractionResultHolder.consume(stack);
-    }
-
-    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        NBTUtils.setInt(stack, "use", 0);
-
-        return super.finishUsingItem(stack, level, entity);
     }
 
     public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
         return net.minecraftforge.common.ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
+    }
+
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x200303)
+                .backgroundBottom(0x180202)
+                .borderTop(0xc00d0c)
+                .borderBottom(0x951312)
+                .build();
     }
 
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
@@ -84,10 +83,6 @@ public class ShieldRonosa extends FlameItemSetting {
                 return this.renderer.get();
             }
         });
-    }
-
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
     }
 
     @SubscribeEvent

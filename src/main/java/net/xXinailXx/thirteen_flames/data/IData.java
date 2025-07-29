@@ -3,7 +3,7 @@ package net.xXinailXx.thirteen_flames.data;
 import net.minecraft.world.entity.player.Player;
 
 public interface IData {
-    public static interface IAbilitiesData {
+    interface IAbilitiesData {
         boolean isLockAbility(Player player, String ability);
 
         void setLockAbility(Player player, String ability, boolean value);
@@ -23,7 +23,7 @@ public interface IData {
         void addLevelAbility(Player player, String ability, int amount);
     }
 
-    public static interface IEffectData {
+    interface IEffectData {
         int getKnef(Player player);
 
         int getSelya(Player player);
@@ -59,7 +59,7 @@ public interface IData {
         void subHet(Player player, int amount);
     }
 
-    public static interface IGuiLevelingData {
+    interface IGuiLevelingData {
         boolean isPlayerScreen(Player player);
 
         int getProcentCurse(Player player);
@@ -93,7 +93,7 @@ public interface IData {
         void addHealthLevel(Player player, int amount);
     }
 
-    public static interface IXpScarabsData {
+    interface IXpScarabsData {
         int getXpScarabSilver(Player player);
 
         int getXpScarabGold(Player player);
@@ -121,7 +121,7 @@ public interface IData {
         void subXpScarabsLazotep(Player player, int amount);
     }
 
-    public static interface IScarabsData {
+    interface IScarabsData {
         int getScarabSilver(Player player);
 
         int getScarabGold(Player player);

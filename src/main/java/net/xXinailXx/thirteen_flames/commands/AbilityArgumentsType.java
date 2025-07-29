@@ -14,7 +14,6 @@ public class AbilityArgumentsType implements ArgumentType<String> {
         return context.getArgument(name, String.class);
     }
 
-    @Override
     public String parse(StringReader reader) throws CommandSyntaxException {
         return reader.readString();
     }

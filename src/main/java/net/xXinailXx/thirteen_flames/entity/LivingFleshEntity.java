@@ -1,5 +1,6 @@
 package net.xXinailXx.thirteen_flames.entity;
 
+import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,9 +14,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.thirteen_flames.init.EntityRegistry;
@@ -32,16 +31,15 @@ public class LivingFleshEntity extends Mob implements IAnimatable {
     private static final EntityDataAccessor<Integer> SIZE = SynchedEntityData.defineId(LivingFleshEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PROC = SynchedEntityData.defineId(LivingFleshEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PIECE = SynchedEntityData.defineId(LivingFleshEntity.class, EntityDataSerializers.INT);
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
-    private ItemStack stack;
+    @Getter
+    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private boolean isMove;
-    private Vec3 lastPos;
 
     public LivingFleshEntity(EntityType<? extends Mob> type, Level level) {
         super(type, level);
     }
 
-    public LivingFleshEntity(Level level, int size, int procSeparation, int piece, ItemStack stack) {
+    public LivingFleshEntity(Level level, int size, int procSeparation, int piece) {
         super(EntityRegistry.LIVING_FLESH.get(), level);
         setSize(size * 10);
         setProcSeparation(procSeparation);
@@ -52,7 +50,8 @@ public class LivingFleshEntity extends Mob implements IAnimatable {
         if (getSize() / 10 > 1) {
             if (this.getSize() > 1 && MathUtils.isRandom(this.level, this.getProcSeparation())) {
                 for (int i = 0; i < this.level.getRandom().nextInt(1, this.getPiece()); i++) {
-                    LivingFleshEntity entity = new LivingFleshEntity(this.level, getSize() / 10 - 1, this.getProcSeparation(), this.getPiece(), this.getStack());
+                    LivingFleshEntity entity = new LivingFleshEntity(this.level, getSize() / 10 - 1, this.getProcSeparation(), this.getPiece());
+
                     entity.setPos(this.position());
                     this.level.addFreshEntity(entity);
                 }
@@ -65,10 +64,7 @@ public class LivingFleshEntity extends Mob implements IAnimatable {
     public void tick() {
         double moved = Math.sqrt(position().distanceToSqr(xo, yo, zo));
 
-        if (moved > 0)
-            this.isMove = true;
-        else
-            this.isMove = false;
+        this.isMove = moved > 0;
 
         super.tick();
     }
@@ -97,11 +93,7 @@ public class LivingFleshEntity extends Mob implements IAnimatable {
     }
 
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<LivingFleshEntity>(this, "controller", 0, this::predicate));
-    }
-
-    public AnimationFactory getFactory() {
-        return factory;
+        animationData.addAnimationController(new AnimationController<>(this, "controller", 0, this::predicate));
     }
 
     public int getPiece() {
@@ -126,14 +118,6 @@ public class LivingFleshEntity extends Mob implements IAnimatable {
 
     public void setSize(int size) {
         this.getEntityData().set(SIZE, size);
-    }
-
-    public ItemStack getStack() {
-        return stack;
-    }
-
-    public void setStack(ItemStack stack) {
-        this.stack = stack;
     }
 
     public void readAdditionalSaveData(CompoundTag compound) {

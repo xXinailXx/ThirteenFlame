@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ShieldItemMixin {
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(Level level, Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResultHolder<ItemStack>> cir) {
-        if (! ProgressManager.isAllowUsage(player.getItemInHand(hand))) {
+        if (!ProgressManager.isAllowUsage(player.getItemInHand(hand))) {
             cir.setReturnValue(InteractionResultHolder.fail(player.getItemInHand(hand)));
             cir.cancel();
         }

@@ -32,6 +32,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
 import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.enderdragonlib.network.packet.SpawnParticlePacket;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
@@ -39,8 +40,6 @@ import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.tools.SwordItemTF;
 import net.xXinailXx.thirteen_flames.item.base.tools.ToolTierTF;
 import org.zeith.hammerlib.net.Network;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.util.function.Consumer;
@@ -116,6 +115,15 @@ public class TravelersSword extends SwordItemTF {
         return builder.build();
     }
 
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x021c22)
+                .backgroundBottom(0x011418)
+                .borderTop(0x2bccac)
+                .borderBottom(0x508a9a)
+                .build();
+    }
+
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
@@ -124,10 +132,6 @@ public class TravelersSword extends SwordItemTF {
                 return this.renderer.get();
             }
         });
-    }
-
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0.5, 0));
     }
 
     @SubscribeEvent

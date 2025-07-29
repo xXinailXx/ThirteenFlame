@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.xXinailXx.thirteen_flames.init.MenuRegistry;
 import net.xXinailXx.thirteen_flames.network.packet.ScrollMenuOpenPacket;
@@ -24,13 +23,6 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class ScrollMenu extends AbstractContainerMenu {
-    private final Container container = new SimpleContainer(1) {
-        public void setChanged() {
-            super.setChanged();
-            ScrollMenu.this.slotsChanged(this);
-        }
-    };
-    private final Level level;
     public ItemStack scrollStack;
     public final int scrollType;
     public int action;
@@ -46,7 +38,6 @@ public class ScrollMenu extends AbstractContainerMenu {
 
     public ScrollMenu(int id, Inventory inventory, ItemStack scrollStack, ItemStack slotStack, int action, int enchLevel, int scroll0, int scroll1, Supplier<EnchantmentUtils.Ench> ench, Supplier<Map<Enchantment, Integer>> enchs, Supplier<Map<Enchantment, EnchantmentUtils.Ench>> possibleEnchs) {
         super(MenuRegistry.SCROLL_MENU.get(), id);
-        this.level = inventory.player.level;
         this.scrollStack = scrollStack;
         this.stack = slotStack;
         this.scrollType = NBTUtils.getInt(scrollStack, "type", 0);
@@ -61,7 +52,13 @@ public class ScrollMenu extends AbstractContainerMenu {
         int x = (Minecraft.getInstance().getWindow().getGuiScaledWidth() - 331) / 2;
         int y = (Minecraft.getInstance().getWindow().getGuiScaledHeight() - 249) / 2;
 
-        this.slot = this.addSlot(new Slot(this.container, 0, x + 157, y + 28));
+        Container container = new SimpleContainer(1) {
+            public void setChanged() {
+                super.setChanged();
+                ScrollMenu.this.slotsChanged(this);
+            }
+        };
+        this.slot = this.addSlot(new Slot(container, 0, x + 157, y + 28));
         this.slot.set(slotStack);
 
         for (int i = 0; i < 3; ++i)
@@ -114,8 +111,7 @@ public class ScrollMenu extends AbstractContainerMenu {
                 CompoundTag tag1 = tag.getCompound("ench_c_" + i);
 
                 ResourceLocation location = new ResourceLocation(tag1.getString("ench_namespace"), tag1.getString("ench_path"));
-                int enchLevel = tag1.getInt("ench_level");
-                EnchantmentUtils.Ench ench1 = null;
+                EnchantmentUtils.Ench ench1;
 
                 CompoundTag tag2 = tag1.getCompound("ench_nbt");
 
@@ -149,7 +145,7 @@ public class ScrollMenu extends AbstractContainerMenu {
     public ItemStack quickMoveStack(Player player, int index) {
         Slot sourceSlot = slots.get(index);
 
-        if (sourceSlot == null || ! sourceSlot.hasItem())
+        if (!sourceSlot.hasItem())
             return ItemStack.EMPTY;
 
         ItemStack sourceStack = sourceSlot.getItem();

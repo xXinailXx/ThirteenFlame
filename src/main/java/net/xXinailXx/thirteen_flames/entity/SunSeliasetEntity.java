@@ -1,5 +1,7 @@
 package net.xXinailXx.thirteen_flames.entity;
 
+import com.mojang.math.Vector3f;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -10,12 +12,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkHooks;
 import net.xXinailXx.enderdragonlib.client.glow.Beam;
 import net.xXinailXx.enderdragonlib.client.glow.GlowData;
@@ -32,7 +31,7 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.awt.*;
-import java.util.List;
+import java.util.Random;
 
 public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow {
     private static final EntityDataAccessor<Integer> RADIUS = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
@@ -41,14 +40,15 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
     private static final EntityDataAccessor<Integer> ANIM_TIME = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> ADD_EXP = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
-    private AnimationFactory factory = GeckoLibUtil.createFactory(this);
+    @Getter
+    private final AnimationFactory factory = GeckoLibUtil.createFactory(this);
     private boolean isAnim = false;
 
     public SunSeliasetEntity(EntityType<? extends Projectile> type, Level level) {
         super(type, level);
     }
 
-    public SunSeliasetEntity(Level level, int radius, int cooldown, ItemStack stack) {
+    public SunSeliasetEntity(Level level, int radius, int cooldown) {
         this(EntityRegistry.SUN_SELIASET.get(), level);
 
         setRadius(radius);
@@ -72,7 +72,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
 
                 if (state.getBlock() instanceof CropBlock block) {
                     if (block.isValidBonemealTarget(this.level, pos, state, this.level.isClientSide) && block.isBonemealSuccess(this.level, this.level.getRandom(), pos, state)) {
-                        ((BonemealableBlock) block).performBonemeal((ServerLevel) this.level, this.level.getRandom(), pos1, state);
+                        block.performBonemeal((ServerLevel) this.level, this.level.getRandom(), pos1, state);
                         setAddExp(getAddExp() + 2);
                     }
                 }
@@ -118,14 +118,18 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
     }
 
     public GlowData constructGlowData() {
-        GlowData data = GlowData.builder(true).translateBeams(new Vec3(0, 0.325, 0));
+        if (getPhase() == 0)
+            return GlowData.builder().build();
 
-        data.addBeam(new Beam(new Color(253, 251, 132), 4, 1, 0.75F));
-        data.addBeam(new Beam(new Color(251, 249, 118), 4, 1, 0.75F));
-        data.addBeam(new Beam(new Color(255, 252, 89), 4, 1, 0.75F));
-        data.addBeam(new Beam(new Color(255, 252, 63), 4, 1, 0.75F));
-
-        return data;
+        return GlowData.builder()
+                .customRenderer(true)
+                .addBeam(6, new Beam(new Color(255, 252, 89), 1, (stack, partialTicks, number) -> {
+                    return stack;
+                }))
+                .addBeam(6, new Beam(new Color(255, 252, 12), 1, (stack, partialTicks, number) -> {
+                    return stack;
+                }))
+                .build();
     }
 
     private <E extends IAnimatable> PlayState predicateIdle(AnimationEvent<E> event) {
@@ -145,12 +149,8 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
     }
 
     public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<SunSeliasetEntity>(this, "idle_controller", 30, this::predicateIdle));
-        animationData.addAnimationController(new AnimationController<SunSeliasetEntity>(this, "move_controller", 30, this::predicateAnim));
-    }
-
-    public AnimationFactory getFactory() {
-        return factory;
+        animationData.addAnimationController(new AnimationController<>(this, "idle_controller", 30, this::predicateIdle));
+        animationData.addAnimationController(new AnimationController<>(this, "move_controller", 30, this::predicateAnim));
     }
 
     public boolean isAnim() {

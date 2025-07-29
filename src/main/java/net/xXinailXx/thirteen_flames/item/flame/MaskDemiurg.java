@@ -11,18 +11,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
 import net.xXinailXx.thirteen_flames.init.KeyBindingRegistry;
 import net.xXinailXx.thirteen_flames.item.base.ArmorItemTF;
 import net.xXinailXx.thirteen_flames.network.packet.UseMaskDemiurgPacket;
 import org.zeith.hammerlib.net.Network;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -41,6 +39,15 @@ public class MaskDemiurg extends ArmorItemTF {
         }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();
     }
 
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x1c0223)
+                .backgroundBottom(0x15011b)
+                .borderTop(0xff00eb)
+                .borderBottom(0xbb00ad)
+                .build();
+    }
+
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
             final Supplier<EmissiveRenderer> renderer = Suppliers.memoize(EmissiveRenderer::new);
@@ -49,10 +56,6 @@ public class MaskDemiurg extends ArmorItemTF {
                 return this.renderer.get();
             }
         });
-    }
-
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0, 0));
     }
 
     @SubscribeEvent

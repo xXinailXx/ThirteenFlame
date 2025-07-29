@@ -15,6 +15,7 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
 import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
 import net.xXinailXx.thirteen_flames.network.packet.capability.StaminaSyncPacket;
@@ -61,15 +62,15 @@ public class StaminaData implements IAutoNBTSerializable {
             StaminaData fake = new StaminaData();
             CompoundTag data = player.getPersistentData();
 
-            if (data.contains("tf_stamina_data"))
-                fake.deserializeNBT(data.getCompound("tf_stamina_data"));
+            if (data.contains("stamina_data"))
+                fake.deserializeNBT(data.getCompound("stamina_data"));
 
             return fake;
         }
 
         public static void setStaminaData(Player player, StaminaData data) {
             CompoundTag nbt = data.serializeNBT();
-            player.getPersistentData().put("tf_stamina_data", nbt);
+            player.getPersistentData().put("stamina_data", nbt);
 
             if (!player.level.isClientSide())
                 Network.sendTo(new StaminaSyncPacket(nbt), player);

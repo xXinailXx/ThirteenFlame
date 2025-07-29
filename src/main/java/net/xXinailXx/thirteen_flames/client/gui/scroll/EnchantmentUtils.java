@@ -5,7 +5,6 @@ import lombok.Setter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraftforge.registries.ForgeRegistries;
-import oshi.util.tuples.Pair;
 
 import java.util.*;
 
@@ -25,14 +24,6 @@ public class EnchantmentUtils {
         }
 
         return map;
-    }
-
-    public static void enchant(ItemStack stack, Map<Enchantment, Integer> enchantments) {
-        enchantments.keySet().forEach(ench -> {
-            int enchantLevel = enchantments.get(ench);
-
-            stack.enchant(ench, enchantLevel);
-        });
     }
 
     @Getter

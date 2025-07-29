@@ -9,10 +9,8 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class ScrollMenuProvider implements MenuProvider {
     private final ItemStack stack;

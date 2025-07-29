@@ -30,8 +30,8 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.MoonBowRenderer;
 import net.xXinailXx.thirteen_flames.entity.MoonCarrierEntity;
 import net.xXinailXx.thirteen_flames.entity.MoonProjectileEntity;
@@ -41,8 +41,6 @@ import net.xXinailXx.thirteen_flames.init.EntityRegistry;
 import net.xXinailXx.thirteen_flames.init.SoundRegistry;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 import org.jetbrains.annotations.NotNull;
-import org.zeith.hammerlib.util.java.tuples.Tuple3;
-import oshi.util.tuples.Pair;
 
 import java.awt.*;
 import java.util.Random;
@@ -172,6 +170,7 @@ public class MoonBow extends FlameItemSetting {
             entity.hurtTime = 0;
             entity.hurtDuration = 0;
             this.isSurging = entity.isInWaterOrRain();
+
             entity.setSwimming(false);
 
             Vec3 luk = player.getLookAngle();
@@ -252,8 +251,13 @@ public class MoonBow extends FlameItemSetting {
         return true;
     }
 
-    protected Pair<Tuple3<Float, Float, Float>, Vec3> beamSetting() {
-        return new Pair<>(new Tuple3<>(1F, 1F, 1F), new Vec3(0, 0, 0));
+    public ItemBorder constructTooltipData() {
+        return ItemBorder.builder()
+                .backgroundTop(0x021a27)
+                .backgroundBottom(0x01141f)
+                .borderTop(0xdafffc)
+                .borderBottom(0x00aab3)
+                .build();
     }
 
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {

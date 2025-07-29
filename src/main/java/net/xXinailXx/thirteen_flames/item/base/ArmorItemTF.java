@@ -2,6 +2,7 @@ package net.xXinailXx.thirteen_flames.item.base;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import lombok.Getter;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
@@ -29,10 +30,12 @@ public abstract class ArmorItemTF extends FlameItemSetting implements Wearable {
             return ArmorItem.dispenseArmor(source, stack) ? stack : super.execute(source, stack);
         }
     };
+    @Getter
     protected final EquipmentSlot slot;
     private final int defense;
     private final float toughness;
     protected final float knockbackResistance;
+    @Getter
     protected final ArmorMaterial material;
     private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
@@ -46,25 +49,17 @@ public abstract class ArmorItemTF extends FlameItemSetting implements Wearable {
         DispenserBlock.registerBehavior(this, DISPENSE_ITEM_BEHAVIOR);
         ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
         UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[slot.getIndex()];
-        builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", (double) this.defense, AttributeModifier.Operation.ADDITION));
-        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", (double) this.toughness, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", this.defense, AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", this.toughness, AttributeModifier.Operation.ADDITION));
 
         if (this.knockbackResistance > 0)
-            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", (double) this.knockbackResistance, AttributeModifier.Operation.ADDITION));
+            builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", this.knockbackResistance, AttributeModifier.Operation.ADDITION));
 
         this.defaultModifiers = builder.build();
     }
 
-    public EquipmentSlot getSlot() {
-        return this.slot;
-    }
-
     public int getEnchantmentValue() {
         return this.material.getEnchantmentValue();
-    }
-
-    public ArmorMaterial getMaterial() {
-        return this.material;
     }
 
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairStack) {

@@ -51,7 +51,6 @@ public abstract class PlayerMixin extends Player {
             ItemStack curio = optional.get().getRight();
 
             if (!curio.isEmpty()) {
-
                 if (!ResearchUtils.isItemResearched(player, curio.getItem()))
                     return;
 

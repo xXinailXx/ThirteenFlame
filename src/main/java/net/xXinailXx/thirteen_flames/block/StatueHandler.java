@@ -5,8 +5,8 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,22 +16,22 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.client.particle.ColoredParticle;
-import net.xXinailXx.enderdragonlib.client.particle.ColoredParticleRendererTypes;
-import net.xXinailXx.enderdragonlib.client.particle.ParticleActions;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
-import net.xXinailXx.thirteen_flames.block.entity.StatueBE;
 import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
+import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
+import net.xXinailXx.thirteen_flames.item.BagPaintItem;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
+import net.xXinailXx.thirteen_flames.network.packet.FlameUpgradePacket;
+import net.xXinailXx.thirteen_flames.network.packet.UpgradeStatuePacket;
 import net.xXinailXx.thirteen_flames.utils.Gods;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.zeith.hammerlib.net.Network;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.controller.AnimationController;
@@ -40,7 +40,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,11 +101,6 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         return posList;
     }
 
-    @Nullable
-    public StatueBE getBE(BlockPos pos) {
-        return (StatueBE) StatueData.getStatueBE(pos);
-    }
-
     private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
         return PlayState.CONTINUE;
     }
@@ -132,39 +126,11 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         };
     }
 
-    public static void upgrade(StatueBE be, Level level, ItemStack stack, Player player, InteractionHand hand) {
-        if (be == null || !be.isFinished() || be.getTimeToUpgrade() > 0 || !isUpgrade(stack, be.getGod()))
-            return;
-
-        if (level.isClientSide)
-            return;
-
-        LevelingUtils.addExperience(stack, 600);
-
-        ItemStack newStack = stack.copy();
-        player.setItemSlot(EquipmentSlot.MAINHAND, newStack);
-
-        ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
-                .color(new Color(255, 140, 0).getRGB())
-                .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
-                .diameter(0.2F)
-                .lifetime(100)
-                .scaleModifier(0.98F)
-                .physical(true)
-                .build());
-
-        Vec3 center = new Vec3(player.getX(), player.getY() + 1, player.getZ());
-
-        ParticleActions.createBall(options, center, level, 2, 0.15F);
-        be.resetFlameUpgradeData();
-        player.swing(hand);
-    }
-
     @SubscribeEvent
     public static void useStatues(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getEntity();
 
-        if (player == null || player.getLevel().isClientSide)
+        if (player == null)
             return;
 
         Level level = event.getLevel();
@@ -177,10 +143,23 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
             if (LevelingUtils.getLevel(stack) >= data.getMaxLevel())
                 return;
 
-            if (state.getBlock() instanceof StatueHandler handler)
-                upgrade(handler.getBE(event.getPos()), level, stack, player, event.getHand());
-            else if (state.getBlock() instanceof StatueStructureBlock structureBlock)
-                upgrade(structureBlock.getMainBlockBE(event.getPos()), level, stack, player, event.getHand());
+            if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueStructureBlock) {
+                Network.sendToServer(new FlameUpgradePacket(stack, event.getPos()));
+                player.swing(InteractionHand.MAIN_HAND);
+                event.setCanceled(true);
+            }
+        } else if (stack.is(ItemRegistry.STATUE_UPGRADER.get()) || (stack.getItem() instanceof BagPaintItem && !stack.is(ItemRegistry.BAG_PAINT.get()))) {
+            if (state.getBlock().defaultBlockState().is(BlockRegistry.STATUE_CUP_UNFINISHED.get())) {
+                level.setBlock(event.getPos(), BlockRegistry.STATUE_CUP.get().defaultBlockState(), 11);
+                player.swing(InteractionHand.MAIN_HAND);
+                event.setCanceled(true);
+            } else if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueGodPharaoh || state.getBlock() instanceof StatueGodPharaohUnfinished || state.getBlock() instanceof StatueStructureBlock) {
+                player.sendSystemMessage(Component.literal("dddddddddddddddddddddddddd"));
+
+                Network.sendToServer(new UpgradeStatuePacket(event.getPos(), stack));
+                player.swing(InteractionHand.MAIN_HAND);
+                event.setCanceled(true);
+            }
         }
     }
 }

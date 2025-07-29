@@ -35,7 +35,7 @@ public class MoonDischargeEntity extends ThrowableProjectile {
     }
 
     public void tick() {
-        Vec3 motion = new Vec3((double)0.0F, 0.6, (double)0.0F);
+        Vec3 motion = new Vec3(0, 0.6, 0);
 
         super.tick();
 
@@ -55,7 +55,7 @@ public class MoonDischargeEntity extends ThrowableProjectile {
         ParticleActions.spawnParticleEntity(new CircleTintData(new Color(10, 46, 203), diametr, 45, 0.9F, false), this, count, speed);
         ParticleActions.spawnParticleEntity(new SparkTintData(new Color(115, 110, 255), diametr, 50), this, count, speed);
         ParticleActions.spawnParticleEntity(new SparkTintData(new Color(245, 152, 255), diametr, 50), this, count, speed);
-        this.level.playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.AZALEA_FALL, SoundSource.MASTER, 0.5F, 1.4F + this.random.nextFloat() * 1.6F);
+        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.AZALEA_FALL, SoundSource.MASTER, 0.5F, 1.4F + this.random.nextFloat() * 1.6F);
     }
 
     public void onRemovedFromWorld() {
@@ -75,19 +75,23 @@ public class MoonDischargeEntity extends ThrowableProjectile {
                 living.hurt(DamageSource.thrown(this, this.getOwner()), this.getDamage());
             }
 
-            this.getLevel().playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 1.0F, this.random.nextFloat() * 1.4F + 0.3F);
-            this.getLevel().playSound((Player)null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 0.03F, this.random.nextFloat() * 1.3F + 0.5F);
+            this.getLevel().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.PLAYERS, 1, this.random.nextFloat() * 1.4F + 0.3F);
+            this.getLevel().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 0.03F, this.random.nextFloat() * 1.3F + 0.5F);
+
             AABB secondaryBox = (new AABB(end, end)).inflate(this.getRadius() * 0.5F).move(0, this.getRadius() * 0.25F, 0);
             List<LivingEntity> secondaryTargets = new ArrayList(this.getLevel().getEntitiesOfClass(LivingEntity.class, secondaryBox, (entity) -> !entity.equals(this.getOwner()) && !entity.equals(obj)));
 
             if (!secondaryTargets.isEmpty()) {
-                LivingEntity secTarget = (LivingEntity)secondaryTargets.get(this.random.nextInt(secondaryTargets.size()));
+                LivingEntity secTarget = secondaryTargets.get(this.random.nextInt(secondaryTargets.size()));
 
                 if (!this.level.isClientSide()) {
                     AABB box2 = secTarget.getBoundingBox();
                     Vec3 end2 = box2.getCenter().add((double) MathUtils.randomFloat(this.random) * box2.getXsize() * 0.4, (double)MathUtils.randomFloat(this.random) * box2.getYsize() * 0.4, (double)MathUtils.randomFloat(this.random) * box2.getZsize() * 0.4);
+
                     this.drawJaggedLightning(this.level, end, end2, 3, 0.3, 0.15F, new Color(222, 127, 255), true);
+
                     end2 = box2.getCenter().add((double)MathUtils.randomFloat(this.random) * box2.getXsize() * 0.4, (double)MathUtils.randomFloat(this.random) * box2.getYsize() * 0.4, (double)MathUtils.randomFloat(this.random) * box2.getZsize() * 0.4);
+
                     this.drawJaggedLightning(this.level, end, end2, 3, 0.3, 0.25F, new Color(154, 96, 255), true);
                     secTarget.hurt(DamageSource.thrown(this, this.getOwner()), this.getDamage());
                 }
@@ -120,7 +124,7 @@ public class MoonDischargeEntity extends ThrowableProjectile {
     }
 
     public float getRadius() {
-        return (Float)this.getEntityData().get(RADIUS);
+        return this.getEntityData().get(RADIUS);
     }
 
     public void setRadius(float radius) {
@@ -128,7 +132,7 @@ public class MoonDischargeEntity extends ThrowableProjectile {
     }
 
     public float getDamage() {
-        return (Float)this.getEntityData().get(DMG);
+        return this.getEntityData().get(DMG);
     }
 
     public void setDamage(float damage) {
@@ -136,8 +140,8 @@ public class MoonDischargeEntity extends ThrowableProjectile {
     }
 
     protected void defineSynchedData() {
-        this.entityData.define(RADIUS, 5.0F);
-        this.entityData.define(DMG, 5.0F);
+        this.entityData.define(RADIUS, 5F);
+        this.entityData.define(DMG, 5F);
     }
 
     protected void readAdditionalSaveData(CompoundTag compound) {

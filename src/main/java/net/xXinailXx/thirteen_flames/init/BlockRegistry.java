@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.*;
-import net.xXinailXx.thirteen_flames.item.StatueBlockItem;
+import net.xXinailXx.thirteen_flames.item.base.StatueBlockItem;
 
 public class BlockRegistry {
     private static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, ThirteenFlames.MODID);
@@ -37,6 +37,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> STATUE_RONOS_STRUCTURE = BLOCKS.register("statue_ronos_structure_block", StatueStructureBlock::new);
     public static final RegistryObject<Block> STATUE_HET_STRUCTURE = BLOCKS.register("statue_het_structure_block", StatueStructureBlock::new);
     public static final RegistryObject<Block> STATUE_GOD_PHARAOH_STRUCTURE = BLOCKS.register("statue_god_pharaoh_structure_block", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_UNFINISHED_STRUCTURE = BLOCKS.register("statue_god_pharaoh_unfinished_structure_block", StatueStructureBlock::new);
     public static final RegistryObject<Block> STATUE_KNEF = BLOCKS.register("statue_knef_block", StatueKnef::new);
     public static final RegistryObject<Block> STATUE_SELYA = BLOCKS.register("statue_selya_block", StatueSelya::new);
     public static final RegistryObject<Block> STATUE_MONTU = BLOCKS.register("statue_montu_block", StatueMontu::new);

@@ -39,10 +39,12 @@ public class SecretSurvival extends AbstarctAbilityWidgets {
 
     @SubscribeEvent
     public static void eat(PlayerInteractEvent.EntityInteractSpecific event) {
-        LivingEntity entity = (LivingEntity) event.getTarget();
+        if (!(event.getTarget() instanceof LivingEntity entity))
+            return;
+
         Player player = event.getEntity();
 
-        if (entity == null || player == null)
+        if (player == null)
             return;
 
         if (data.isActiveAbility(player, "secret_survival"))

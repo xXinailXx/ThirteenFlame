@@ -1,6 +1,8 @@
 package net.xXinailXx.thirteen_flames.entity;
 
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -28,6 +30,8 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
     private static final EntityDataAccessor<Float> EFFECTIVE = SynchedEntityData.defineId(HornWindSeliasetEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_BLOCK_DISTANCE = SynchedEntityData.defineId(HornWindSeliasetEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> REVERCE = SynchedEntityData.defineId(HornWindSeliasetEntity.class, EntityDataSerializers.BOOLEAN);
+    @Setter
+    @Getter
     private Vec3 startPos;
     private ItemStack stack;
 
@@ -94,14 +98,6 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
             ((LivingEntity) entity).knockback(0.4, -delta.x, -delta.z);
 
         LevelingUtils.addExperience(this.stack, 2);
-    }
-
-    public Vec3 getStartPos() {
-        return startPos;
-    }
-
-    public void setStartPos(Vec3 startPos) {
-        this.startPos = startPos;
     }
 
     public boolean isReverce() {

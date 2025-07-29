@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.utils.NBTUtils;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -33,23 +34,22 @@ public class ScrollScreen extends AbstractContainerScreen<ScrollMenu> {
     private final List<AbstractWidget> enchWidget = new ArrayList<>();
     public final Map<Enchantment, EnchantmentUtils.Ench> possibleEnchs;
     public final Map<Enchantment, Integer> enchs;
+    @Getter
     private EnchantmentUtils.Ench enchSelected;
-    private final Inventory inventory;
     private final int backgroundHeight = 249;
     private final int backgroundWidth = 331;
-    private int scrollType;
-    private double expModifier;
+    private final int scrollType;
     private ItemStack stack;
+    @Getter
     private int enchLevel;
+    @Getter
     private int expCost = 0;
     public int scrollY0;
     public int scrollY1;
 
     public ScrollScreen(ScrollMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
-        this.inventory = inventory;
         this.scrollType = NBTUtils.getInt(menu.scrollStack, "type", 0);
-        this.expModifier = AbilityUtils.getAbilityValue(menu.scrollStack, "catalog", "modifier");
         this.stack = menu.stack;
         this.possibleEnchs = menu.possibleEnchs;
         this.enchs = menu.enchs;
@@ -59,21 +59,12 @@ public class ScrollScreen extends AbstractContainerScreen<ScrollMenu> {
         this.scrollY1 = menu.scroll1;
 
         for (Enchantment enchantment : this.enchs.keySet()) {
-            int i = 0;
-
-            switch (enchantment.getRarity()) {
-                case COMMON:
-                    i = 1;
-                    break;
-                case UNCOMMON:
-                    i = 2;
-                    break;
-                case RARE:
-                    i = 4;
-                    break;
-                case VERY_RARE:
-                    i = 8;
-            }
+            int i = switch (enchantment.getRarity()) {
+                case COMMON -> 1;
+                case UNCOMMON -> 2;
+                case RARE -> 4;
+                case VERY_RARE -> 8;
+            };
 
             this.expCost += (int) (this.enchs.get(enchantment) * i * AbilityUtils.getAbilityValue(this.menu.scrollStack, "catalog", "modifier"));
         }
@@ -160,14 +151,14 @@ public class ScrollScreen extends AbstractContainerScreen<ScrollMenu> {
 
         stack.pushPose();
 
-        this.blit(stack, x, y, 0, 0, backgroundWidth, backgroundHeight, 512, 512);
+        blit(stack, x, y, 0, 0, backgroundWidth, backgroundHeight, 512, 512);
 
         RenderSystem.setShaderTexture(0, new ResourceLocation(ThirteenFlames.MODID, "textures/gui/gems/scroll_gem_" + this.scrollType + ".png"));
 
-        this.blit(stack, x + 1, y + 72, 0, 0, 10, 21, 10, 21);
+        blit(stack, x + 1, y + 72, 0, 0, 10, 21, 10, 21);
 
         if (!this.enchs.isEmpty())
-            this.font.draw(stack, Component.translatable("gui.thirteen_flames.scroll.ench_level_info", expCost), x + 164 - MC.font.width(Component.translatable("gui.thirteen_flames.scroll.ench_level_info", expCost)) / 2, y + 90, 0x673E09);
+            this.font.draw(stack, Component.translatable("gui.thirteen_flames.scroll.ench_level_info", expCost), x + 164 - (float) MC.font.width(Component.translatable("gui.thirteen_flames.scroll.ench_level_info", expCost)) / 2, y + 90, 0x673E09);
 
         stack.popPose();
     }
@@ -337,25 +328,6 @@ public class ScrollScreen extends AbstractContainerScreen<ScrollMenu> {
             return false;
         else if (ench.getMinLevel() != this.enchSelected.getMinLevel())
             return false;
-        else if (ench.getMaxLevel() != this.enchSelected.getMaxLevel())
-            return false;
-
-        return true;
-    }
-
-    public EnchantmentUtils.Ench getEnchSelected() {
-        return enchSelected;
-    }
-
-    public int getEnchLevel() {
-        return enchLevel;
-    }
-
-    public int getExpCost() {
-        return expCost;
-    }
-
-    public boolean isPauseScreen() {
-        return false;
+        else return ench.getMaxLevel() == this.enchSelected.getMaxLevel();
     }
 }

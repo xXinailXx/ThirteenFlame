@@ -197,7 +197,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
 
         if (isUnlock()) {
             if (isBuyAbility()) {
-                entries.add(Component.translatable("button.thirteen_flames.button.total_level", new Object[]{getLevelAbility(), getAbilityData().getMaxLevel()}));
+                entries.add(Component.translatable("button.thirteen_flames.button.total_level", getLevelAbility(), getAbilityData().getMaxLevel()));
                 entries.add(Component.literal(" "));
 
                 renderIconYOff += 2;
@@ -230,7 +230,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
             if (isLockAbility())
                 entries.add(Component.translatable("button.thirteen_flames.button.command_lock"));
             else
-                entries.add(Component.translatable("button.thirteen_flames.button.lock", new Object[]{screenName, getAbilityData().getRequiredLevel()}));
+                entries.add(Component.translatable("button.thirteen_flames.button.lock", screenName, getAbilityData().getRequiredLevel()));
         }
 
         for (MutableComponent entry : entries) {
@@ -307,10 +307,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
             return false;
 
         if (this instanceof GiftGodPharaoh)
-            if (ModList.get().isLoaded("pocket_dimension"))
-                return true;
-            else
-                return false;
+            return ModList.get().isLoaded("pocket_dimension");
 
         return getScreenLevel() >= getAbilityData().getRequiredLevel() || getAbilityData().getScreenID().equals(ScreenID.GLOBAL);
     }

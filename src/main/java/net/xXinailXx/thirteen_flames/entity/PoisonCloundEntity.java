@@ -3,6 +3,8 @@ package net.xXinailXx.thirteen_flames.entity;
 import it.hurts.sskirillss.relics.client.particles.circle.CircleTintData;
 import it.hurts.sskirillss.relics.client.particles.spark.SparkTintData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -33,6 +35,8 @@ public class PoisonCloundEntity extends Projectile {
     private static final EntityDataAccessor<Integer> DURATION = SynchedEntityData.defineId(PoisonCloundEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Float> RADIUS = SynchedEntityData.defineId(PoisonCloundEntity.class, EntityDataSerializers.FLOAT);
     private final Random random = new Random();
+    @Getter
+    @Setter
     private ItemStack sword;
     private int cooldown = 0;
 
@@ -47,12 +51,12 @@ public class PoisonCloundEntity extends Projectile {
         if (this.tickCount > this.getLifeTime())
             this.discard();
 
-        float radius = this.getRadius() * (1.0F - (float)this.tickCount / (float)this.getLifeTime());
-        AABB box = (new AABB(this.getPosition(1.0F), this.getPosition(1.0F))).inflate((double)radius);
+        float radius = this.getRadius() * (1 - (float)this.tickCount / (float)this.getLifeTime());
+        AABB box = (new AABB(this.getPosition(1), this.getPosition(1))).inflate(radius);
 
         if (this.getLevel() instanceof ServerLevel) {
-            ParticleActions.spawnParticleAABB(this.getLevel(), new CircleTintData(new Color(85 - this.random.nextInt(80) + this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 6.0F + 0.1F, 80, 0.94F, false), box, Math.round(radius * radius * 2.0F) + 1, 0.01 * (double)radius);
-            ParticleActions.spawnParticleAABB(this.getLevel(), new SparkTintData(new Color(85 - this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 10.0F, 60), box, Math.round(radius * radius) + 1, (double)0.0F);
+            ParticleActions.spawnParticleAABB(this.getLevel(), new CircleTintData(new Color(85 - this.random.nextInt(80) + this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 6 + 0.1F, 80, 0.94F, false), box, Math.round(radius * radius * 2) + 1, 0.01 * (double)radius);
+            ParticleActions.spawnParticleAABB(this.getLevel(), new SparkTintData(new Color(85 - this.random.nextInt(80), 255 - this.random.nextInt(160), 0), radius / 10, 60), box, Math.round(radius * radius) + 1, 0);
         }
 
         List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, box, (entity) -> !entity.equals(this.getOwner()));
@@ -62,7 +66,7 @@ public class PoisonCloundEntity extends Projectile {
                 if (e.is(Objects.requireNonNull(this.getOwner())))
                     continue;
 
-                e.hurt(DamageSource.MAGIC, 2.0F + radius);
+                e.hurt(DamageSource.MAGIC, 2 + radius);
                 int maxAmp = this.getAmplifire();
                 int duration = this.getDuration();
 
@@ -98,16 +102,12 @@ public class PoisonCloundEntity extends Projectile {
         return false;
     }
 
-    public boolean canBeCollidedWith() {
-        return false;
-    }
-
     public void setLifeTime(int lifetime) {
         this.getEntityData().set(LIFETIME, lifetime);
     }
 
     public int getLifeTime() {
-        return (Integer)this.getEntityData().get(LIFETIME);
+        return this.getEntityData().get(LIFETIME);
     }
 
     public void setAmplifire(int maxAmp) {
@@ -115,7 +115,7 @@ public class PoisonCloundEntity extends Projectile {
     }
 
     public int getAmplifire() {
-        return (Integer)this.getEntityData().get(APLIFIRE);
+        return this.getEntityData().get(APLIFIRE);
     }
 
     public void setDuration(int duration) {
@@ -123,23 +123,15 @@ public class PoisonCloundEntity extends Projectile {
     }
 
     public int getDuration() {
-        return (Integer)this.getEntityData().get(DURATION);
+        return this.getEntityData().get(DURATION);
     }
 
     public float getRadius() {
-        return (Float)this.getEntityData().get(RADIUS);
+        return this.getEntityData().get(RADIUS);
     }
 
     public void setRadius(float radius) {
         this.getEntityData().set(RADIUS, radius);
-    }
-
-    public void setSword(ItemStack swort) {
-        this.sword = swort;
-    }
-
-    public ItemStack getSword() {
-        return this.sword;
     }
 
     public boolean isAlwaysTicking() {
@@ -147,7 +139,7 @@ public class PoisonCloundEntity extends Projectile {
     }
 
     protected void defineSynchedData() {
-        this.entityData.define(RADIUS, 5.0F);
+        this.entityData.define(RADIUS, 5F);
         this.entityData.define(LIFETIME, 20);
         this.entityData.define(APLIFIRE, 0);
         this.entityData.define(DURATION, 2);
