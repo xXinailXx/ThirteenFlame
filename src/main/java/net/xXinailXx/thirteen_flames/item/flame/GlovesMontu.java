@@ -154,9 +154,6 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
         if (curio.isEmpty())
             return;
 
-        if (!ResearchUtils.isItemResearched(player, curio.getItem()))
-            return;
-
         ItemEntity itemEntity = (ItemEntity) event.getEntityHitResult().getEntity();
 
         if (!player.getLevel().isClientSide)

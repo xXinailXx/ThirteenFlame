@@ -83,9 +83,6 @@ public class SwordRonosa extends SwordItemTF {
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (! ResearchUtils.isItemResearched(player, player.getItemInHand(hand).getItem()))
-            return InteractionResultHolder.success(player.getItemInHand(hand));
-
         if (player.isCrouching() && !AbilityUtils.isAbilityOnCooldown(player.getItemInHand(hand), "fart")) {
             level.playSound(null, player, SoundEvents.CHORUS_FLOWER_DEATH, SoundSource.MASTER, 1.2F, 0.1F);
             level.playSound(null, player, SoundEvents.SCULK_BLOCK_BREAK, SoundSource.MASTER, 1.0F, 1.0F);

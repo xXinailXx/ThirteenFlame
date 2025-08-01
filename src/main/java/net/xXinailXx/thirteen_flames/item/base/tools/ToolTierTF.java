@@ -14,6 +14,6 @@ import java.util.List;
 
 public class ToolTierTF {
     public static Tier THIRTEEN_FLAMES = TierSortingRegistry.registerTier(new ForgeTier(4, 2031, 9, 0, 15,
-            ThirteenFlamesTags.Blocks.NEEDS_FLAME_TOOL, () -> Ingredient.of(ItemRegistry.LAZOTEP_INGOT.get())),
+            ThirteenFlamesTags.NEEDS_FLAME_TOOL, () -> Ingredient.of(ItemRegistry.LAZOTEP_INGOT.get())),
             new ResourceLocation(ThirteenFlames.MODID, "flame"), List.of(Tiers.NETHERITE), List.of());
 }

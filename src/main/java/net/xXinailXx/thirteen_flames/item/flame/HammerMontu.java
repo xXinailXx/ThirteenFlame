@@ -55,9 +55,6 @@ public class HammerMontu extends PickaxeItemTF {
         Level level = use.getLevel();
         ItemStack stack = use.getItemInHand();
 
-        if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
-            return InteractionResult.SUCCESS;
-
         if (!AbilityUtils.isAbilityOnCooldown(stack, "ejection")) {
             ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(stack, "ejection", "radius"));
             shockwave.setOwner(player);
@@ -95,9 +92,6 @@ public class HammerMontu extends PickaxeItemTF {
     @SubscribeEvent
     public static void onBlockDestroy(BlockEvent.BreakEvent event) {
         ItemStack stack = event.getPlayer().getMainHandItem();
-
-        if (!ResearchUtils.isItemResearched(event.getPlayer(), stack.getItem()))
-            return;
 
         BlockPos pos = event.getPos();
         Level level = event.getPlayer().getLevel();

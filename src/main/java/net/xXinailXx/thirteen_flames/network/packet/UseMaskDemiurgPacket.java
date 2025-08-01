@@ -23,9 +23,6 @@ public class UseMaskDemiurgPacket implements IPacket {
         if (!stack.is(ItemRegistry.MASK_DEMIURG.get()))
             return;
 
-        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
-            return;
-
         if (AbilityUtils.isAbilityOnCooldown(stack, "dematerialization"))
             return;
 

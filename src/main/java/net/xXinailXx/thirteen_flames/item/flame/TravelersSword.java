@@ -62,9 +62,6 @@ public class TravelersSword extends SwordItemTF {
     }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
-        if (!ResearchUtils.isItemResearched(player, player.getItemInHand(hand).getItem()))
-            return InteractionResultHolder.success(player.getItemInHand(hand));
-
         if (hand.equals(InteractionHand.MAIN_HAND)) {
             ItemStack stack = player.getMainHandItem();
             double speedValue = AbilityUtils.getAbilityValue(stack, "wind_wandering", "speed");
@@ -152,13 +149,11 @@ public class TravelersSword extends SwordItemTF {
         AttributeInstance movementSpeed = player.getAttribute(Attributes.MOVEMENT_SPEED);
 
         if (stack.is(ItemRegistry.TRAVELERS_SWORD.get())) {
-            if (ResearchUtils.isItemResearched(player, stack.getItem())) {
-                if (! movementSpeed.hasModifier(speedBonus))
-                    movementSpeed.addTransientModifier(speedBonus);
+            if (! movementSpeed.hasModifier(speedBonus))
+                movementSpeed.addTransientModifier(speedBonus);
 
-                if (! stepHeight.hasModifier(stepHeightBonus))
-                    stepHeight.addTransientModifier(stepHeightBonus);
-            }
+            if (! stepHeight.hasModifier(stepHeightBonus))
+                stepHeight.addTransientModifier(stepHeightBonus);
         } else {
             stepHeight.removeModifier(stepHeightBonus);
             movementSpeed.removeModifier(speedBonus);

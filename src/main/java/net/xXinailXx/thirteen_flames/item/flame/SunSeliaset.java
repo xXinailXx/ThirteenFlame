@@ -47,9 +47,6 @@ public class SunSeliaset extends FlameItemSetting {
         Level level = use.getLevel();
         ItemStack stack = use.getItemInHand();
 
-        if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
-            return InteractionResult.SUCCESS;
-
         SunSeliasetEntity sun = new SunSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "light", "radius"), (int) AbilityUtils.getAbilityValue(stack, "light", "cooldown"));
         sun.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         level.addFreshEntity(sun);

@@ -78,9 +78,6 @@ public class MoonBow extends FlameItemSetting {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
 
-        if (!ResearchUtils.isItemResearched(player, itemstack.getItem()))
-            return InteractionResultHolder.success(itemstack);
-
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(itemstack);
     }

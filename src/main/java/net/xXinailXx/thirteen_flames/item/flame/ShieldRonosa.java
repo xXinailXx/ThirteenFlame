@@ -55,9 +55,6 @@ public class ShieldRonosa extends FlameItemSetting {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
-            return InteractionResultHolder.success(stack);
-
         player.startUsingItem(hand);
         return InteractionResultHolder.consume(stack);
     }
@@ -99,9 +96,6 @@ public class ShieldRonosa extends FlameItemSetting {
         else if (player.getOffhandItem().is(ItemRegistry.SHIELD_RONOSA.get()))
             stack = player.getOffhandItem();
         else
-            return;
-
-        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
             return;
 
         if (NBTUtils.getInt(stack, "use", 0) == 0)

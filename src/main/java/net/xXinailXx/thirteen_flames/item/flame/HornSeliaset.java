@@ -65,9 +65,6 @@ public class HornSeliaset extends FlameItemSetting {
         Level level = use.getLevel();
         ItemStack stack = use.getItemInHand();
 
-        if (!ResearchUtils.isItemResearched(use.getPlayer(), stack.getItem()))
-            return InteractionResult.SUCCESS;
-
         HornSeliasetEntity horn = new HornSeliasetEntity(level, (int) AbilityUtils.getAbilityValue(stack, "rhythm", "waves"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "cooldown"), (int) AbilityUtils.getAbilityValue(stack, "rhythm", "stun"));
         horn.setPos(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         horn.setOwner(use.getPlayer());

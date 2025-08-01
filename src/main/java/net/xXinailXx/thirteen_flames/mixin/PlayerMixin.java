@@ -51,9 +51,6 @@ public abstract class PlayerMixin extends Player {
             ItemStack curio = optional.get().getRight();
 
             if (!curio.isEmpty()) {
-                if (!ResearchUtils.isItemResearched(player, curio.getItem()))
-                    return;
-
                 double value = AbilityUtils.getAbilityValue(curio, "usin", "boost");
 
                 ci.setReturnValue((float) (1.0D / this.getAttributeValue(Attributes.ATTACK_SPEED) * 20.0D * (1 - value * 0.01)));

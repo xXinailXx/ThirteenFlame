@@ -24,8 +24,6 @@ public class EffectRegistry {
     public static final RegistryObject<MobEffect> KISS_KNEF = EFFECTS.register("kiss_knef", () -> new Kiss_Knef(MobEffectCategory.HARMFUL, new Color(44, 0, 138).getRGB()));
     public static final RegistryObject<MobEffect> POISON = EFFECTS.register("poison", () -> new Poison(MobEffectCategory.HARMFUL, new Color(0, 93, 2).getRGB()));
 
-    public EffectRegistry() {}
-
     public static void register() {
         EFFECTS.register(FMLJavaModLoadingContext.get().getModEventBus());
     }

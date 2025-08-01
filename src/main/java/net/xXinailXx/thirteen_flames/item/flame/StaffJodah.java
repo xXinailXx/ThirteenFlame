@@ -65,9 +65,6 @@ public class StaffJodah extends SwordItemTF {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (!ResearchUtils.isItemResearched(player, stack.getItem()))
-            return InteractionResultHolder.success(stack);
-
         if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && !AbilityUtils.isAbilityOnCooldown(stack, "backlight")) {
             ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                     .color(new Color(255, 255, 255).getRGB())

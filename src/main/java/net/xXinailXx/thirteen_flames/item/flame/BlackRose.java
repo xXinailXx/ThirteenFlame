@@ -107,9 +107,6 @@ public class BlackRose extends FlameItemSetting {
             ItemStack stack = player.getInventory().items.get(i);
 
             if (stack.getItem() instanceof BlackRose) {
-                if (!ResearchUtils.isItemResearched(player, stack.getItem()))
-                    return;
-
                 if (!net.xXinailXx.enderdragonlib.utils.MathUtils.isRandom(player.getLevel(), (int) AbilityUtils.getAbilityValue(stack, "flesh", "revival")))
                     return;
 

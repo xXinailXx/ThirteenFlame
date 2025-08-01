@@ -37,9 +37,6 @@ public class FlightHet extends FlameItemSetting {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack mainStack = player.getMainHandItem();
 
-        if (!ResearchUtils.isItemResearched(player, mainStack.getItem()))
-            return super.use(level, player, hand);
-
         ItemStack offStack = player.getOffhandItem();
 
         if (mainStack.is(ItemRegistry.FLIGHT_HET.get()) && offStack.is(Items.PAPER)) {
