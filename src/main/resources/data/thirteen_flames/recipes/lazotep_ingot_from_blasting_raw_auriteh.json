@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 1.0,
+  "group": "lazotep_ingot",
+  "ingredient": {
+    "item": "thirteen_flames:raw_lazotep"
+  },
+  "result": "thirteen_flames:lazotep_ingot"
+}

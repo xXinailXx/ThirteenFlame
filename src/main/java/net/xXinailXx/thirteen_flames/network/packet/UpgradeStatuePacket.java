@@ -52,14 +52,10 @@ public class UpgradeStatuePacket implements IPacket {
             this.pos = builder.mainPos();
         }
 
-        player.sendSystemMessage(Component.literal(this.pos.toShortString() + "LLLLLLLLLLLLLL"));
-
         StatueBE be = (StatueBE) level.getChunkAt(this.pos).getBlockEntity(this.pos);
 
         if (be == null)
             return;
-
-        player.sendSystemMessage(Component.literal("SSSSSSSSSSSSSShHHHHHHHHHHIIIIIIIITTTTTTTT"));
 
         Direction direction = level.getBlockState(this.pos).getValue(CustomStatueUtils.FACING);
 

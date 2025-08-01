@@ -1,15 +1,11 @@
 package net.xXinailXx.thirteen_flames.mixin;
 
-import com.mojang.authlib.GameProfile;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.ProfilePublicKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
@@ -19,7 +15,6 @@ import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.flame.MoonBow;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -32,28 +27,35 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Mixin(Player.class)
-public abstract class PlayerMixin extends Player {
+public abstract class PlayerMixin extends LivingEntity {
     @Shadow public abstract ItemStack getItemBySlot(EquipmentSlot p_36257_);
     @Shadow public abstract Iterable<ItemStack> getArmorSlots();
     @Unique private IData.IAbilitiesData data = new Data.AbilitiesData.Utils();
 
-    public PlayerMixin(Level p_219727_, BlockPos p_219728_, float p_219729_, GameProfile p_219730_, @Nullable ProfilePublicKey p_219731_) {
-        super(p_219727_, p_219728_, p_219729_, p_219730_, p_219731_);
+    protected PlayerMixin(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
+        super(p_20966_, p_20967_);
     }
 
     @Inject(method = "getCurrentItemAttackStrengthDelay", at = @At("RETURN"), cancellable = true)
-    private void getCurrentItemAttackStrengthDelayWithFasterAttackSpeed(CallbackInfoReturnable<Float> ci) {
+    private void getCurrentItemAttackStrengthDelay(CallbackInfoReturnable<Float> ci) {
         Player player = (Player) (Object) this;
 
         Optional<ImmutableTriple<String, Integer, ItemStack>> optional = CuriosApi.getCuriosHelper().findEquippedCurio(ItemRegistry.GLOVES_MONTU.get(), player);
 
-        if (!optional.isEmpty()) {
+        if (optional.isPresent()) {
             ItemStack curio = optional.get().getRight();
 
             if (!curio.isEmpty()) {
-                double value = AbilityUtils.getAbilityValue(curio, "usin", "boost");
+                int value = (int) AbilityUtils.getAbilityValue(curio, "usin", "boost");
 
-                ci.setReturnValue((float) (1.0D / this.getAttributeValue(Attributes.ATTACK_SPEED) * 20.0D * (1 - value * 0.01)));
+                System.out.println(value);
+                System.out.println(ci.getReturnValueF());
+
+                ci.setReturnValue(ci.getReturnValueF() * (1 - value * 0.01F));
+
+                System.out.println(ci.getReturnValueF());
+
+                ci.cancel();
             }
         }
 

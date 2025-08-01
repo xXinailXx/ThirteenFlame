@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -56,6 +58,17 @@ public class THModEvents {
         }
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)
+        public static void attackEntity(LivingAttackEvent event) {
+            LivingEntity entity = event.getEntity();
+
+            if (entity == null || event.getSource().getEntity() == null || !(event.getSource().getEntity() instanceof Player))
+                return;
+
+            if (!ProgressManager.isAllowStatUsage(ProgressManager.ProgressType.MINING, ((Player) event.getSource().getEntity()).getMainHandItem()))
+                event.setCanceled(true);
+        }
+
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void keyPressed(InputEvent.Key event) {
             Minecraft minecraft = Minecraft.getInstance();
 
@@ -64,32 +77,6 @@ public class THModEvents {
 
             if (event.getKey() == new KeyMapping("key.display_skill_tree", 79, "key.categories.skilltree").getKey().getValue())
                 event.setCanceled(true);
-        }
-
-        @SubscribeEvent
-        public static void attackEntity(AttackEntityEvent event) {
-            Player player = event.getEntity();
-
-            if (player == null)
-                return;
-
-            ItemStack stack = player.getMainHandItem();
-
-            if (!ProgressManager.isAllowStatUsage(ProgressManager.ProgressType.FIGHT, stack))
-                event.setCanceled(true);
-        }
-
-        @SubscribeEvent
-        public static void getDigSpeed(PlayerEvent.BreakSpeed event) {
-            Player player = event.getEntity();
-
-            if (player == null)
-                return;
-
-            ItemStack stack = player.getMainHandItem();
-
-            if (!ProgressManager.isAllowStatUsage(ProgressManager.ProgressType.MINING, stack))
-                event.setNewSpeed(0F);
         }
 
         @SubscribeEvent

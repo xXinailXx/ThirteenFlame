@@ -61,9 +61,9 @@ public class PoisonCloundEntity extends Projectile {
 
         List<LivingEntity> entities = this.level.getEntitiesOfClass(LivingEntity.class, box, (entity) -> !entity.equals(this.getOwner()));
 
-        if (this.cooldown == 0) {
+        if (this.cooldown == 0 && !this.level.isClientSide) {
             for(LivingEntity e : entities) {
-                if (e.is(Objects.requireNonNull(this.getOwner())))
+                if (this.getOwner() != null && e.is(this.getOwner()))
                     continue;
 
                 e.hurt(DamageSource.MAGIC, 2 + radius);

@@ -23,17 +23,17 @@ public class ScarabItem extends ItemSetting {
 
         if (level.isClientSide) {
             if (this.type == ScarabsType.SILVER)
-                data.addScarabSilver(player, stack.getCount());
+                data.addScarabSilver(player, 1);
         } else {
             switch (this.type) {
-                case GOLD -> data.addScarabGold(player, stack.getCount());
-                case AURITEH -> data.addScarabAuriteh(player, stack.getCount());
-                case LAZOTEP -> data.addScarabLazotep(player, stack.getCount());
+                case GOLD -> data.addScarabGold(player, 1);
+                case AURITEH -> data.addScarabAuriteh(player, 1);
+                case LAZOTEP -> data.addScarabLazotep(player, 1);
             }
         }
 
         if (!player.isCreative())
-            stack.shrink(stack.getCount());
+            stack.split(1);
 
         return super.use(level, player, hand);
     }

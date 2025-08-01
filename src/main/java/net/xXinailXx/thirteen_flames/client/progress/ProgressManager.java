@@ -116,6 +116,9 @@ public class ProgressManager {
 
         int reqLevel = getToolReqLevel(type, stack);
 
+        if (reqLevel == -1)
+            return true;
+
         return switch (type) {
             case MINING -> data.getMiningLevel(Minecraft.getInstance().player) >= reqLevel;
             case CRAFT -> data.getCraftLevel(Minecraft.getInstance().player) >= reqLevel;

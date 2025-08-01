@@ -28,6 +28,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
+import net.xXinailXx.thirteen_flames.data.IStaminaData;
+import net.xXinailXx.thirteen_flames.data.StaminaData;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.FlameItemSetting;
 
@@ -56,7 +58,15 @@ public class ShieldRonosa extends FlameItemSetting {
         ItemStack stack = player.getItemInHand(hand);
 
         player.startUsingItem(hand);
+        NBTUtils.setInt(stack, "use", 1);
+
         return InteractionResultHolder.consume(stack);
+    }
+
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        NBTUtils.setInt(stack, "use", 0);
+
+        return super.finishUsingItem(stack, level, entity);
     }
 
     public boolean canPerformAction(ItemStack stack, net.minecraftforge.common.ToolAction toolAction) {
@@ -87,6 +97,11 @@ public class ShieldRonosa extends FlameItemSetting {
         LivingEntity living = event.getEntity();
 
         if (!(living instanceof Player player))
+            return;
+
+        IStaminaData data = new StaminaData.Utils();
+
+        if (data.isStaminaEmpty(player))
             return;
 
         ItemStack stack;

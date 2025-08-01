@@ -8,17 +8,16 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -90,26 +89,34 @@ public class HammerMontu extends PickaxeItemTF {
     }
 
     @SubscribeEvent
-    public static void onBlockDestroy(BlockEvent.BreakEvent event) {
-        ItemStack stack = event.getPlayer().getMainHandItem();
+    public static void blockDestroy(BlockEvent.BreakEvent event) {
+        Player player = event.getPlayer();
+
+        if (player == null || player.isCreative())
+            return;
+
+        ItemStack stack = player.getMainHandItem();
 
         BlockPos pos = event.getPos();
-        Level level = event.getPlayer().getLevel();
+        Level level = player.getLevel();
         double maxLevel = AbilityUtils.getAbilityValue(stack, "digging", "mining");
 
         if (stack.getItem() == ItemRegistry.HAMMER_MONTU.get()) {
+            ItemEntity entity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), level.getBlockState(pos).getBlock().asItem().getDefaultInstance());
+            level.addFreshEntity(entity);
+
             switch ((int) maxLevel) {
                 case 2 -> {
                     BlockState state = level.getBlockState(pos.below());
 
-                    if (!(state.getMaterial() == Material.BARRIER) || !(state.getMaterial() == Material.PORTAL))
+                    if (state.getBlock().defaultDestroyTime() > 0)
                         level.destroyBlock(pos.below(), true);
                 }
                 case 3 -> {
                     BlockState stateAbove = level.getBlockState(pos.below());
                     BlockState stateBelow = level.getBlockState(pos.above());
 
-                    if (!(stateAbove.getMaterial() == Material.BARRIER) || !(stateAbove.getMaterial() == Material.PORTAL) && !(stateBelow.getMaterial() == Material.BARRIER) || !(stateBelow.getMaterial() == Material.PORTAL)) {
+                    if (stateAbove.getBlock().defaultDestroyTime() > 0 && stateBelow.getBlock().defaultDestroyTime() > 0) {
                         level.destroyBlock(pos.below(), true);
                         level.destroyBlock(pos.above(), true);
                     }

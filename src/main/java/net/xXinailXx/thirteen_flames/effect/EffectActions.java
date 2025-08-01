@@ -107,7 +107,7 @@ public class EffectActions {
                                 level.levelEvent(1505, blockPos, 0);
                                 bonemealableBlock.performBonemeal((ServerLevel) level, level.getRandom(), blockPos, state);
 
-                                ParticleOptions options = ParticleUtils.createStatueParticle(new Color(255, 203, 0), 0.25F, 40, 0.95F);
+                                ParticleOptions options = ParticleUtils.createOtherGodsParticle(new Color(255, 203, 0), 0.25F, 40, 0.95F);
 
                                 Network.sendToAll(new SpawnParticlePacket(options, pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, 0, 0, 0));
                             }

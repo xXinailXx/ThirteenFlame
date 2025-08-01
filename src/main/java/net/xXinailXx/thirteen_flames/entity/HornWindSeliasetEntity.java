@@ -87,6 +87,9 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
     protected void onHitEntity(EntityHitResult result) {
         Entity entity = result.getEntity();
 
+        if (entity.getLevel().isClientSide)
+            return;
+
         if (!(entity instanceof LivingEntity) || entity.is(getOwner()))
             return;
 
@@ -96,6 +99,12 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
             ((LivingEntity) entity).knockback(0.4, delta.x, delta.z);
         else
             ((LivingEntity) entity).knockback(0.4, -delta.x, -delta.z);
+
+        if (this.stack == null) {
+            discard();
+
+            return;
+        }
 
         LevelingUtils.addExperience(this.stack, 2);
     }
@@ -154,9 +163,5 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
         this.entityData.define(EFFECTIVE, 1F);
         this.entityData.define(MAX_BLOCK_DISTANCE, 8F);
         this.entityData.define(REVERCE, false);
-    }
-
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

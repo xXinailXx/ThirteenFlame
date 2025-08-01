@@ -191,6 +191,8 @@ public class StaminaData implements IAutoNBTSerializable {
                 if (staminaData.getStamina(player) <= 0) {
                     staminaData.setRegenCooldown(player, 3);
                     staminaData.setShakeTime(player, 10);
+
+
                     event.setCanceled(true);
                 } else {
                     staminaData.addStamina(player, -1);

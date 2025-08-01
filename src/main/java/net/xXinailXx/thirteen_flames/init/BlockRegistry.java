@@ -29,7 +29,7 @@ public class BlockRegistry {
     public static final RegistryObject<Block> LAZOTEP_ORE = BLOCKS.register("lazotep_ore",
             () -> new DropExperienceBlock(BlockBehaviour.Properties.of(Material.STONE).strength(14f).requiresCorrectToolForDrops(), UniformInt.of(3, 7)));
     public static final RegistryObject<Block> LOOSE_SAND = BLOCKS.register("loose_sands",
-            () -> new WebBlock(BlockBehaviour.Properties.of(Material.SAND).noCollission().strength(0.8F)));
+            () -> new WebBlock(BlockBehaviour.Properties.of(Material.SAND).noCollission().strength(0.5F)));
 
     public static final RegistryObject<Block> STATUE_KNEF_STRUCTURE = BLOCKS.register("statue_knef_structure_block", StatueStructureBlock::new);
     public static final RegistryObject<Block> STATUE_SELYA_STRUCTURE = BLOCKS.register("statue_selya_structure_block", StatueStructureBlock::new);

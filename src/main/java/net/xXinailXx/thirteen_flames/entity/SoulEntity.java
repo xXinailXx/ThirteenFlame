@@ -3,6 +3,7 @@ package net.xXinailXx.thirteen_flames.entity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -27,15 +28,27 @@ public class SoulEntity extends ThrowableProjectile {
     }
 
     public void tick() {
-        if (getOwner() == null)
+        if (getOwner() == null || !(getOwner() instanceof Player))
             this.discard();
 
         super.tick();
 
-        this.setDeltaMovement(this.getDeltaMovement().add(this.getOwner().position().subtract(this.position()).normalize().scale(0.1)));
+        double distance = this.position().distanceTo(getOwner().position().add(0, getOwner().getBbHeight() / 2, 0));
+
+        if (distance > 32) {
+            discard();
+
+            return;
+        } else if (distance > 1) {
+            this.setDeltaMovement(this.getDeltaMovement().add(this.getOwner().position().subtract(this.position()).normalize().scale(0.1)));
+        } else {
+            ((Player) getOwner()).heal(this.heal);
+
+            this.remove(RemovalReason.KILLED);
+        }
 
         ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
-                .color(new Color(0, 159, 191).getRGB())
+                .color(new Color(0, 214, 255).getRGB())
                 .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                 .diameter(0.15F)
                 .lifetime(10)
@@ -44,19 +57,6 @@ public class SoulEntity extends ThrowableProjectile {
                 .build());
 
         Network.sendToAll(new SpawnParticlePacket(options, this.position().x, this.position().y, this.position().z, 0 ,0, 0));
-    }
-
-    protected void onHitEntity(EntityHitResult result) {
-        Entity entity = result.getEntity();
-
-        if (!entity.is(this.getOwner()))
-            return;
-
-        if (!(entity instanceof LivingEntity living))
-            return;
-
-        living.heal(this.heal);
-        this.discard();
     }
 
     protected void defineSynchedData() {

@@ -1,6 +1,5 @@
 package net.xXinailXx.thirteen_flames.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import it.hurts.sskirillss.relics.init.EffectRegistry;
 import lombok.Getter;
@@ -203,6 +202,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
 
     public GlowData constructGlowData() {
         return GlowData.builder()
+                .customRenderer()
                 .addBeam(8, new Beam(getPhase() != 1 ? new Color(255, 82, 82) : new Color(114, 255, 82), 1, (stack, partialTicks, number) -> {
                     Random random = new Random(1488);
 

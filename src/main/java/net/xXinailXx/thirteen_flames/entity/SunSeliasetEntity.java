@@ -1,6 +1,5 @@
 package net.xXinailXx.thirteen_flames.entity;
 
-import com.mojang.math.Vector3f;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -31,7 +30,6 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import software.bernie.geckolib3.util.GeckoLibUtil;
 
 import java.awt.*;
-import java.util.Random;
 
 public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow {
     private static final EntityDataAccessor<Integer> RADIUS = SynchedEntityData.defineId(SunSeliasetEntity.class, EntityDataSerializers.INT);
@@ -122,7 +120,7 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
             return GlowData.builder().build();
 
         return GlowData.builder()
-                .customRenderer(true)
+                .customRenderer()
                 .addBeam(6, new Beam(new Color(255, 252, 89), 1, (stack, partialTicks, number) -> {
                     return stack;
                 }))

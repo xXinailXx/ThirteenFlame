@@ -11,7 +11,6 @@ import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicAbilitySt
 import it.hurts.sskirillss.relics.items.relics.base.data.leveling.RelicLevelingData;
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
 import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
-import it.hurts.sskirillss.relics.items.relics.base.utils.ResearchUtils;
 import it.hurts.sskirillss.relics.utils.DurabilityUtils;
 import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.model.EntityModel;
@@ -156,13 +155,10 @@ public class GlovesMontu extends FlameItemSetting implements ICurioRenderable {
 
         ItemEntity itemEntity = (ItemEntity) event.getEntityHitResult().getEntity();
 
-        if (!player.getLevel().isClientSide)
-            return;
-
         if (player.getMainHandItem().is(ItemRegistry.AURITEH_NUGGET.get())) {
             ItemStack stack = itemEntity.getItem().copy();
 
-            if (stack.getDamageValue() < stack.getMaxDamage()) {
+            if (stack.getMaxDamage() - stack.getDamageValue() < stack.getMaxDamage()) {
                 double value = AbilityUtils.getAbilityValue(curio, "fixin", "effective");
 
                 DurabilityUtils.repair(stack, (int) (stack.getMaxDamage() * ((int) value * 0.01)));

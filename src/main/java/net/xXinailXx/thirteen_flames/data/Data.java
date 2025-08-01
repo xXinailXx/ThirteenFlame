@@ -29,6 +29,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.player.*;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
@@ -417,25 +418,25 @@ public class Data implements IData {
 
             public void setMiningLevel(Player player, int amount) {
                 GuiLevelingData data = getGuiData(player);
-                data.setMiningLevel(Math.max(amount, 0));
+                data.setMiningLevel(Mth.clamp(amount, 0, 100));
                 setGuiData(player, data);
             }
 
             public void setCraftLevel(Player player, int amount) {
                 GuiLevelingData data = getGuiData(player);
-                data.setCraftLevel(Math.max(amount, 0));
+                data.setCraftLevel(Mth.clamp(amount, 0, 100));
                 setGuiData(player, data);
             }
 
             public void setFightLevel(Player player, int amount) {
                 GuiLevelingData data = getGuiData(player);
-                data.setFightLevel(Math.max(amount, 0));
+                data.setFightLevel(Mth.clamp(amount, 0, 100));
                 setGuiData(player, data);
             }
 
             public void setHealthLevel(Player player, int amount) {
                 GuiLevelingData data = getGuiData(player);
-                data.setHealthLevel(Math.max(amount, 0));
+                data.setHealthLevel(Mth.clamp(amount, 0, 100));
                 setGuiData(player, data);
             }
 
@@ -463,19 +464,19 @@ public class Data implements IData {
             }
 
             public void addMiningLevel(Player player, int amount) {
-                setMiningLevel(player, getMiningLevel(player) + Mth.clamp(amount, 0, 100));
+                setMiningLevel(player, Mth.clamp(getMiningLevel(player) + amount, 0, 100));
             }
 
             public void addCraftLevel(Player player, int amount) {
-                setCraftLevel(player, getCraftLevel(player) + Mth.clamp(amount, 0, 100));
+                setCraftLevel(player, Mth.clamp(getCraftLevel(player) + amount, 0, 100));
             }
 
             public void addFightLevel(Player player, int amount) {
-                setFightLevel(player, getFightLevel(player) + Mth.clamp(amount, 0, 100));
+                setFightLevel(player, Mth.clamp(getFightLevel(player) + amount, 0, 100));
             }
 
             public void addHealthLevel(Player player, int amount) {
-                setHealthLevel(player, getHealthLevel(player) + Mth.clamp(amount, 0, 100));
+                setHealthLevel(player, Mth.clamp(getHealthLevel(player) + amount, 0, 100));
             }
         }
     }
@@ -735,8 +736,11 @@ public class Data implements IData {
         }
 
         @SubscribeEvent
-        public static void harvest(PlayerEvent.HarvestCheck event) {
-            new XpScarabsData.Utils().subXpScarab(event.getEntity(), 1);
+        public static void breakBlock(BlockEvent.BreakEvent event) {
+            if (event.getPlayer() == null)
+                return;
+
+            new XpScarabsData.Utils().subXpScarab(event.getPlayer(), 1);
         }
 
         @SubscribeEvent
@@ -765,10 +769,6 @@ public class Data implements IData {
         @SubscribeEvent
         public static void addExtraDrop(LivingDropsEvent event) {
             Level level = event.getEntity().getLevel();
-
-            if (level == null && ! (event.getSource().getEntity() instanceof Player))
-                return;
-
             Entity entity = event.getSource().getEntity();
 
             if (entity instanceof LivingEntity living && living instanceof Player player){
@@ -883,21 +883,21 @@ public class Data implements IData {
             }
 
             if (xpScarabsData.getXpScarabGold(player) <= 0) {
-                xpScarabsData.setXpScarabGold(player, 750 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
+                xpScarabsData.setXpScarabGold(player, 750 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.GOLD));
                 scarabsData.addScarabGold(player, 1);
 
                 MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_gold_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.gold").getString()));
             }
 
             if (xpScarabsData.getXpScarabAuriteh(player) <= 0) {
-                xpScarabsData.setXpScarabAuriteh(player, 1000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
+                xpScarabsData.setXpScarabAuriteh(player, 1000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.AURITEH));
                 scarabsData.addScarabAuriteh(player, 1);
 
                 MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_lazotep_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.auriteh").getString()));
             }
 
             if (xpScarabsData.getXpScarabLazotep(player) <= 0) {
-                xpScarabsData.setXpScarabLazotep(player, 2000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.SILVER));
+                xpScarabsData.setXpScarabLazotep(player, 2000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.LAZOTEP));
                 scarabsData.addScarabLazotep(player, 1);
 
                 MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_silver_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.lazotep").getString()));

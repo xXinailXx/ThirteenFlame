@@ -92,7 +92,7 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
             if (getGod().equals(Gods.KNEF))
                 options = ParticleUtils.createKnefParticle(color, 0.25F, random.nextInt(25, 60), 0.98F);
             else
-                options = ParticleUtils.createStatueParticle(color, 0.25F, getGod().equals(Gods.GOD_PHARAOH) ? random.nextInt(40, 75) : random.nextInt(25, 60), 0.98F);
+                options = ParticleUtils.createOtherGodsParticle(color, 0.25F, getGod().equals(Gods.GOD_PHARAOH) ? random.nextInt(40, 75) : random.nextInt(25, 60), 0.96F);
 
             Iterable<BlockPos> iterable;
 
@@ -160,46 +160,48 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
                             default -> this.worldPosition.north(2);
                         };
 
-                        BlockPos pos = null;
+                        BlockPos cup2 = null;
 
                         for (int i = 0; i <= 1; i++) {
                             BlockState state = this.level.getBlockState(i == 0 ? posCups : posCups.below());
 
                             if (state.is(BlockRegistry.STATUE_CUP.get())) {
-                                pos = i == 0 ? posCups : posCups.below();
+                                cup2 = i == 0 ? posCups : posCups.below();
                                 break;
                             }
                         }
 
-                        if (pos != null) {
+                        if (cup2 != null) {
                             BlockPos cup1;
-                            BlockPos cup3 = switch (direction) {
+                            BlockPos cup3;
+
+                            switch (direction) {
                                 case SOUTH -> {
-                                    cup1 = pos.west();
-                                    yield pos.east();
+                                    cup1 = cup2.west();
+                                    cup3 = cup2.east();
                                 }
                                 case WEST -> {
-                                    cup1 = pos.north();
-                                    yield pos.south();
+                                    cup1 = cup2.north();
+                                    cup3 = cup2.south();
                                 }
                                 case EAST -> {
-                                    cup1 = pos.south();
-                                    yield pos.north();
+                                    cup1 = cup2.south();
+                                    cup3 = cup2.north();
                                 }
                                 default -> {
-                                    cup1 = pos.east();
-                                    yield pos.west();
+                                    cup1 = cup2.east();
+                                    cup3 = cup2.west();
                                 }
-                            };
+                            }
 
                             if (this.level.getBlockState(cup1).is(BlockRegistry.STATUE_CUP.get()) && this.level.getBlockState(cup3).is(BlockRegistry.STATUE_CUP.get())) {
-                                ParticleUtils.spawnCupFire(level, color, cup1);
+                                ParticleUtils.spawnCupFire(this.level, color, cup1);
 
                                 if (amplifier >= 2)
-                                    ParticleUtils.spawnCupFire(level, color, pos);
+                                    ParticleUtils.spawnCupFire(this.level, color, cup2);
 
                                 if (amplifier >= 3)
-                                    ParticleUtils.spawnCupFire(level, color, cup3);
+                                    ParticleUtils.spawnCupFire(this.level, color, cup3);
                             }
                         }
                     }

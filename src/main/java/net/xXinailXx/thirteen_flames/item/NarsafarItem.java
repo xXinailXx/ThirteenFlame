@@ -6,6 +6,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -15,6 +18,7 @@ import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.base.ItemSetting;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.List;
 
 public class NarsafarItem extends ItemSetting {
@@ -41,7 +45,7 @@ public class NarsafarItem extends ItemSetting {
         tag.putString("hover_gender", gender);
         tag.putString("hover_profession", profession);
         tag.putString("hover_owner", owner);
-        tag.putString("hover_series_int", series < 10 ? "00" + String.valueOf(series) : series < 100 ? "0" + String.valueOf(series) : String.valueOf(series));
+        tag.putString("hover_series_int", series < 10 ? "00" + series : series < 100 ? "0" + series : String.valueOf(series));
         tag.putString("hover_series_str", series_str);
         stack.setTag(tag);
 

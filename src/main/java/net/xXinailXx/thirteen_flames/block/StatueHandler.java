@@ -154,8 +154,6 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
                 player.swing(InteractionHand.MAIN_HAND);
                 event.setCanceled(true);
             } else if (state.getBlock() instanceof StatueHandler || state.getBlock() instanceof StatueGodPharaoh || state.getBlock() instanceof StatueGodPharaohUnfinished || state.getBlock() instanceof StatueStructureBlock) {
-                player.sendSystemMessage(Component.literal("dddddddddddddddddddddddddd"));
-
                 Network.sendToServer(new UpgradeStatuePacket(event.getPos(), stack));
                 player.swing(InteractionHand.MAIN_HAND);
                 event.setCanceled(true);

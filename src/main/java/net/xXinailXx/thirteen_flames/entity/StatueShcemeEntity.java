@@ -49,8 +49,8 @@ public class StatueShcemeEntity extends Projectile {
             Color color = null;
 
             switch (getGod()) {
-                case KNEF -> color = new Color(1, 0, 0);
-                case SELYA -> color = new Color(242, 208, 53);
+                case KNEF -> color = new Color(0, 0, 0);
+                case SELYA -> color = new Color(255, 203, 0);
                 case MONTU -> color = new Color(121, 251, 88);
                 case RONOS -> color = new Color(212, 38, 19);
                 case HET -> color = new Color(255, 247, 105);
@@ -84,9 +84,9 @@ public class StatueShcemeEntity extends Projectile {
                 if (getGod().equals(Gods.KNEF))
                     options = ParticleUtils.createKnefParticle(color, 0.05F, 40, 0);
                 else
-                    options = ParticleUtils.createStatueParticle(color, 0.05F, 40, 0);
+                    options = ParticleUtils.createOtherGodsParticle(color, 0.05F, 40, 0);
 
-                ParticleActions.createBlock(options, ParticleUtils.createKnefParticle(new Color(239, 52, 34), 0.05F, 40, 0), Vec3.atCenterOf(pos), this.level, true);
+                ParticleActions.createBlock(options, ParticleUtils.createOtherGodsParticle(new Color(239, 52, 34), 0.05F, 40, 0), Vec3.atCenterOf(pos), this.level, true);
             }
 
             if (count == maxCount) {

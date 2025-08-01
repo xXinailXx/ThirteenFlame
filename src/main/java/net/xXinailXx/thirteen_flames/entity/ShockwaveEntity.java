@@ -11,6 +11,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -69,7 +70,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
                     if (!state.getMaterial().blocksMotion() || level.getBlockState(p.above()).getMaterial().blocksMotion())
                         continue;
 
-                    entity.setPos(p.getX() + 0.5F, p.getY() + 0.5F, p.getZ() + 0.5F);
+                    entity.setPos(p.getX() + 0.5, p.getY() + 0.5, p.getZ() + 0.5);
                 } else if (level.getBlockState(p).isAir() && level.getBlockState(p.above()).isAir()){
                     for (int i = 0; i < radius; i++) {
                         BlockPos pos = new BlockPos(p.getX(), p.getY() - extraY, p.getZ());
@@ -81,7 +82,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
 
                             entity = new BlockSimulationEntity(level, state);
 
-                            entity.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5F);
+                            entity.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 
                             break;
                         } else {
@@ -99,7 +100,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
 
                             entity = new BlockSimulationEntity(level, state);
 
-                            entity.setPos(pos.getX() + 0.5F, pos.getY() + 0.5F, pos.getZ() + 0.5);
+                            entity.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 
                             break;
                         }
@@ -112,7 +113,7 @@ public class ShockwaveEntity extends ThrowableProjectile {
                 level.addFreshEntity(entity);
 
                 BlockPos spawnPos = p;
-                List<Block> oreMap = new ArrayList<>();
+                List<Block> ores = new ArrayList<>();
 
                 while (this.level.getBlockState(spawnPos).isAir())
                     spawnPos = spawnPos.below();
@@ -120,22 +121,27 @@ public class ShockwaveEntity extends ThrowableProjectile {
                 for (int i = 0; i < radius; i++) {
                     BlockState state = this.level.getBlockState(spawnPos.below(i));
 
-                    if (!state.isAir())
-                        if (state.getBlock() instanceof DropExperienceBlock)
-                            oreMap.add(state.getBlock());
+                    if (!state.isAir()) {
+                        if (state.getBlock() instanceof DropExperienceBlock) {
+                            ores.add(state.getBlock());
+
+                            level.setBlock(spawnPos.below(i), Blocks.AIR.defaultBlockState(), 11);
+                        }
+                    }
                 }
 
-                if (oreMap.isEmpty())
+                if (ores.isEmpty())
                     continue;
 
                 int count = 0;
 
-                for (Block block : oreMap) {
+                for (Block block : ores) {
                     OreBlockSimulationEntity simulation = new OreBlockSimulationEntity(level, block.defaultBlockState());
 
                     simulation.setPos(spawnPos.getX() + 0.5, spawnPos.getY() - count + 0.01, spawnPos.getZ() + 0.5);
-                    simulation.setOreCount(oreMap.size());
+                    simulation.setOreCount(ores.size());
                     level.addFreshEntity(simulation);
+
                     count++;
                 }
             }
