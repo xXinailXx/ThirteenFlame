@@ -24,6 +24,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
 import net.xXinailXx.thirteen_flames.client.renderer.item.EmissiveRenderer;
+import net.xXinailXx.thirteen_flames.data.IStaminaData;
+import net.xXinailXx.thirteen_flames.data.StaminaData;
 import net.xXinailXx.thirteen_flames.entity.ShockwaveEntity;
 import net.xXinailXx.thirteen_flames.item.base.tools.PickaxeItemTF;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
@@ -54,19 +56,18 @@ public class HammerMontu extends PickaxeItemTF {
         Level level = use.getLevel();
         ItemStack stack = use.getItemInHand();
 
-        if (!AbilityUtils.isAbilityOnCooldown(stack, "ejection")) {
+        if (!player.getCooldowns().isOnCooldown(stack.getItem())) {
             ShockwaveEntity shockwave = new ShockwaveEntity(level, (int) AbilityUtils.getAbilityValue(stack, "ejection", "radius"));
             shockwave.setOwner(player);
             shockwave.setPos(use.getClickedPos().getX(), use.getClickedPos().getY(), use.getClickedPos().getZ());
             level.addFreshEntity(shockwave);
 
-            LevelingUtils.addExperience(player, stack, 5);
+            LevelingUtils.addExperience(stack, 5);
 
             player.getCooldowns().addCooldown(stack.getItem(), (int) (AbilityUtils.getAbilityValue(stack, "ejection", "cooldown") * 20));
-            AbilityUtils.addAbilityCooldown(stack, "ejection", (int) (AbilityUtils.getAbilityValue(stack, "ejection", "cooldown") * 20));
         }
 
-        return super.useOn(use);
+        return InteractionResult.SUCCESS;
     }
 
     public ItemBorder constructTooltipData() {
@@ -89,7 +90,7 @@ public class HammerMontu extends PickaxeItemTF {
     }
 
     @SubscribeEvent
-    public static void blockDestroy(BlockEvent.BreakEvent event) {
+    public static void breakBlock(BlockEvent.BreakEvent event) {
         Player player = event.getPlayer();
 
         if (player == null || player.isCreative())
@@ -105,20 +106,28 @@ public class HammerMontu extends PickaxeItemTF {
             ItemEntity entity = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), level.getBlockState(pos).getBlock().asItem().getDefaultInstance());
             level.addFreshEntity(entity);
 
+            IStaminaData data = new StaminaData.Utils();
+
             switch ((int) maxLevel) {
                 case 2 -> {
                     BlockState state = level.getBlockState(pos.below());
 
-                    if (state.getBlock().defaultDestroyTime() > 0)
+                    if (data.getStamina(player) >= 2 && state.getBlock().defaultDestroyTime() > 0)
                         level.destroyBlock(pos.below(), true);
                 }
                 case 3 -> {
                     BlockState stateAbove = level.getBlockState(pos.below());
                     BlockState stateBelow = level.getBlockState(pos.above());
 
-                    if (stateAbove.getBlock().defaultDestroyTime() > 0 && stateBelow.getBlock().defaultDestroyTime() > 0) {
-                        level.destroyBlock(pos.below(), true);
-                        level.destroyBlock(pos.above(), true);
+                    if (data.getStamina(player) >= 3) {
+                        if (stateAbove.getBlock().defaultDestroyTime() > 0)
+                            level.destroyBlock(pos.above(), true);
+
+                        if (stateBelow.getBlock().defaultDestroyTime() > 0)
+                            level.destroyBlock(pos.below(), true);
+                    } else if (data.getStamina(player) == 2) {
+                        if (stateBelow.getBlock().defaultDestroyTime() > 0)
+                            level.destroyBlock(pos.below(), true);
                     }
                 }
             }

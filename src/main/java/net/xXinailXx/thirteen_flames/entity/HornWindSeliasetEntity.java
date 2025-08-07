@@ -30,27 +30,24 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
     private static final EntityDataAccessor<Float> EFFECTIVE = SynchedEntityData.defineId(HornWindSeliasetEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_BLOCK_DISTANCE = SynchedEntityData.defineId(HornWindSeliasetEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Boolean> REVERCE = SynchedEntityData.defineId(HornWindSeliasetEntity.class, EntityDataSerializers.BOOLEAN);
-    @Setter
-    @Getter
-    private Vec3 startPos;
     private ItemStack stack;
 
     public HornWindSeliasetEntity(EntityType<? extends ThrowableProjectile> type, Level level) {
         super(type, level);
     }
 
-    public HornWindSeliasetEntity(Level level, float effective, float maxBlockDistance, Vec3 startPos, boolean reverce, ItemStack stack) {
+    public HornWindSeliasetEntity(Level level, float effective, float maxBlockDistance, boolean reverce, ItemStack stack) {
         this(EntityRegistry.HORN_WIND_SELIASET.get(), level);
 
         setEffective(effective);
         setMaxBD(maxBlockDistance);
-        setStartPos(startPos);
         setReverce(reverce);
+
         this.stack = stack;
     }
 
     public void tick() {
-        if (this.stack == null || this.stack.isEmpty())
+        if (this.stack == null || this.stack.isEmpty() || this.getOwner() == null)
             discard();
 
         Vec3 motion = this.getDeltaMovement().scale(this.tickCount == 1 ? getEffective() : 1);
@@ -60,11 +57,11 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
         if (this.level.isClientSide)
             return;
 
-        if (this.position().distanceTo(this.startPos) >= getMaxBD())
+        if (this.position().distanceTo(this.getOwner().getEyePosition().add(this.getOwner().getLookAngle().scale(1.5))) > getMaxBD())
             discard();
 
         ColoredParticle.Options particle = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
-                .color(new Color(255, 255, 255, 51).getRGB())
+                .color(new Color(255, 255, 255, 75).getRGB())
                 .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
                 .diameter(0.1F)
                 .lifetime(1)
@@ -145,7 +142,6 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
         super.readAdditionalSaveData(tag);
         setEffective(tag.getFloat("effective"));
         setMaxBD(tag.getFloat("max_bd"));
-        setStartPos(new Vec3(tag.getDouble("s_x"), tag.getDouble("s_y"), tag.getDouble("s_z")));
         setReverce(tag.getBoolean("reverce"));
     }
 
@@ -153,9 +149,6 @@ public class HornWindSeliasetEntity extends ThrowableProjectile {
         super.addAdditionalSaveData(tag);
         tag.putFloat("effective", getEffective());
         tag.putFloat("max_bd", getMaxBD());
-        tag.putDouble("s_x", getStartPos().x);
-        tag.putDouble("s_y", getStartPos().y);
-        tag.putDouble("s_z", getStartPos().z);
         tag.putBoolean("reverce", isReverce());
     }
 

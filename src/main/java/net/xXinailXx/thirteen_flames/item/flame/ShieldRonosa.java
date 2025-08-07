@@ -99,11 +99,6 @@ public class ShieldRonosa extends FlameItemSetting {
         if (!(living instanceof Player player))
             return;
 
-        IStaminaData data = new StaminaData.Utils();
-
-        if (data.isStaminaEmpty(player))
-            return;
-
         ItemStack stack;
 
         if (player.getMainHandItem().is(ItemRegistry.SHIELD_RONOSA.get()))

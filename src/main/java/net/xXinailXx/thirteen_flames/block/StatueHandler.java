@@ -5,6 +5,7 @@ import it.hurts.sskirillss.relics.items.relics.base.utils.LevelingUtils;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -60,19 +61,19 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         if (level.isClientSide)
             return;
 
-        for (BlockPos pos1 : getBlockPoses(pos, false)) {
+        for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false)) {
             StatueStructureBlock structureBlock = (StatueStructureBlock) this.getStructureBlock();
 
             level.setBlock(pos1, structureBlock.defaultBlockState(), 11);
         }
 
-        StatueData.addStatue(new StatueData.StatueBuilder(getBlockPoses(pos, false), pos));
+        StatueData.addStatue(new StatueData.StatueBuilder(getBlockPoses(state.getValue(FACING), pos, false), pos));
     }
 
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
         super.destroy(accessor, pos, state);
 
-        for (BlockPos pos1 : getBlockPoses(pos, false))
+        for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false))
             accessor.destroyBlock(pos1, false);
 
         StatueData.removeStatue(pos);
@@ -81,13 +82,13 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
         super.playerDestroy(level, player, pos, state, entity, stack);
 
-        for (BlockPos pos1 : getBlockPoses(pos, false))
+        for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false))
             level.destroyBlock(pos1, false);
 
         StatueData.removeStatue(pos);
     }
 
-    public List<BlockPos> getBlockPoses(BlockPos pos, boolean isMain) {
+    public List<BlockPos> getBlockPoses(Direction direction, BlockPos pos, boolean isMain) {
         Iterable<BlockPos> iterable = BlockPos.betweenClosed(pos.offset(-1, 0, -1), pos.offset(1, 4, 1));
         List<BlockPos> posList = new ArrayList<>();
 
@@ -99,14 +100,6 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         }
 
         return posList;
-    }
-
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        return PlayState.CONTINUE;
-    }
-
-    public void registerControllers(AnimationData data) {
-        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
 
     public static boolean isUpgrade(ItemStack stack, Gods gods) {
@@ -124,6 +117,14 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
             case HET -> stack.is(ItemRegistry.SCROLL_HET.get()) || stack.is(ItemRegistry.FLIGHT_HET.get());
             case GOD_PHARAOH -> false;
         };
+    }
+
+    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
+        return PlayState.CONTINUE;
+    }
+
+    public void registerControllers(AnimationData data) {
+        data.addAnimationController(new AnimationController(this, "controller", 0, this::predicate));
     }
 
     @SubscribeEvent
@@ -148,7 +149,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
                 player.swing(InteractionHand.MAIN_HAND);
                 event.setCanceled(true);
             }
-        } else if (stack.is(ItemRegistry.STATUE_UPGRADER.get()) || (stack.getItem() instanceof BagPaintItem && !stack.is(ItemRegistry.BAG_PAINT.get()))) {
+        } else if (stack.is(ItemRegistry.STATUE_UPGRADER.get()) || (stack.getItem() instanceof BagPaintItem && !stack.is(ItemRegistry.BAG_PAINT.get()) && !stack.is(ItemRegistry.BAG_PAINT_CUP.get()))) {
             if (state.getBlock().defaultBlockState().is(BlockRegistry.STATUE_CUP_UNFINISHED.get())) {
                 level.setBlock(event.getPos(), BlockRegistry.STATUE_CUP.get().defaultBlockState(), 11);
                 player.swing(InteractionHand.MAIN_HAND);
@@ -159,5 +160,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
                 event.setCanceled(true);
             }
         }
+
+        player.swing(InteractionHand.MAIN_HAND);
     }
 }

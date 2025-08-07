@@ -60,7 +60,10 @@ public class UpgradeStatuePacket implements IPacket {
         Direction direction = level.getBlockState(this.pos).getValue(CustomStatueUtils.FACING);
 
         if (!be.isFinished()) {
-            if (getStack(be.getGod()).getGod().equals(Gods.GOD_PHARAOH)) {
+            if (this.stack.getItem() instanceof BagPaintItem item && !item.getGod().equals(be.getGod()))
+                return;
+
+            if (be.getGod().equals(Gods.GOD_PHARAOH)) {
                 CustomStatueUtils newStatue = (CustomStatueUtils) BlockRegistry.STATUE_GOD_PHARAOH.get();
 
                 player.getLevel().setBlock(this.pos, newStatue.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
@@ -87,16 +90,5 @@ public class UpgradeStatuePacket implements IPacket {
             else
                 be.resetFlameUpgradeData();
         }
-    }
-
-    private static BagPaintItem getStack(Gods gods) {
-        return switch (gods) {
-            case KNEF -> (BagPaintItem) ItemRegistry.BAG_PAINT_KNEF.get();
-            case SELYA -> (BagPaintItem) ItemRegistry.BAG_PAINT_SELYA.get();
-            case MONTU -> (BagPaintItem) ItemRegistry.BAG_PAINT_MONTU.get();
-            case RONOS -> (BagPaintItem) ItemRegistry.BAG_PAINT_RONOS.get();
-            case HET -> (BagPaintItem) ItemRegistry.BAG_PAINT_HET.get();
-            case GOD_PHARAOH -> (BagPaintItem) ItemRegistry.BAG_PAINT_GOD_PHARAOH.get();
-        };
     }
 }

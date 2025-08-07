@@ -1,15 +1,15 @@
 modLoader="javafml"
 loaderVersion="[43,)"
-license = "GNU GPL V3"
+license = "All Rights Reserved"
 
 [[mods]]
 modId="thirteen_flames"
-version="${file.jarVersion}"
+version="0.1.0"
 displayName="Storytelling: Thirteen Flames"
 logoFile="logo.png"
-credits="xXinailXx"
+credits="MrLololoshka, Storytelling Team"
 authors="xXinailXx"
-description=''''''
+description='''Mod adds most of the items and mechanics from Lp. Тринадцать Огней'''
 
 [[dependencies.thirteen_flames]]
 modId="forge"

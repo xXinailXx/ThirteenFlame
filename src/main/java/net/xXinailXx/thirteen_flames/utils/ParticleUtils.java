@@ -1,6 +1,7 @@
 package net.xXinailXx.thirteen_flames.utils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -15,11 +16,6 @@ import java.awt.*;
 
 public class ParticleUtils {
     public static void spawnCupFire(Level level, Color color, BlockPos pos) {
-        Player player = Minecraft.getInstance().player;
-
-        if (player == null)
-            return;
-
         ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                 .color(color.getRGB())
                 .renderType(color.equals(new Color(0, 0, 0)) ? ColoredParticleRendererTypes.DISABLE_RENDER_LIGHT_COLOR : ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
@@ -36,6 +32,11 @@ public class ParticleUtils {
         double deltaY = box.getYsize() / 2 + 0.1;
         double deltaZ = box.getZsize() / 2;
 
+        ClientLevel clientLevel = Minecraft.getInstance().level;
+
+        if (clientLevel == null)
+            return;
+
         for(int i = 0; i < 15; ++i) {
             double d1 = level.random.nextGaussian() * deltaX;
             double d3 = level.random.nextGaussian() * deltaY;
@@ -44,7 +45,7 @@ public class ParticleUtils {
             double d7 = level.random.nextGaussian() * 0.003;
             double d8 = level.random.nextGaussian() * 0.003;
 
-            player.level.addParticle(options, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8);
+            clientLevel.addParticle(options, vec3.x + d1, vec3.y + d3, vec3.z + d5, d6, d7 + 0.02, d8);
         }
     }
 

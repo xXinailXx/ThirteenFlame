@@ -37,6 +37,7 @@
     "client.LivingEntityRenderer",
     "client.LocalPlayerMixin",
     "client.PassiveSkillTreeMixin",
+    "client.PlayerRendererMixin",
     "client.SkillButtomMixin"
   ],
   "minVersion": "0.8"

@@ -32,6 +32,8 @@ public class HornSeliasetEntityRenderer extends GeoProjectilesRenderer<HornSelia
         GlowData data = animatable.constructGlowData();
         Random random = new Random(1488);
 
+        stack.translate(0, 0.3, 0);
+
         for (int i = 0; i < data.getBeams().size(); i++) {
             Beam beam = data.getBeams().get(i);
 
@@ -43,5 +45,7 @@ public class HornSeliasetEntityRenderer extends GeoProjectilesRenderer<HornSelia
         }
 
         stack.popPose();
+
+        super.render(animatable, yaw, partialTick, stack, bufferSource, packedLight);
     }
 }

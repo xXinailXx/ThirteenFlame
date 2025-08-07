@@ -28,25 +28,30 @@ public class AbilityUtils {
                 BlockPos targetPos = (BlockPos) iterator.next();
                 BlockState blockstate = level.getBlockState( targetPos );
                 Block block = blockstate.getBlock();
-                if ((blockstate.getBlock() != Blocks.BEDROCK || block != Blocks.BARRIER || !(block instanceof CommandBlock)))
+
+                if (block.defaultDestroyTime() > 0)
                     level.destroyBlock(targetPos, true);
             }
         } else if (player.getDirection() == Direction.EAST || player.getDirection() == Direction.WEST) {
             Iterator iterator = BlockPos.betweenClosed(pos.offset(0, -range, -range), pos.offset(0, range, range)).iterator();
+
             while (iterator.hasNext()) {
                 BlockPos targetPos = (BlockPos) iterator.next();
                 BlockState blockstate = level.getBlockState( targetPos );
                 Block block = blockstate.getBlock();
-                if ((blockstate.getBlock() != Blocks.BEDROCK || block != Blocks.BARRIER || ! (block instanceof CommandBlock)))
+
+                if (block.defaultDestroyTime() > 0)
                     level.destroyBlock(targetPos, true);
             }
-        } else if (player.getDirection() == Direction.UP || player.getDirection() == Direction.DOWN) {
+        } else {
             Iterator iterator = BlockPos.betweenClosed(pos.offset(-range, 0, -range), pos.offset(range, 0, range)).iterator();
+
             while (iterator.hasNext()) {
                 BlockPos targetPos = (BlockPos) iterator.next();
                 BlockState blockstate = level.getBlockState( targetPos );
                 Block block = blockstate.getBlock();
-                if ((blockstate.getBlock() != Blocks.BEDROCK || block != Blocks.BARRIER || ! (block instanceof CommandBlock)))
+
+                if (block.defaultDestroyTime() > 0)
                     level.destroyBlock(targetPos, true);
             }
         }

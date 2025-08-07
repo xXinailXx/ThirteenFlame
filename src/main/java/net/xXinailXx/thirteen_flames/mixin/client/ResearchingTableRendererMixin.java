@@ -15,7 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ResearchingTableRendererMixin {
     @Inject(method = "render(Lit/hurts/sskirillss/relics/tiles/ResearchingTableTile;FLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;II)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lcom/mojang/math/Quaternion;)V"))
     public void render(ResearchingTableTile tileEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, CallbackInfo ci) {
-        if (tileEntity.getStack().is(ItemRegistry.SHIELD_RONOSA.get()))
+        if (tileEntity.getStack().is(ItemRegistry.SHIELD_RONOSA.get())) {
+            matrixStack.scale(0.85F, 0.85F, 0.85F);
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        } else if (tileEntity.getStack().is(ItemRegistry.HORN_SELIASET.get())) {
+            matrixStack.scale(0.75F, 0.75F, 0.75F);
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(180));
+            matrixStack.translate(0, 0.15, 0);
+        }
     }
 }

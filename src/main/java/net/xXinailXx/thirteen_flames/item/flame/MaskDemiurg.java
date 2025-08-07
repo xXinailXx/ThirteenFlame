@@ -10,9 +10,11 @@ import it.hurts.sskirillss.relics.utils.MathUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
@@ -32,10 +34,10 @@ public class MaskDemiurg extends ArmorItemTF {
     }
 
     public RelicData getRelicData() {
-        return RelicData.builder().abilityData(RelicAbilityData.builder().ability("dematerialization", RelicAbilityEntry.builder().maxLevel(10).stat("time", RelicAbilityStat.builder().initialValue(1, 6).thresholdValue(1, 20).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
+        return RelicData.builder().abilityData(RelicAbilityData.builder().ability("dematerialization", RelicAbilityEntry.builder().maxLevel(10).stat("time", RelicAbilityStat.builder().initialValue(1, 5).thresholdValue(1, 20).upgradeModifier(RelicAbilityStat.Operation.ADD, 1).formatValue((value) -> {
             return MathUtils.round(value, 1);
         }).build()).stat("cooldown", RelicAbilityStat.builder().initialValue(60, 30).thresholdValue(5, 60).upgradeModifier(RelicAbilityStat.Operation.ADD, -2).formatValue((value) -> {
-            return MathUtils.round(value, 0);
+            return (int)MathUtils.round(value, 0);
         }).build()).build()).build()).levelingData(new RelicLevelingData(100, 10, 100)).build();
     }
 

@@ -30,7 +30,7 @@ import org.zeith.hammerlib.net.Network;
 
 import java.awt.*;
 
-@Mod.EventBusSubscriber(modid = ThirteenFlames.MODID)
+@Mod.EventBusSubscriber()
 public class EffectActions {
     @SubscribeEvent
     public static void onLivingHeal(LivingHealEvent event) {
@@ -82,13 +82,18 @@ public class EffectActions {
             return;
 
         AttributeInstance speed_attribute = player.getAttribute(Attributes.MOVEMENT_SPEED);
-        AttributeModifier bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_effect_bless_montu"), ThirteenFlames.MODID + ":effect_bless_montu", player.hasEffect(EffectRegistry.BLESSING_MONTU.get()) ? (0.01 * player.getEffect(EffectRegistry.BLESSING_MONTU.get()).getAmplifier()) : 0, AttributeModifier.Operation.ADDITION);
+        AttributeModifier montuBonus = new AttributeModifier(UUIDManager.getOrCreate("tf_effect_bless_montu"), ThirteenFlames.MODID + ":effect_bless_montu", player.hasEffect(EffectRegistry.BLESSING_MONTU.get()) ? (0.01 * player.getEffect(EffectRegistry.BLESSING_MONTU.get()).getAmplifier()) : 0, AttributeModifier.Operation.ADDITION);
 
-        if (player.hasEffect(EffectRegistry.BLESSING_MONTU.get()))
-            if (!speed_attribute.hasModifier(bonus))
-                speed_attribute.addTransientModifier(bonus);
-        else
-            speed_attribute.removeModifier(bonus);
+        if (player.hasEffect(EffectRegistry.BLESSING_MONTU.get())) {
+            if (!speed_attribute.hasModifier(montuBonus)) {
+                speed_attribute.addTransientModifier(montuBonus);
+            } else if (speed_attribute.getModifier(UUIDManager.getOrCreate("tf_effect_bless_montu")).getAmount() != (0.01 * player.getEffect(EffectRegistry.BLESSING_MONTU.get()).getAmplifier())) {
+                speed_attribute.removeModifier(montuBonus);
+                speed_attribute.addTransientModifier(montuBonus);
+            }
+        } else {
+            speed_attribute.removeModifier(montuBonus);
+        }
 
         if (player.hasEffect(EffectRegistry.BLESSING_SELIASET.get())) {
             Level level = player.getLevel();

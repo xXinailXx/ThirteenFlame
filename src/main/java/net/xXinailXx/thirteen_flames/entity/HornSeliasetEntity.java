@@ -203,15 +203,7 @@ public class HornSeliasetEntity extends Projectile implements IAnimatable, IGlow
     public GlowData constructGlowData() {
         return GlowData.builder()
                 .customRenderer()
-                .addBeam(8, new Beam(getPhase() != 1 ? new Color(255, 82, 82) : new Color(114, 255, 82), 1, (stack, partialTicks, number) -> {
-                    Random random = new Random(1488);
-
-                    stack.mulPose(Vector3f.XP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
-                    stack.mulPose(Vector3f.YP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
-                    stack.mulPose(Vector3f.ZP.rotationDegrees(random.nextFloat() * 360.0F + partialTicks));
-
-                    return stack;
-                }))
+                .addBeam(8, new Beam(getPhase() != 1 ? new Color(255, 82, 82) : new Color(114, 255, 82), 1, (stack, partialTicks, number) -> stack))
                 .build();
     }
 

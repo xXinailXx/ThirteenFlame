@@ -31,25 +31,25 @@ public class BlockRegistry {
     public static final RegistryObject<Block> LOOSE_SAND = BLOCKS.register("loose_sands",
             () -> new WebBlock(BlockBehaviour.Properties.of(Material.SAND).noCollission().strength(0.5F)));
 
-    public static final RegistryObject<Block> STATUE_KNEF_STRUCTURE = BLOCKS.register("statue_knef_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_SELYA_STRUCTURE = BLOCKS.register("statue_selya_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_MONTU_STRUCTURE = BLOCKS.register("statue_montu_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_RONOS_STRUCTURE = BLOCKS.register("statue_ronos_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_HET_STRUCTURE = BLOCKS.register("statue_het_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_STRUCTURE = BLOCKS.register("statue_god_pharaoh_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_UNFINISHED_STRUCTURE = BLOCKS.register("statue_god_pharaoh_unfinished_structure_block", StatueStructureBlock::new);
-    public static final RegistryObject<Block> STATUE_KNEF = BLOCKS.register("statue_knef_block", StatueKnef::new);
-    public static final RegistryObject<Block> STATUE_SELYA = BLOCKS.register("statue_selya_block", StatueSelya::new);
-    public static final RegistryObject<Block> STATUE_MONTU = BLOCKS.register("statue_montu_block", StatueMontu::new);
-    public static final RegistryObject<Block> STATUE_RONOS = BLOCKS.register("statue_ronos_block", StatueRonos::new);
-    public static final RegistryObject<Block> STATUE_HET = BLOCKS.register("statue_het_block", StatueHet::new);
-    public static final RegistryObject<Block> STATUE_GOD_PHARAOH = BLOCKS.register("statue_god_pharaoh_block", StatueGodPharaoh::new);
-    public static final RegistryObject<Block> STATUE_KNEF_UNFINISHED = BLOCKS.register("statue_knef_unfinished_block", StatueKnefUnfinished::new);
-    public static final RegistryObject<Block> STATUE_SELYA_UNFINISHED = BLOCKS.register("statue_selya_unfinished_block", StatueSelyaUnfinished::new);
-    public static final RegistryObject<Block> STATUE_MONTU_UNFINISHED = BLOCKS.register("statue_montu_unfinished_block", StatueMontuUnfinished::new);
-    public static final RegistryObject<Block> STATUE_RONOS_UNFINISHED = BLOCKS.register("statue_ronos_unfinished_block", StatueRonosUnfinished::new);
-    public static final RegistryObject<Block> STATUE_HET_UNFINISHED = BLOCKS.register("statue_het_unfinished_block", StatueHetUnfinished::new);
-    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_UNFINISHED = BLOCKS.register("statue_god_pharaoh_unfinished_block", StatueGodPharaohUnfinished::new);
+    public static final RegistryObject<Block> STATUE_KNEF_STRUCTURE = BLOCKS.register("statue_knef_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_SELYA_STRUCTURE = BLOCKS.register("statue_selya_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_MONTU_STRUCTURE = BLOCKS.register("statue_montu_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_RONOS_STRUCTURE = BLOCKS.register("statue_ronos_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_HET_STRUCTURE = BLOCKS.register("statue_het_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_STRUCTURE = BLOCKS.register("statue_god_pharaoh_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_UNFINISHED_STRUCTURE = BLOCKS.register("statue_god_pharaoh_unfinished_structure", StatueStructureBlock::new);
+    public static final RegistryObject<Block> STATUE_KNEF = BLOCKS.register("statue_knef", StatueKnef::new);
+    public static final RegistryObject<Block> STATUE_SELYA = BLOCKS.register("statue_selya", StatueSelya::new);
+    public static final RegistryObject<Block> STATUE_MONTU = BLOCKS.register("statue_montu", StatueMontu::new);
+    public static final RegistryObject<Block> STATUE_RONOS = BLOCKS.register("statue_ronos", StatueRonos::new);
+    public static final RegistryObject<Block> STATUE_HET = BLOCKS.register("statue_het", StatueHet::new);
+    public static final RegistryObject<Block> STATUE_GOD_PHARAOH = BLOCKS.register("statue_god_pharaoh", StatueGodPharaoh::new);
+    public static final RegistryObject<Block> STATUE_KNEF_UNFINISHED = BLOCKS.register("statue_knef_unfinished", StatueKnefUnfinished::new);
+    public static final RegistryObject<Block> STATUE_SELYA_UNFINISHED = BLOCKS.register("statue_selya_unfinished", StatueSelyaUnfinished::new);
+    public static final RegistryObject<Block> STATUE_MONTU_UNFINISHED = BLOCKS.register("statue_montu_unfinished", StatueMontuUnfinished::new);
+    public static final RegistryObject<Block> STATUE_RONOS_UNFINISHED = BLOCKS.register("statue_ronos_unfinished", StatueRonosUnfinished::new);
+    public static final RegistryObject<Block> STATUE_HET_UNFINISHED = BLOCKS.register("statue_het_unfinished", StatueHetUnfinished::new);
+    public static final RegistryObject<Block> STATUE_GOD_PHARAOH_UNFINISHED = BLOCKS.register("statue_god_pharaoh_unfinished", StatueGodPharaohUnfinished::new);
     public static final RegistryObject<Block> STATUE_CUP = BLOCKS.register("statue_cup", StatueCup::new);
     public static final RegistryObject<Block> STATUE_CUP_UNFINISHED = BLOCKS.register("statue_cup_unfinished", StatueCup::new);
 

@@ -135,20 +135,20 @@ public class BlackRose extends FlameItemSetting {
             ItemStack stack = player.getInventory().items.get(i);
 
             if (stack.getItem() instanceof BlackRose && NBTUtils.getInt(stack, "bone", 0) > 0) {
-                double resist = AbilityUtils.getAbilityValue(stack, "bonfire", "resist");
+                float resist = (float) AbilityUtils.getAbilityValue(stack, "bonfire", "resist");
                 int boneCount = NBTUtils.getInt(stack, "bone", 0);
                 float amount = event.getAmount();
-                float newDamage = 0;
+                float newDamage;
 
-                if (boneCount >= amount * 0.5 / resist) {
-                    newDamage = (float) (amount * 0.5);
-                    NBTUtils.setInt(stack, "bone", (int) (boneCount - (amount * 0.5 / resist)));
+                if (boneCount >= Math.floor(amount * 0.65F / resist)) {
+                    newDamage = amount * 0.65F / resist;
+                    NBTUtils.setInt(stack, "bone", (int) (boneCount - Math.floor(amount * 0.65F / resist)));
                 } else {
-                    newDamage = (float) (boneCount * resist);
+                    newDamage = boneCount * resist;
                     NBTUtils.setInt(stack, "bone", 0);
                 }
 
-                LevelingUtils.addExperience(stack, (int) newDamage / 2);
+                LevelingUtils.addExperience(stack, (int) newDamage);
 
                 player.heal(newDamage);
             }

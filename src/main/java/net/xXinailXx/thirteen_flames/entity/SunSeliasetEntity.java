@@ -121,12 +121,8 @@ public class SunSeliasetEntity extends Projectile implements IAnimatable, IGlow 
 
         return GlowData.builder()
                 .customRenderer()
-                .addBeam(6, new Beam(new Color(255, 252, 89), 1, (stack, partialTicks, number) -> {
-                    return stack;
-                }))
-                .addBeam(6, new Beam(new Color(255, 252, 12), 1, (stack, partialTicks, number) -> {
-                    return stack;
-                }))
+                .addBeam(6, new Beam(new Color(255, 253, 165), 1, (stack, partialTicks, number) -> stack))
+                .addBeam(6, new Beam(new Color(244, 243, 144), 1, (stack, partialTicks, number) -> stack))
                 .build();
     }
 

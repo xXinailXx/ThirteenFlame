@@ -39,7 +39,10 @@ public class DestroyStatuePacket implements IPacket {
         for (BlockPos pos1 : builder.posList())
             level.setBlock(pos1, Blocks.AIR.defaultBlockState(), 11);
 
-        level.setBlock(builder.mainPos(), Blocks.AIR.defaultBlockState(), 11);
+        if (!ctx.getSender().isCreative())
+            level.destroyBlock(builder.mainPos(), true);
+        else
+            level.setBlock(builder.mainPos(), Blocks.AIR.defaultBlockState(), 11);
 
         StatueData.removeStatue(builder.mainPos());
     }

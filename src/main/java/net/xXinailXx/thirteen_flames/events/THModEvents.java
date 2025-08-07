@@ -33,6 +33,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
+import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.block.StatueHandler;
 import net.xXinailXx.thirteen_flames.client.progress.ProgressHelper;
@@ -177,12 +178,13 @@ public class THModEvents {
 
                     level.setBlock(builder.mainPos(), statue.defaultBlockState().setValue(CustomStatueUtils.FACING, direction), 11);
 
-                    for (BlockPos pos : statue.getBlockPoses(builder.mainPos(), false))
+                    for (BlockPos pos : statue.getBlockPoses(direction, builder.mainPos(), false))
                         level.setBlock(pos, statue.getStructureBlock().defaultBlockState(), 11);
 
                     entity.remove(Entity.RemovalReason.KILLED);
 
                     Data.StatueBuilderData.removeShceme(uuid);
+                    StatueData.addStatue(new StatueData.StatueBuilder(statue.getBlockPoses(direction, builder.mainPos(), false), builder.mainPos()));
                 } else {
                     data.putFloat("progress", data.getFloat("progress") + 1);
 

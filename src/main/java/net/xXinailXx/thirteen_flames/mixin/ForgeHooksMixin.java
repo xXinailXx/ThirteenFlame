@@ -28,7 +28,7 @@ public class ForgeHooksMixin {
 
             amount = (float) (amount - (amount * (Math.round((float) guiLevelingData.getFightLevel(player) / 10) * 0.01)));
 
-            cir.setReturnValue(entity instanceof Player || ! MinecraftForge.EVENT_BUS.post(new LivingAttackEvent(entity, src, amount)));
+            cir.setReturnValue(entity instanceof Player || !MinecraftForge.EVENT_BUS.post(new LivingAttackEvent(entity, src, amount)));
             cir.cancel();
         }
     }

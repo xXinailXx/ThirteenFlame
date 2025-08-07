@@ -2,6 +2,8 @@ package net.xXinailXx.thirteen_flames.mixin.client;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import net.xXinailXx.thirteen_flames.item.flame.MoonBow;
 import net.xXinailXx.thirteen_flames.mixin.LivingEntityMixin;
 import org.spongepowered.asm.mixin.Mixin;

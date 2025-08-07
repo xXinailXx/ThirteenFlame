@@ -12,6 +12,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
@@ -162,7 +163,7 @@ public class StaminaData implements IAutoNBTSerializable {
         private static Vec3 lastPos = Vec3.ZERO;
         private static int posDiffs = 0;
 
-        @SubscribeEvent
+        @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void attackEntity(LivingAttackEvent event) {
             if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
@@ -182,7 +183,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void breakBlock(BlockEvent.BreakEvent event) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             Player player = event.getPlayer();
@@ -211,14 +212,16 @@ public class StaminaData implements IAutoNBTSerializable {
                 if (staminaData.getStamina(player) <= 0) {
                     staminaData.setRegenCooldown(player, 3);
                     staminaData.setShakeTime(player, 10);
+
                     event.setNewSpeed(0.0F);
+                    event.setCanceled(true);
                 }
             }
         }
 
         @SubscribeEvent
         public static void playerJump(LivingEvent.LivingJumpEvent event) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.getEntity() instanceof Player player)
@@ -227,7 +230,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick1(TickEvent.PlayerTickEvent event) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.SERVER) {
@@ -281,7 +284,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick2(TickEvent.PlayerTickEvent event) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.phase == TickEvent.Phase.END) {

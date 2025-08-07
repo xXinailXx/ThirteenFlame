@@ -65,7 +65,7 @@ public class StaffJodah extends SwordItemTF {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
 
-        if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && !AbilityUtils.isAbilityOnCooldown(stack, "backlight")) {
+        if (hand == InteractionHand.MAIN_HAND && player.isShiftKeyDown() && !player.getCooldowns().isOnCooldown(stack.getItem())) {
             ColoredParticle.Options options = new ColoredParticle.Options(ColoredParticle.Constructor.builder()
                     .color(new Color(255, 255, 255).getRGB())
                     .renderType(ColoredParticleRendererTypes.RENDER_LIGHT_COLOR)
@@ -88,7 +88,6 @@ public class StaffJodah extends SwordItemTF {
             }
 
             player.getCooldowns().addCooldown(stack.getItem(), (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "cooldown")));
-            AbilityUtils.addAbilityCooldown(stack, "backlight", (int) (20 * AbilityUtils.getAbilityValue(stack,"backlight", "cooldown")));
         }
 
         return super.use(level, player, hand);

@@ -48,13 +48,7 @@ public abstract class PlayerMixin extends LivingEntity {
             if (!curio.isEmpty()) {
                 int value = (int) AbilityUtils.getAbilityValue(curio, "usin", "boost");
 
-                System.out.println(value);
-                System.out.println(ci.getReturnValueF());
-
                 ci.setReturnValue(ci.getReturnValueF() * (1 - value * 0.01F));
-
-                System.out.println(ci.getReturnValueF());
-
                 ci.cancel();
             }
         }

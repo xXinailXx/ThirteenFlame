@@ -5,8 +5,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.block.StatueCup;
-import net.xXinailXx.thirteen_flames.block.StatueStructureBlock;
+import net.xXinailXx.thirteen_flames.block.*;
 
 public class StatueBlockItem extends BlockItem {
     public StatueBlockItem(Block block, Properties properties) {

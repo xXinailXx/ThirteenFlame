@@ -56,7 +56,7 @@ public class HornSeliaset extends FlameItemSetting {
         }).build()).stat("cooldown", RelicAbilityStat.builder().initialValue(72, 52).thresholdValue(5, 72).upgradeModifier(RelicAbilityStat.Operation.ADD, -3).formatValue((value) -> {
             return (int)MathUtils.round(value, 0);
         }).build()).stat("stun", RelicAbilityStat.builder().initialValue(1, 1.5).thresholdValue(1, 10).upgradeModifier(RelicAbilityStat.Operation.ADD, 0.5).formatValue((value) -> {
-            return (int)MathUtils.round(value, 0);
+            return MathUtils.round(value, 1);
         }).build()).build()).build()).levelingData(new RelicLevelingData(200, 15, 200)).build();
     }
 
@@ -105,10 +105,10 @@ public class HornSeliaset extends FlameItemSetting {
     public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
         Vec3 startPos = player.getEyePosition().add(player.getLookAngle().scale(1.5));
 
-        HornWindSeliasetEntity entity = new HornWindSeliasetEntity(player.level, (float) AbilityUtils.getAbilityValue(stack, "wind", "effective"), (float) AbilityUtils.getAbilityValue(stack, "wind", "distance"), startPos, player.isShiftKeyDown(), stack);
+        HornWindSeliasetEntity entity = new HornWindSeliasetEntity(player.level, (float) AbilityUtils.getAbilityValue(stack, "wind", "effective"), (float) AbilityUtils.getAbilityValue(stack, "wind", "distance"), player.isShiftKeyDown(), stack);
         entity.setOwner(player);
-        entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.75F, 0.25F, 0);
         entity.setPos(startPos);
+        entity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.75F, 0.25F, 0);
 
         player.level.addFreshEntity(entity);
 
