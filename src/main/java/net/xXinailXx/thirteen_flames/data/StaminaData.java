@@ -61,7 +61,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public static StaminaData getStaminaData(Player player) {
             StaminaData fake = new StaminaData();
-            CompoundTag data = player.getPersistentData();
+            CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
 
             if (data.contains("stamina_data"))
                 fake.deserializeNBT(data.getCompound("stamina_data"));
@@ -71,7 +71,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public static void setStaminaData(Player player, StaminaData data) {
             CompoundTag nbt = data.serializeNBT();
-            player.getPersistentData().put("stamina_data", nbt);
+            PlayerCapManager.getOrCreateData(player, "tf_data").put("stamina_data", nbt);
 
             if (!player.level.isClientSide())
                 Network.sendTo(new StaminaSyncPacket(nbt), player);
@@ -192,7 +192,6 @@ public class StaminaData implements IAutoNBTSerializable {
                 if (staminaData.getStamina(player) <= 0) {
                     staminaData.setRegenCooldown(player, 3);
                     staminaData.setShakeTime(player, 10);
-
 
                     event.setCanceled(true);
                 } else {

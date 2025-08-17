@@ -33,7 +33,7 @@ public class Resistance extends AbstarctAbilityWidgets {
             return;
 
         AttributeInstance damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
-        AttributeModifier bonusDamage = new AttributeModifier(UUIDManager.getOrCreate("ability_damage_bonus"), ThirteenFlames.MODID + ":damage_bonus", damage.getValue(), AttributeModifier.Operation.ADDITION);
+        AttributeModifier bonusDamage = new AttributeModifier(UUIDManager.getOrCreate("tf_ability_damage_bonus"), ThirteenFlames.MODID + ":damage_bonus", damage.getValue(), AttributeModifier.Operation.ADDITION);
 
         if (data.isActiveAbility(player, "resistance") && StaminaData.Utils.getStaminaData(player).isStaminaFull()) {
             if (!damage.hasModifier(bonusDamage))

@@ -829,7 +829,7 @@ public class Data implements IData {
                 abilitiesData.setLevelAbility(player, "recovery", 1);
             }
 
-            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("gui_mining_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getFightLevel(player) * 0.01), AttributeModifier.Operation.ADDITION);
+            AttributeModifier attack_damage_bonus = new AttributeModifier(UUIDManager.getOrCreate("tf_gui_fight_attack_damage"), ThirteenFlames.MODID + ":attack_damage", (guiLevelingData.getFightLevel(player) * 0.01), AttributeModifier.Operation.ADDITION);
             AttributeInstance attack_damage = player.getAttribute(Attributes.ATTACK_DAMAGE);
 
             if (!attack_damage.hasModifier(attack_damage_bonus))
