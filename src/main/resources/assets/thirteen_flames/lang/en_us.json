@@ -41,7 +41,7 @@
   "effect.thirteen_flames.blessing_seliaset": "Благославление Селиасэт",
   "effect.thirteen_flames.blessing_het": "Благославление Хэтентепа",
   "effect.thirteen_flames.kiss_knef": "Поцелуй Кнефмтити",
-  "effect.thirteen_flames.kiss_knef": "Поцелуй Кнефмтити",
+  "effect.thirteen_flames.poison": "Яд Гезиры",
 
   "entity.thirteen_flames.living_flesh": "Живая плоть",
   "entity.thirteen_flames.sun_seliaset": "Солнце Селиасет",
@@ -52,6 +52,7 @@
   "tooltip.thirteen_flames.progress.fight": "§c§l[§l>§l] §r§fМинимальный уровень боя для сражения: %1$s",
   "tooltip.thirteen_flames.progress.health": "§c§l[§l>§l] §r§fМинимальный уровень здоровья для востановления: %1$s",
 
+  "message.thirteen_flames.add_scarab": "+%1$s скарабей",
   "message.thirteen_flames.add_scarabs": "Получен %1$s скарабей для улучшения персонажа!",
   "message.thirteen_flames.scarab_type.silver": "серебрянный",
   "message.thirteen_flames.scarab_type.gold": "золотой",
@@ -76,6 +77,7 @@
   "command.thirteen_flames.stamina.take_message": "У игрока %1$s, было убрано %2$s стамины.",
   "command.thirteen_flames.stamina.set_message": "Игроку %1$s, было установлено %2$s стамина.",
   "command.thirteen_flames.stamina.full_message": "У игрока %1$s, стамина пополнена до максимума.",
+  "command.thirteen_flames.stamina.infinity_message": "Игроку %1$s, было выдана бесконечная стамина.",
   "command.thirteen_flames.gui_leveling.add_message": "Игроку %1$s, было добавлено %2$s уровней в меню %3$s.",
   "command.thirteen_flames.gui_leveling.take_message": "У игрока %1$s, было убрано %2$s уровней в меню %3$s.",
   "command.thirteen_flames.gui_leveling.set_message": "Игроку %1$s, было установлено %2$s уровней в меню %3$s.",

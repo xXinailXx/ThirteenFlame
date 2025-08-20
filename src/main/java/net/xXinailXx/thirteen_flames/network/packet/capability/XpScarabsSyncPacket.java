@@ -31,6 +31,7 @@ public class XpScarabsSyncPacket implements IPacket {
 
         if (player != null) {
             Data.XpScarabsData fake = new Data.XpScarabsData();
+
             fake.deserializeNBT(this.tag);
             Data.XpScarabsData.Utils.setXpScarabsData(player, fake);
         }

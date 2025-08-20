@@ -31,6 +31,7 @@ public class ScarabsSyncPacket implements IPacket {
 
         if (player != null) {
             Data.ScarabsData fake = new Data.ScarabsData();
+
             fake.deserializeNBT(this.tag);
             Data.ScarabsData.Utils.setScarabsData(player, fake);
         }

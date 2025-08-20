@@ -159,7 +159,7 @@ public class LivingEntityMixin {
         }
     }
 
-    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hurt", at = @At("HEAD"), cancellable = true, remap = false)
     public void hurt(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (Objects.equals(source, MoonBow.SUCC)) {
             LivingEntity entity = (LivingEntity) (Object) this;

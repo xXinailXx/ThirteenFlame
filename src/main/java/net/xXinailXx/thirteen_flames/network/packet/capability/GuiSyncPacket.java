@@ -31,6 +31,7 @@ public class GuiSyncPacket implements IPacket {
 
         if (player != null) {
             Data.GuiLevelingData fake = new Data.GuiLevelingData();
+
             fake.deserializeNBT(this.tag);
             Data.GuiLevelingData.Utils.setGuiData(player, fake);
         }

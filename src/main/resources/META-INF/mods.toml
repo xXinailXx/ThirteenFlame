@@ -4,12 +4,12 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId="thirteen_flames"
-version="0.1.0"
+version="${file.jarVersion}"
 displayName="Storytelling: Thirteen Flames"
 logoFile="logo.png"
 credits="MrLololoshka, Storytelling Team"
 authors="xXinailXx"
-description='''Mod adds most of the items and mechanics from Lp. Тринадцать Огней'''
+description='''Mod adds most of the items and mechanics from Lp.Тринадцать Огней'''
 
 [[dependencies.thirteen_flames]]
 modId="forge"

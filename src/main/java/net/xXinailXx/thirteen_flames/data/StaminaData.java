@@ -26,6 +26,7 @@ import org.zeith.hammerlib.net.Network;
 
 @Getter
 public class StaminaData implements IAutoNBTSerializable {
+    @Setter
     @NBTSerializable
     private int maxStamina;
     @NBTSerializable
@@ -36,10 +37,6 @@ public class StaminaData implements IAutoNBTSerializable {
     @Setter
     @NBTSerializable
     private int shakeTime;
-
-    public void setMaxStamina(int amount) {
-        this.maxStamina = Math.max(amount, 10);
-    }
 
     public void setStamina(int amount) {
         if (amount > this.maxStamina)
@@ -53,7 +50,7 @@ public class StaminaData implements IAutoNBTSerializable {
     }
 
     public boolean isStaminaFull() {
-        return this.stamina == this.maxStamina;
+        return this.stamina >= this.maxStamina;
     }
 
     public static class Utils implements IStaminaData {
@@ -71,6 +68,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public static void setStaminaData(Player player, StaminaData data) {
             CompoundTag nbt = data.serializeNBT();
+
             PlayerCapManager.getOrCreateData(player, "tf_data").put("stamina_data", nbt);
 
             if (!player.level.isClientSide())
@@ -83,16 +81,18 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public void setStamina(Player player, int stamina) {
             StaminaData data = getStaminaData(player);
+
             data.setStamina(Mth.clamp(stamina, 0, getMaxStamina(player)));
             setStaminaData(player, data);
         }
 
         public int getMaxStamina(Player player) {
-            return Math.max(10 * (abilitiesData.isActiveAbility(player, "stamina_mantra") ? abilitiesData.getLevelAbility(player, "stamina_mantra") : 1), getStaminaData(player).getMaxStamina());
+            return getStaminaData(player).getMaxStamina();
         }
 
         public void setMaxStamina(Player player, int stamina) {
             StaminaData data = getStaminaData(player);
+
             data.setMaxStamina(stamina);
             setStaminaData(player, data);
         }
@@ -103,6 +103,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public void setRegenCooldown(Player player, int cooldown) {
             StaminaData data = getStaminaData(player);
+
             data.setRegenCooldown(Math.max(0, cooldown));
             setStaminaData(player, data);
         }
@@ -121,6 +122,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public void setShakeTime(Player player, int time) {
             StaminaData data = getStaminaData(player);
+
             data.setShakeTime(Math.max(0, time));
             setStaminaData(player, data);
         }
@@ -140,7 +142,7 @@ public class StaminaData implements IAutoNBTSerializable {
             setStamina(player, getStamina(player) + stamina);
         }
 
-        public void addStaminaReqAbil(Player player, int stamina) {
+        public void addStaminaReqAbility(Player player, int stamina) {
             if (abilitiesData.isActiveAbility(player, "stamina_mantra"))
                 addStamina(player, stamina * abilitiesData.getLevelAbility(player, "stamina_mantra"));
             else
@@ -238,7 +240,7 @@ public class StaminaData implements IAutoNBTSerializable {
                 if (player == null)
                     return;
 
-                int staminaLevel = abilitiesData.isActiveAbility(player, "stamina_mantra") ? abilitiesData.getLevelAbility(player, "stamina_mantra") : 1;
+                int staminaLevel = abilitiesData.isActiveAbility(player, "stamina_mantra") ? 1 + abilitiesData.getLevelAbility(player, "stamina_mantra") : 1;
 
                 staminaData.setMaxStamina(player, 10 * staminaLevel);
 
@@ -254,7 +256,7 @@ public class StaminaData implements IAutoNBTSerializable {
                     int tickCount = player.tickCount - (AbilityUtils.playerLevelSea(player) != AbilityUtils.PlayerPosYState.NONE ? 3 : 0);
 
                     if (tickCount % 2 == 0)
-                        staminaData.addStaminaReqAbil(player, 1);
+                        staminaData.addStaminaReqAbility(player, 1);
                 }
 
                 if (stamina > maxStamina)
@@ -271,9 +273,11 @@ public class StaminaData implements IAutoNBTSerializable {
 
                         if (posDiffs >= 1) {
                             posDiffs = 0;
+
                             staminaData.addStamina(player, -1);
                         } else if (player.isSprinting()) {
                             staminaData.setRegenCooldown(player, 3);
+
                             ++posDiffs;
                         }
                     }

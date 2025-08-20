@@ -31,6 +31,7 @@ public class StaminaSyncPacket implements IPacket {
 
         if (player != null) {
             StaminaData fake = new StaminaData();
+
             fake.deserializeNBT(this.tag);
             StaminaData.Utils.setStaminaData(player, fake);
         }

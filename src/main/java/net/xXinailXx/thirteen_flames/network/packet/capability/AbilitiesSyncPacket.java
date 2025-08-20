@@ -32,6 +32,7 @@ public class AbilitiesSyncPacket implements IPacket {
         if (player != null) {
             for (String key : this.tag.getAllKeys()) {
                 Data.AbilitiesData.Handler handler = new Data.AbilitiesData.Handler();
+
                 handler.deserializeNBT(this.tag.getCompound(key));
                 Data.AbilitiesData.Utils.setAbilityData(player, key, handler);
             }

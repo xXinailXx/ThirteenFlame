@@ -21,7 +21,7 @@ public interface IStaminaData {
 
     void addStamina(Player player, int stamina);
 
-    void addStaminaReqAbil(Player player, int stamina);
+    void addStaminaReqAbility(Player player, int stamina);
 
     void addMaxStamina(Player player, int stamina);
 

@@ -893,14 +893,14 @@ public class Data implements IData {
                 xpScarabsData.setXpScarabAuriteh(player, 1000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.AURITEH));
                 scarabsData.addScarabAuriteh(player, 1);
 
-                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_lazotep_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.auriteh").getString()));
+                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_auriteh_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.auriteh").getString()));
             }
 
             if (xpScarabsData.getXpScarabLazotep(player) <= 0) {
                 xpScarabsData.setXpScarabLazotep(player, 2000 + XpScarabsData.Utils.addExtraXp(player, ScarabsType.LAZOTEP));
                 scarabsData.addScarabLazotep(player, 1);
 
-                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_silver_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.lazotep").getString()));
+                MessageManager.addMessage(new ResourceLocation(ThirteenFlames.MODID, "textures/gui/icon/scarab_lazotep_icon.png"), Component.translatable("message.thirteen_flames.add_scarabs", Component.translatable("message.thirteen_flames.scarab_type.lazotep").getString()));
             }
         }
     }

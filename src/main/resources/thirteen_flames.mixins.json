@@ -32,9 +32,9 @@
   "client": [
     "client.AddXpButtonAbilityScreenMixin",
     "client.AddXpButtonRelicScreen",
-    "client.BakedOverrideAccessor",
+    "client.BakedOverrideMixin",
     "client.GameRendererMixin",
-    "client.LivingEntityRenderer",
+    "client.LivingEntityRendererMixin",
     "client.LocalPlayerMixin",
     "client.PassiveSkillTreeMixin",
     "client.PlayerRendererMixin",

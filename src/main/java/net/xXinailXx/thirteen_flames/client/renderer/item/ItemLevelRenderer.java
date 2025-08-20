@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HalfTransparentBlock;
 import net.minecraft.world.level.block.StainedGlassPaneBlock;
-import net.xXinailXx.thirteen_flames.mixin.client.BakedOverrideAccessor;
+import net.xXinailXx.thirteen_flames.mixin.client.BakedOverrideMixin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +33,7 @@ public abstract class ItemLevelRenderer extends BlockEntityWithoutLevelRenderer 
     public void renderOverrride(ItemOverrides.BakedOverride override, @NotNull ItemTransforms.@NotNull TransformType transformType, @NotNull PoseStack pose, @NotNull ItemStack stack, @NotNull MultiBufferSource bufferSource, @Nullable RenderType overrideType, int uv2, int overlay) {
         Minecraft mc = Minecraft.getInstance();
         ItemRenderer ir = mc.getItemRenderer();
-        BakedModel overridenModel = ((BakedOverrideAccessor)override).getModel();
+        BakedModel overridenModel = ((BakedOverrideMixin)override).getModel();
 
         if (overridenModel != null) {
             boolean cull;
@@ -80,7 +80,7 @@ public abstract class ItemLevelRenderer extends BlockEntityWithoutLevelRenderer 
 
         while(var11.hasNext()) {
             ItemOverrides.BakedOverride override = (ItemOverrides.BakedOverride)var11.next();
-            BakedModel overridenModel = ((BakedOverrideAccessor)override).getModel();
+            BakedModel overridenModel = ((BakedOverrideMixin)override).getModel();
 
             if (overridenModel != null) {
                 boolean cull;

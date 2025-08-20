@@ -31,6 +31,7 @@ public class EffectSyncPacket implements IPacket {
 
         if (player != null) {
             Data.EffectData fake = new Data.EffectData();
+
             fake.deserializeNBT(this.tag);
             Data.EffectData.Utils.setEffectData(player, fake);
         }
