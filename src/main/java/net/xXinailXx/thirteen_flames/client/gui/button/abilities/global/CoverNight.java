@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapability;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityData;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbstarctAbilityWidgets;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.ScreenID;
@@ -44,7 +44,7 @@ public class CoverNight extends AbstarctAbilityWidgets {
                 player.setInvisible(false);
                 player.removeEffect(MobEffects.REGENERATION);
 
-                PlayerCapManager.addData(player, "tf_ability_cover_night", IntTag.valueOf(tickState));
+                PlayerCapability.add(player, "tf_ability_cover_night", IntTag.valueOf(tickState));
 
                 return;
             }
@@ -59,12 +59,12 @@ public class CoverNight extends AbstarctAbilityWidgets {
                     tickState--;
             }
         } else {
-            if (PlayerCapManager.getData(player, "tf_ability_cover_night") != null && ((IntTag) PlayerCapManager.getData(player, "tf_ability_cover_night")).getAsInt() == 4)
+            if (PlayerCapability.get(player, "tf_ability_cover_night") != null && ((IntTag) PlayerCapability.get(player, "tf_ability_cover_night")).getAsInt() == 4)
                 player.setInvisible(false);
 
             tickState = 3;
         }
 
-        PlayerCapManager.addData(player, "tf_ability_cover_night", IntTag.valueOf(tickState));
+        PlayerCapability.add(player, "tf_ability_cover_night", IntTag.valueOf(tickState));
     }
 }

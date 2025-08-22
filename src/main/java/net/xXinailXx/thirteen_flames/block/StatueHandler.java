@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -20,9 +19,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.network.packet.RemoveStatuePacket;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesServerConfig;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import net.xXinailXx.thirteen_flames.item.BagPaintItem;
@@ -67,7 +67,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
             level.setBlock(pos1, structureBlock.defaultBlockState(), 11);
         }
 
-        StatueData.addStatue(new StatueData.StatueBuilder(getBlockPoses(state.getValue(FACING), pos, false), pos));
+        StatueData.addStatue(level, new StatueData.StatueBuilder(getBlockPoses(state.getValue(FACING), pos, false), pos));
     }
 
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
@@ -76,7 +76,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false))
             accessor.destroyBlock(pos1, false);
 
-        StatueData.removeStatue(pos);
+        Network.sendToServer(new RemoveStatuePacket(pos));
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
@@ -85,7 +85,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
         for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false))
             level.destroyBlock(pos1, false);
 
-        StatueData.removeStatue(pos);
+        StatueData.removeStatue(level, pos);
     }
 
     public List<BlockPos> getBlockPoses(Direction direction, BlockPos pos, boolean isMain) {
@@ -103,7 +103,7 @@ public abstract class StatueHandler extends CustomStatueUtils implements IAnimat
     }
 
     public static boolean isUpgrade(ItemStack stack, Gods gods) {
-        if (!ThirteenFlamesCommonConfig.FLAME_UPGRADE_REQ_TYPE.get())
+        if (! ThirteenFlamesServerConfig.FLAME_UPGRADE_REQ_TYPE.get())
             return true;
 
         if (!(stack.getItem() instanceof FlameItemSetting))

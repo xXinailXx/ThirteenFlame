@@ -2,7 +2,7 @@ package net.xXinailXx.thirteen_flames.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class ThirteenFlamesCommonConfig {
+public class ThirteenFlamesServerConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 

@@ -18,6 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.Mod;
+import net.xXinailXx.enderdragonlib.network.packet.RemoveStatuePacket;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
 import net.xXinailXx.thirteen_flames.data.IData;
@@ -26,6 +27,7 @@ import net.xXinailXx.thirteen_flames.init.BlockEntityRegistry;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.data.Data;
 import org.jetbrains.annotations.Nullable;
+import org.zeith.hammerlib.net.Network;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +55,7 @@ public class StatueGodPharaoh extends CustomStatueUtils {
             level.setBlock(pos1, structureBlock.defaultBlockState(), 11);
         }
 
-        StatueData.addStatue(new StatueData.StatueBuilder(getBlockPoses(state.getValue(FACING), pos, false), pos));
+        StatueData.addStatue(level, new StatueData.StatueBuilder(getBlockPoses(state.getValue(FACING), pos, false), pos));
     }
 
     public void destroy(LevelAccessor accessor, BlockPos pos, BlockState state) {
@@ -62,7 +64,7 @@ public class StatueGodPharaoh extends CustomStatueUtils {
         for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false))
             accessor.destroyBlock(pos1, false);
 
-        StatueData.removeStatue(pos);
+        Network.sendToServer(new RemoveStatuePacket(pos));
     }
 
     public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity entity, ItemStack stack) {
@@ -71,7 +73,7 @@ public class StatueGodPharaoh extends CustomStatueUtils {
         for (BlockPos pos1 : getBlockPoses(state.getValue(FACING), pos, false))
             level.destroyBlock(pos1, false);
 
-        StatueData.removeStatue(pos);
+        StatueData.removeStatue(level, pos);
     }
 
     @OnlyIn(Dist.CLIENT)

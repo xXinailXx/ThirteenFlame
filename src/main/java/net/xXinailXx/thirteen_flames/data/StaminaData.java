@@ -16,9 +16,9 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapability;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.data.AbilityUtils;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesServerConfig;
 import net.xXinailXx.thirteen_flames.network.packet.capability.StaminaSyncPacket;
 import org.zeith.hammerlib.api.io.IAutoNBTSerializable;
 import org.zeith.hammerlib.api.io.NBTSerializable;
@@ -58,7 +58,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         public static StaminaData getStaminaData(Player player) {
             StaminaData fake = new StaminaData();
-            CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
+            CompoundTag data = PlayerCapability.getOrCreateData(player, "tf_data");
 
             if (data.contains("stamina_data"))
                 fake.deserializeNBT(data.getCompound("stamina_data"));
@@ -69,7 +69,7 @@ public class StaminaData implements IAutoNBTSerializable {
         public static void setStaminaData(Player player, StaminaData data) {
             CompoundTag nbt = data.serializeNBT();
 
-            PlayerCapManager.getOrCreateData(player, "tf_data").put("stamina_data", nbt);
+            PlayerCapability.getOrCreateData(player, "tf_data").put("stamina_data", nbt);
 
             if (!player.level.isClientSide())
                 Network.sendTo(new StaminaSyncPacket(nbt), player);
@@ -167,7 +167,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent(priority = EventPriority.HIGHEST)
         public static void attackEntity(LivingAttackEvent event) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.getSource().getEntity() instanceof Player player) {
@@ -185,7 +185,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void breakBlock(BlockEvent.BreakEvent event) {
-            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             Player player = event.getPlayer();
@@ -204,7 +204,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void setBreakSpeed(PlayerEvent.BreakSpeed event) {
-            if (! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             Player player = event.getEntity();
@@ -222,7 +222,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerJump(LivingEvent.LivingJumpEvent event) {
-            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.getEntity() instanceof Player player)
@@ -231,7 +231,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick1(TickEvent.PlayerTickEvent event) {
-            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.phase == TickEvent.Phase.END && event.side == LogicalSide.SERVER) {
@@ -287,7 +287,7 @@ public class StaminaData implements IAutoNBTSerializable {
 
         @SubscribeEvent
         public static void playerTick2(TickEvent.PlayerTickEvent event) {
-            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             if (event.phase == TickEvent.Phase.END) {

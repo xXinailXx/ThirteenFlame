@@ -14,12 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapability;
 import net.xXinailXx.enderdragonlib.client.utils.gui.AbstractWidget;
 import net.xXinailXx.enderdragonlib.utils.GuiUtils;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.gui.button.abilities.global.GiftGodPharaoh;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesServerConfig;
 import net.xXinailXx.thirteen_flames.data.IData;
 import net.xXinailXx.thirteen_flames.data.Data;
 import net.xXinailXx.thirteen_flames.network.packet.AbilityWidgetActionPacket;
@@ -294,7 +294,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
 
     private int getTime() {
         if (getAbilityData().getAbilityName().equals("egyptian_strength")) {
-            int time = PlayerCapManager.getTimers(MC.player).contains("tf_ability_egyptian_strength") ? PlayerCapManager.getTimer(MC.player, "tf_ability_egyptian_strength") : 0;
+            int time = PlayerCapability.getTimers(MC.player).contains("tf_ability_egyptian_strength") ? PlayerCapability.getTimer(MC.player, "tf_ability_egyptian_strength") : 0;
 
             return (int) Math.floor((double) time / 20);
         }
@@ -303,7 +303,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
     }
 
     private boolean isUnlock() {
-        if (isLockAbility() || (this.isConfigBlock && ! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get()))
+        if (isLockAbility() || (this.isConfigBlock && ! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get()))
             return false;
 
         if (this instanceof GiftGodPharaoh)
@@ -313,7 +313,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
     }
 
     public boolean isLockAbility() {
-        return data.isLockAbility(MC.player, getAbilityData().getAbilityName()) || (this.isConfigBlock && ! ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get());
+        return data.isLockAbility(MC.player, getAbilityData().getAbilityName()) || (this.isConfigBlock && ! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get());
     }
 
     public boolean isBuyAbility() {
@@ -342,7 +342,7 @@ public abstract class AbstarctAbilityWidgets extends AbstractWidget implements I
                 guiLevelingData.setProcentCurse(MC.player, 70);
         } else if (getAbilityData().getAbilityName().equals("cover_night")) {
             if (!value)
-                PlayerCapManager.addData(MC.player, "tf_ability_cover_night", IntTag.valueOf(4));
+                PlayerCapability.add(MC.player, "tf_ability_cover_night", IntTag.valueOf(4));
         }
     }
 

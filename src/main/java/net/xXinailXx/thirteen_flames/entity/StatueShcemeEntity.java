@@ -90,12 +90,12 @@ public class StatueShcemeEntity extends Projectile {
             }
 
             if (count == maxCount) {
-                if (!Data.StatueBuilderData.containsShceme(this.getUUID()))
-                    Data.StatueBuilderData.addShceme(this.getUUID(), new Data.StatueBuilderData.ShcemeBuilder(buildPosList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod()));
+                if (!Data.StatueBuilderData.containsShceme(this.level, this.getUUID()))
+                    Data.StatueBuilderData.addShceme(this.level, this.getUUID(), new Data.StatueBuilderData.ShcemeBuilder(buildPosList, new BlockPos(Vec3.atCenterOf(this.blockPosition())), getGod()));
 
                 setBuilded(true);
             } else if (count < maxCount) {
-                Data.StatueBuilderData.removeShceme(this.getUUID());
+                Data.StatueBuilderData.removeShceme(this.level, this.getUUID());
                 setBuilded(false);
             }
         }
@@ -107,7 +107,7 @@ public class StatueShcemeEntity extends Projectile {
         if (this.level.isClientSide)
             return;
 
-        Data.StatueBuilderData.removeShceme(this.getUUID());
+        Data.StatueBuilderData.removeShceme(this.level, this.getUUID());
     }
 
     protected void readAdditionalSaveData(CompoundTag compound) {

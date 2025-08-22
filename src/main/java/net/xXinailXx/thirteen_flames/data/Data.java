@@ -32,8 +32,8 @@ import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
-import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapability;
+import net.xXinailXx.enderdragonlib.capability.ServerCapability;
 import net.xXinailXx.enderdragonlib.capability.managers.UUIDManager;
 import net.xXinailXx.enderdragonlib.client.message.MessageManager;
 import net.xXinailXx.enderdragonlib.client.utils.MessageUtil;
@@ -54,8 +54,8 @@ import java.util.*;
 public class Data implements IData {
     public static class StatueBuilderData {
         @Nullable
-        public static ShcemeBuilder getShceme(UUID uuid) {
-            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
+        public static ShcemeBuilder getShceme(Level level, UUID uuid) {
+            CompoundTag tag = ServerCapability.getCap(level).getOrCreateData("tf_statue_shceme_builder_data");
 
             if (!tag.contains(uuid.toString()))
                 return null;
@@ -73,8 +73,8 @@ public class Data implements IData {
             return new ShcemeBuilder(posList, mainPos, gods1);
         }
 
-        public static void addShceme(UUID uuid, ShcemeBuilder builder) {
-            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
+        public static void addShceme(Level level, UUID uuid, ShcemeBuilder builder) {
+            CompoundTag tag = ServerCapability.getCap(level).getOrCreateData("tf_statue_shceme_builder_data");
             CompoundTag data = new CompoundTag();
 
             data.putInt("god", builder.god().ordinal());
@@ -88,21 +88,21 @@ public class Data implements IData {
             data.put("complete_poses", listTag);
             tag.put(uuid.toString(), data);
 
-            ServerCapManager.addServerData("tf_statue_shceme_builder_data", tag);
+            ServerCapability.getCap(level).add("tf_statue_shceme_builder_data", tag);
         }
 
-        public static void removeShceme(UUID uuid) {
-            CompoundTag tag = ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data");
+        public static void removeShceme(Level level, UUID uuid) {
+            CompoundTag tag = ServerCapability.getCap(level).getOrCreateData("tf_statue_shceme_builder_data");
 
             if (!tag.contains(uuid.toString()))
                 return;
 
             tag.remove(uuid.toString());
-            ServerCapManager.addServerData("tf_statue_shceme_builder_data", tag);
+            ServerCapability.getCap(level).add("tf_statue_shceme_builder_data", tag);
         }
 
-        public static boolean containsShceme(UUID uuid) {
-            return ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data").contains(uuid.toString());
+        public static boolean containsShceme(Level level, UUID uuid) {
+            return ServerCapability.getCap(level).getOrCreateData("tf_statue_shceme_builder_data").contains(uuid.toString());
         }
 
         public record ShcemeBuilder(List<BlockPos> posList, BlockPos mainPos, Gods god) {}
@@ -114,7 +114,7 @@ public class Data implements IData {
                 return new CompoundTag();
 
             CompoundTag abilitiesData = new CompoundTag();
-            CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
+            CompoundTag data = PlayerCapability.getOrCreateData(player, "tf_data");
 
             if (data.contains("abilities_data"))
                 abilitiesData = data.getCompound("abilities_data");
@@ -126,7 +126,7 @@ public class Data implements IData {
             if (player == null)
                 return;
 
-            PlayerCapManager.getOrCreateData(player, "tf_data").put("abilities_data", tag);
+            PlayerCapability.getOrCreateData(player, "tf_data").put("abilities_data", tag);
 
             if (!player.level.isClientSide())
                 Network.sendTo(new AbilitiesSyncPacket(tag), player);
@@ -233,7 +233,7 @@ public class Data implements IData {
         public static class Utils implements IEffectData {
             public static EffectData getEffectData(Player player) {
                 EffectData fake = new EffectData();
-                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
+                CompoundTag data = PlayerCapability.getOrCreateData(player, "tf_data");
 
                 if (data.contains("effect_data"))
                     fake.deserializeNBT(data.getCompound("effect_data"));
@@ -243,7 +243,7 @@ public class Data implements IData {
 
             public static void setEffectData(Player player, EffectData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getOrCreateData(player, "tf_data").put("effect_data", nbt);
+                PlayerCapability.getOrCreateData(player, "tf_data").put("effect_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new EffectSyncPacket(nbt), player);
@@ -370,7 +370,7 @@ public class Data implements IData {
                     player = Minecraft.getInstance().player;
 
                 GuiLevelingData fake = new GuiLevelingData();
-                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
+                CompoundTag data = PlayerCapability.getOrCreateData(player, "tf_data");
 
                 if (data.contains("gui_data"))
                     fake.deserializeNBT(data.getCompound("gui_data"));
@@ -380,7 +380,7 @@ public class Data implements IData {
 
             public static void setGuiData(Player player, GuiLevelingData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getOrCreateData(player, "tf_data").put("gui_data", nbt);
+                PlayerCapability.getOrCreateData(player, "tf_data").put("gui_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new GuiSyncPacket(nbt), player);
@@ -496,7 +496,7 @@ public class Data implements IData {
         public static class Utils implements IXpScarabsData {
             public static XpScarabsData getXpScarabsData(Player player) {
                 XpScarabsData fake = new XpScarabsData();
-                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
+                CompoundTag data = PlayerCapability.getOrCreateData(player, "tf_data");
 
                 if (data.contains("xp_scarabs_data"))
                     fake.deserializeNBT(data.getCompound("xp_scarabs_data"));
@@ -506,7 +506,7 @@ public class Data implements IData {
 
             public static void setXpScarabsData(Player player, XpScarabsData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getOrCreateData(player, "tf_data").put("xp_scarabs_data", nbt);
+                PlayerCapability.getOrCreateData(player, "tf_data").put("xp_scarabs_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new XpScarabsSyncPacket(nbt), player);
@@ -601,7 +601,7 @@ public class Data implements IData {
         public static class Utils implements IScarabsData {
             public static ScarabsData getScarabsData(Player player) {
                 ScarabsData fake = new ScarabsData();
-                CompoundTag data = PlayerCapManager.getOrCreateData(player, "tf_data");
+                CompoundTag data = PlayerCapability.getOrCreateData(player, "tf_data");
 
                 if (data.contains("scarabs_data"))
                     fake.deserializeNBT(data.getCompound("scarabs_data"));
@@ -611,7 +611,7 @@ public class Data implements IData {
 
             public static void setScarabsData(Player player, ScarabsData data) {
                 CompoundTag nbt = data.serializeNBT();
-                PlayerCapManager.getOrCreateData(player, "tf_data").put("scarabs_data", nbt);
+                PlayerCapability.getOrCreateData(player, "tf_data").put("scarabs_data", nbt);
 
                 if (!player.level.isClientSide())
                     Network.sendTo(new ScarabsSyncPacket(nbt), player);

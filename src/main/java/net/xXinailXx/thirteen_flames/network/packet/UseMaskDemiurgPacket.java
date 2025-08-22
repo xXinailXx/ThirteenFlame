@@ -1,15 +1,12 @@
 package net.xXinailXx.thirteen_flames.network.packet;
 
 import it.hurts.sskirillss.relics.items.relics.base.utils.AbilityUtils;
-import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.IntTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.xXinailXx.enderdragonlib.capability.PlayerCapManager;
+import net.xXinailXx.enderdragonlib.capability.PlayerCapability;
 import net.xXinailXx.thirteen_flames.init.ItemRegistry;
 import org.zeith.hammerlib.net.IPacket;
 import org.zeith.hammerlib.net.PacketContext;
@@ -31,7 +28,7 @@ public class UseMaskDemiurgPacket implements IPacket {
 
         int time = (int) (AbilityUtils.getAbilityValue(stack, "dematerialization", "time") * 20);
 
-        PlayerCapManager.addTimer(player, "tf_mask_demiurg_dematerialization", time);
+        PlayerCapability.addTimer(player, "tf_mask_demiurg_dematerialization", time);
 
         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, time, 2, true, true));
 

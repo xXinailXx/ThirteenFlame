@@ -28,10 +28,10 @@ public class DestroyStatuePacket implements IPacket {
 
     public void serverExecute(PacketContext ctx) {
         ServerLevel level = ctx.getSender().getLevel();
-        StatueData.StatueBuilder builder = StatueData.getStatue(pos);
+        StatueData.StatueBuilder builder = StatueData.getStatue(level, this.pos);
 
         if (builder == null) {
-            level.destroyBlock(pos, true);
+            level.destroyBlock(this.pos, true);
 
             return;
         }
@@ -44,6 +44,6 @@ public class DestroyStatuePacket implements IPacket {
         else
             level.setBlock(builder.mainPos(), Blocks.AIR.defaultBlockState(), 11);
 
-        StatueData.removeStatue(builder.mainPos());
+        StatueData.removeStatue(level, builder.mainPos());
     }
 }

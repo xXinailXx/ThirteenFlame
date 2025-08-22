@@ -13,7 +13,7 @@ import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesServerConfig;
 import net.xXinailXx.thirteen_flames.data.IStaminaData;
 import net.xXinailXx.thirteen_flames.data.StaminaData;
 
@@ -26,7 +26,7 @@ public class StaminaHud {
         LocalPlayer player = MC.player;
 
         if (player != null && !player.isCreative() && !player.isSpectator()) {
-            if (!ThirteenFlamesCommonConfig.STAMINA_ACTIVE.get())
+            if (! ThirteenFlamesServerConfig.STAMINA_ACTIVE.get())
                 return;
 
             RandomSource random = player.getRandom();

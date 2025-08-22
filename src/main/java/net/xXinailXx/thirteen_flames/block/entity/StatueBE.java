@@ -22,7 +22,7 @@ import net.xXinailXx.enderdragonlib.utils.MathUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.StatueBlockEntity;
 import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
-import net.xXinailXx.thirteen_flames.config.ThirteenFlamesCommonConfig;
+import net.xXinailXx.thirteen_flames.config.ThirteenFlamesServerConfig;
 import net.xXinailXx.thirteen_flames.effect.StatueEffect;
 import net.xXinailXx.thirteen_flames.init.BlockRegistry;
 import net.xXinailXx.thirteen_flames.utils.Gods;
@@ -44,7 +44,7 @@ import java.util.Map;
 public class StatueBE extends StatueBlockEntity implements IAnimatable {
     private final AnimationFactory factory = new AnimationFactory(this);
     @Setter
-    private int timeToUpgrade = ThirteenFlamesCommonConfig.TIME_TO_FLAME_UPGRADE.get();
+    private int timeToUpgrade = ThirteenFlamesServerConfig.TIME_TO_FLAME_UPGRADE.get();
     private final Gods god;
     private final boolean finished;
 
@@ -58,7 +58,7 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
         if (this.level == null || this.level.isClientSide)
             return;
 
-        if (StatueData.getStatue(this.worldPosition) == null) {
+        if (StatueData.getStatue(this.level, this.worldPosition) == null) {
             Iterable<BlockPos> iterable;
 
             if (getGod().equals(Gods.GOD_PHARAOH))
@@ -71,7 +71,7 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
             for (BlockPos pos : iterable)
                 posList.add(new BlockPos(pos.getX(), pos.getY(), pos.getZ()));
 
-            StatueData.addStatue(new StatueData.StatueBuilder(posList, this.worldPosition));
+            StatueData.addStatue(this.level, new StatueData.StatueBuilder(posList, this.worldPosition));
         }
 
         RandomSource random = this.level.getRandom();
@@ -235,7 +235,7 @@ public class StatueBE extends StatueBlockEntity implements IAnimatable {
     }
 
     public void resetFlameUpgradeData() {
-        this.timeToUpgrade = ThirteenFlamesCommonConfig.TIME_TO_FLAME_UPGRADE.get();
+        this.timeToUpgrade = ThirteenFlamesServerConfig.TIME_TO_FLAME_UPGRADE.get();
     }
 
     public void registerControllers(AnimationData data) {

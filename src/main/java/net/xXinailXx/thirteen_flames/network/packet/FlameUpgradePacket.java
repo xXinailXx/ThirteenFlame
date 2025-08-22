@@ -44,7 +44,7 @@ public class FlameUpgradePacket implements IPacket {
         ServerLevel level = player.getLevel();
 
         if (level.getBlockState(this.pos).getBlock() instanceof StatueStructureBlock)
-            this.pos = StatueData.getStatue(this.pos).mainPos();
+            this.pos = StatueData.getStatue(level, this.pos).mainPos();
 
         StatueBE be = (StatueBE) level.getChunkAt(this.pos).getBlockEntity(this.pos);
 

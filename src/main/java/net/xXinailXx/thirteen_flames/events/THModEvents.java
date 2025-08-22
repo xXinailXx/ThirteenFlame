@@ -25,13 +25,12 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.xXinailXx.enderdragonlib.capability.ServerCapManager;
+import net.xXinailXx.enderdragonlib.capability.ServerCapability;
 import net.xXinailXx.enderdragonlib.utils.statues.CustomStatueUtils;
 import net.xXinailXx.enderdragonlib.utils.statues.data.StatueData;
 import net.xXinailXx.thirteen_flames.ThirteenFlames;
@@ -115,8 +114,8 @@ public class THModEvents {
                 UUID uuid = null;
                 Data.StatueBuilderData.ShcemeBuilder builder = null;
 
-                for (String key : ServerCapManager.getOrCreateData("tf_statue_shceme_builder_data").getAllKeys()) {
-                    Data.StatueBuilderData.ShcemeBuilder builder1 = Data.StatueBuilderData.getShceme(UUID.fromString(key));
+                for (String key : ServerCapability.getCap(level).getOrCreateData("tf_statue_shceme_builder_data").getAllKeys()) {
+                    Data.StatueBuilderData.ShcemeBuilder builder1 = Data.StatueBuilderData.getShceme(level, UUID.fromString(key));
 
                     if (builder1 == null)
                         continue;
@@ -183,8 +182,8 @@ public class THModEvents {
 
                     entity.remove(Entity.RemovalReason.KILLED);
 
-                    Data.StatueBuilderData.removeShceme(uuid);
-                    StatueData.addStatue(new StatueData.StatueBuilder(statue.getBlockPoses(direction, builder.mainPos(), false), builder.mainPos()));
+                    Data.StatueBuilderData.removeShceme(level, uuid);
+                    StatueData.addStatue(level, new StatueData.StatueBuilder(statue.getBlockPoses(direction, builder.mainPos(), false), builder.mainPos()));
                 } else {
                     data.putFloat("progress", data.getFloat("progress") + 1);
 

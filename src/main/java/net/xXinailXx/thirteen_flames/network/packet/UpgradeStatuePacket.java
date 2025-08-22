@@ -44,7 +44,7 @@ public class UpgradeStatuePacket implements IPacket {
         ServerLevel level = player.getLevel();
 
         if (level.getBlockState(this.pos).getBlock() instanceof StatueStructureBlock) {
-            StatueData.StatueBuilder builder = StatueData.getStatue(this.pos);
+            StatueData.StatueBuilder builder = StatueData.getStatue(level, this.pos);
 
             if (builder == null)
                 return;
