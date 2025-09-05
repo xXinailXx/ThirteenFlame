@@ -32,6 +32,7 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.xXinailXx.enderdragonlib.client.utils.item.tooltip.ItemBorder;
+import net.xXinailXx.thirteen_flames.ThirteenFlames;
 import net.xXinailXx.thirteen_flames.client.renderer.item.MoonBowRenderer;
 import net.xXinailXx.thirteen_flames.entity.MoonCarrierEntity;
 import net.xXinailXx.thirteen_flames.entity.MoonProjectileEntity;
@@ -49,7 +50,7 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class MoonBow extends FlameItemSetting {
-    public static final DamageSource SUCC = (new DamageSource("thirteen_flames:succ")).bypassArmor().bypassEnchantments().bypassMagic().bypassInvul();
+    public static final DamageSource SUCC = (new DamageSource(ThirteenFlames.MODID + ":succ")).bypassArmor().bypassEnchantments().bypassMagic().bypassInvul();
     private final Random random = new Random();
     private boolean isSurging;
 
