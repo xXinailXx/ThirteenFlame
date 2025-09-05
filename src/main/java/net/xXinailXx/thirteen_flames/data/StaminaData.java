@@ -316,9 +316,8 @@ public class StaminaData implements IAutoNBTSerializable {
 
                     player.setSprinting(false);
 
-                    if (player instanceof LocalPlayer localPlayer) {
+                    if (player instanceof LocalPlayer localPlayer)
                         localPlayer.input.forwardImpulse = 0.0F;
-                    }
                 }
             }
         }
